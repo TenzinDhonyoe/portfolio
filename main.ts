@@ -13,7 +13,7 @@ const CARD_TITLE_HEIGHT = 52 // title + tag + gap
 const CARD_PAD_X = 20
 const CARD_PAD_Y = 16
 const CARD_GAP = 14
-const NARROW = 850
+const NARROW = 920
 const MOBILE = 500
 
 // ---- State ----
