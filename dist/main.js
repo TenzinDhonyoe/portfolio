@@ -1,16 +1,3291 @@
-var If=["BN","BN","BN","BN","BN","BN","BN","BN","BN","S","B","S","WS","B","BN","BN","BN","BN","BN","BN","BN","BN","BN","BN","BN","BN","BN","BN","B","B","B","S","WS","ON","ON","ET","ET","ET","ON","ON","ON","ON","ON","ON","CS","ON","CS","ON","EN","EN","EN","EN","EN","EN","EN","EN","EN","EN","ON","ON","ON","ON","ON","ON","ON","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","ON","ON","ON","ON","ON","ON","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","ON","ON","ON","ON","BN","BN","BN","BN","BN","BN","B","BN","BN","BN","BN","BN","BN","BN","BN","BN","BN","BN","BN","BN","BN","BN","BN","BN","BN","BN","BN","BN","BN","BN","BN","BN","BN","CS","ON","ET","ET","ET","ET","ON","ON","ON","ON","L","ON","ON","ON","ON","ON","ET","ET","EN","EN","ON","L","ON","ON","ON","EN","L","ON","ON","ON","ON","ON","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","ON","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","L","ON","L","L","L","L","L","L","L","L"],hf=["AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","CS","AL","ON","ON","NSM","NSM","NSM","NSM","NSM","NSM","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","NSM","NSM","NSM","NSM","NSM","NSM","NSM","NSM","NSM","NSM","NSM","NSM","NSM","NSM","AL","AL","AL","AL","AL","AL","AL","AN","AN","AN","AN","AN","AN","AN","AN","AN","AN","ET","AN","AN","AL","AL","AL","NSM","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","NSM","NSM","NSM","NSM","NSM","NSM","NSM","NSM","NSM","NSM","NSM","NSM","NSM","NSM","NSM","NSM","NSM","NSM","NSM","ON","NSM","NSM","NSM","NSM","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL","AL"];function pf(f){if(f<=255)return If[f];if(1424<=f&&f<=1524)return"R";if(1536<=f&&f<=1791)return hf[f&255];if(1792<=f&&f<=2220)return"AL";return"L"}function xf(f){let u=f.length;if(u===0)return null;let $=Array(u),R=0;for(let O=0;O<u;O++){let M=pf(f.charCodeAt(O));if(M==="R"||M==="AL"||M==="AN")R++;$[O]=M}if(R===0)return null;let H=u/R<0.3?0:1,D=new Int8Array(u);for(let O=0;O<u;O++)D[O]=H;let q=H&1?"R":"L",_=q,Y=_;for(let O=0;O<u;O++)if($[O]==="NSM")$[O]=Y;else Y=$[O];Y=_;for(let O=0;O<u;O++){let M=$[O];if(M==="EN")$[O]=Y==="AL"?"AN":"EN";else if(M==="R"||M==="L"||M==="AL")Y=M}for(let O=0;O<u;O++)if($[O]==="AL")$[O]="R";for(let O=1;O<u-1;O++){if($[O]==="ES"&&$[O-1]==="EN"&&$[O+1]==="EN")$[O]="EN";if($[O]==="CS"&&($[O-1]==="EN"||$[O-1]==="AN")&&$[O+1]===$[O-1])$[O]=$[O-1]}for(let O=0;O<u;O++){if($[O]!=="EN")continue;let M;for(M=O-1;M>=0&&$[M]==="ET";M--)$[M]="EN";for(M=O+1;M<u&&$[M]==="ET";M++)$[M]="EN"}for(let O=0;O<u;O++){let M=$[O];if(M==="WS"||M==="ES"||M==="ET"||M==="CS")$[O]="ON"}Y=_;for(let O=0;O<u;O++){let M=$[O];if(M==="EN")$[O]=Y==="L"?"L":"EN";else if(M==="R"||M==="L")Y=M}for(let O=0;O<u;O++){if($[O]!=="ON")continue;let M=O+1;while(M<u&&$[M]==="ON")M++;let X=O>0?$[O-1]:_,V=M<u?$[M]:_,J=X!=="L"?"R":"L";if(J===(V!=="L"?"R":"L"))for(let C=O;C<M;C++)$[C]=J;O=M-1}for(let O=0;O<u;O++)if($[O]==="ON")$[O]=q;for(let O=0;O<u;O++){let M=$[O];if((D[O]&1)===0){if(M==="R")D[O]++;else if(M==="AN"||M==="EN")D[O]+=2}else if(M==="L"||M==="AN"||M==="EN")D[O]++}return D}function Ff(f,u){let $=xf(f);if($===null)return null;let R=new Int8Array(u.length);for(let H=0;H<u.length;H++)R[H]=$[u[H]];return R}var gf=/[ \t\n\r\f]+/g,mf=/[\t\n\r\f]| {2,}|^ | $/;function rf(f){let u=f??"normal";return u==="pre-wrap"?{mode:u,preserveOrdinarySpaces:!0,preserveHardBreaks:!0}:{mode:u,preserveOrdinarySpaces:!1,preserveHardBreaks:!1}}function af(f){if(!mf.test(f))return f;let u=f.replace(gf," ");if(u.charCodeAt(0)===32)u=u.slice(1);if(u.length>0&&u.charCodeAt(u.length-1)===32)u=u.slice(0,-1);return u}function sf(f){if(!/[\r\f]/.test(f))return f.replace(/\r\n/g,`
-`);return f.replace(/\r\n/g,`
-`).replace(/[\r\f]/g,`
-`)}var Df=null,df;function tf(){if(Df===null)Df=new Intl.Segmenter(df,{granularity:"word"});return Df}var nf=/\p{Script=Arabic}/u,n=/\p{M}/u,zf=/\p{Nd}/u;function Of(f){return nf.test(f)}function l(f){for(let u of f){let $=u.codePointAt(0);if($>=19968&&$<=40959||$>=13312&&$<=19903||$>=131072&&$<=173791||$>=173824&&$<=177983||$>=177984&&$<=178207||$>=178208&&$<=183983||$>=183984&&$<=191471||$>=196608&&$<=201551||$>=63744&&$<=64255||$>=194560&&$<=195103||$>=12288&&$<=12351||$>=12352&&$<=12447||$>=12448&&$<=12543||$>=44032&&$<=55215||$>=65280&&$<=65519)return!0}return!1}var Mf=new Set(["，","．","！","：","；","？","、","。","・","）","〕","〉","》","」","』","】","〗","〙","〛","ー","々","〻","ゝ","ゞ","ヽ","ヾ"]),i=new Set(['"',"(","[","{","“","‘","«","‹","（","〔","〈","《","「","『","【","〖","〘","〚"]),Rf=new Set(["'","’"]),m=new Set([".",",","!","?",":",";","،","؛","؟","।","॥","၊","။","၌","၍","၏",")","]","}","%",'"',"”","’","»","›","…"]),ef=new Set([":",".","،","؛"]),fu=new Set(["၏"]),uu=new Set(["”","’","»","›","」","』","】","》","〉","〕","）"]);function $u(f){if(_f(f))return!0;let u=!1;for(let $ of f){if(m.has($)){u=!0;continue}if(u&&n.test($))continue;return!1}return u}function Du(f){for(let u of f)if(!Mf.has(u)&&!m.has(u))return!1;return f.length>0}function Ou(f){if(_f(f))return!0;for(let u of f)if(!i.has(u)&&!Rf.has(u)&&!n.test(u))return!1;return f.length>0}function _f(f){let u=!1;for(let $ of f){if($==="\\"||n.test($))continue;if(i.has($)||m.has($)||Rf.has($)){u=!0;continue}return!1}return u}function Hu(f){let u=Array.from(f),$=u.length;while($>0){let R=u[$-1];if(n.test(R)){$--;continue}if(i.has(R)||Rf.has(R)){$--;continue}break}if($<=0||$===u.length)return null;return{head:u.slice(0,$).join(""),tail:u.slice($).join("")}}function qu(f,u){if(f.length===0)return!1;for(let $ of f)if($!==u)return!1;return!0}function Mu(f){if(!Of(f)||f.length===0)return!1;return ef.has(f[f.length-1])}function Ru(f){if(f.length===0)return!1;return fu.has(f[f.length-1])}function _u(f){if(f.length<2||f[0]!==" ")return null;let u=f.slice(1);if(/^\p{M}+$/u.test(u))return{space:" ",marks:u};return null}function Vf(f){for(let u=f.length-1;u>=0;u--){let $=f[u];if(uu.has($))return!0;if(!m.has($))return!1}return!1}function Vu(f,u){if(u.preserveOrdinarySpaces||u.preserveHardBreaks){if(f===" ")return"preserved-space";if(f==="\t")return"tab";if(u.preserveHardBreaks&&f===`
-`)return"hard-break"}if(f===" ")return"space";if(f===" "||f===" "||f==="⁠"||f==="\uFEFF")return"glue";if(f==="​")return"zero-width-break";if(f==="­")return"soft-hyphen";return"text"}function I(f){return f.length===1?f[0]:f.join("")}function Yu(f,u,$,R){let H=[],D=null,q=[],_=$,Y=!1,O=0;for(let M of f){let X=Vu(M,R),V=X==="text"&&u;if(D!==null&&X===D&&V===Y){q.push(M),O+=M.length;continue}if(D!==null)H.push({text:I(q),isWordLike:Y,kind:D,start:_});D=X,q=[M],_=$+O,Y=V,O+=M.length}if(D!==null)H.push({text:I(q),isWordLike:Y,kind:D,start:_});return H}function Hf(f){return f==="space"||f==="preserved-space"||f==="zero-width-break"||f==="hard-break"}var Ju=/^[A-Za-z][A-Za-z0-9+.-]*:$/;function Xu(f,u){let $=f.texts[u];if($.startsWith("www."))return!0;return Ju.test($)&&u+1<f.len&&f.kinds[u+1]==="text"&&f.texts[u+1]==="//"}function Zu(f){return f.includes("?")&&(f.includes("://")||f.startsWith("www."))}function Qu(f){let u=f.texts.slice(),$=f.isWordLike.slice(),R=f.kinds.slice(),H=f.starts.slice();for(let q=0;q<f.len;q++){if(R[q]!=="text"||!Xu(f,q))continue;let _=[u[q]],Y=q+1;while(Y<f.len&&!Hf(R[Y])){_.push(u[Y]),$[q]=!0;let O=u[Y].includes("?");if(R[Y]="text",u[Y]="",Y++,O)break}u[q]=I(_)}let D=0;for(let q=0;q<u.length;q++){let _=u[q];if(_.length===0)continue;if(D!==q)u[D]=_,$[D]=$[q],R[D]=R[q],H[D]=H[q];D++}return u.length=D,$.length=D,R.length=D,H.length=D,{len:D,texts:u,isWordLike:$,kinds:R,starts:H}}function vu(f){let u=[],$=[],R=[],H=[];for(let D=0;D<f.len;D++){let q=f.texts[D];if(u.push(q),$.push(f.isWordLike[D]),R.push(f.kinds[D]),H.push(f.starts[D]),!Zu(q))continue;let _=D+1;if(_>=f.len||Hf(f.kinds[_]))continue;let Y=[],O=f.starts[_],M=_;while(M<f.len&&!Hf(f.kinds[M]))Y.push(f.texts[M]),M++;if(Y.length>0)u.push(I(Y)),$.push(!0),R.push("text"),H.push(O),D=M-1}return{len:u.length,texts:u,isWordLike:$,kinds:R,starts:H}}var Nu=new Set([":","-","/","×",",",".","+","–","—"]),Uf=/^[A-Za-z0-9_]+[,:;]*$/,bf=/[,:;]+$/;function Kf(f){for(let u of f)if(zf.test(u))return!0;return!1}function qf(f){if(f.length===0)return!1;for(let u of f){if(zf.test(u)||Nu.has(u))continue;return!1}return!0}function Cu(f){let u=[],$=[],R=[],H=[];for(let D=0;D<f.len;D++){let q=f.texts[D],_=f.kinds[D];if(_==="text"&&qf(q)&&Kf(q)){let Y=[q],O=D+1;while(O<f.len&&f.kinds[O]==="text"&&qf(f.texts[O]))Y.push(f.texts[O]),O++;u.push(I(Y)),$.push(!0),R.push("text"),H.push(f.starts[D]),D=O-1;continue}u.push(q),$.push(f.isWordLike[D]),R.push(_),H.push(f.starts[D])}return{len:u.length,texts:u,isWordLike:$,kinds:R,starts:H}}function Fu(f){let u=[],$=[],R=[],H=[];for(let D=0;D<f.len;D++){let q=f.texts[D],_=f.kinds[D],Y=f.isWordLike[D];if(_==="text"&&Y&&Uf.test(q)){let O=[q],M=bf.test(q),X=D+1;while(M&&X<f.len&&f.kinds[X]==="text"&&f.isWordLike[X]&&Uf.test(f.texts[X])){let V=f.texts[X];O.push(V),M=bf.test(V),X++}u.push(I(O)),$.push(!0),R.push("text"),H.push(f.starts[D]),D=X-1;continue}u.push(q),$.push(Y),R.push(_),H.push(f.starts[D])}return{len:u.length,texts:u,isWordLike:$,kinds:R,starts:H}}function Uu(f){let u=[],$=[],R=[],H=[];for(let D=0;D<f.len;D++){let q=f.texts[D];if(f.kinds[D]==="text"&&q.includes("-")){let _=q.split("-"),Y=_.length>1;for(let O=0;O<_.length;O++){let M=_[O];if(!Y)break;if(M.length===0||!Kf(M)||!qf(M))Y=!1}if(Y){let O=0;for(let M=0;M<_.length;M++){let X=_[M],V=M<_.length-1?`${X}-`:X;u.push(V),$.push(!0),R.push("text"),H.push(f.starts[D]+O),O+=V.length}continue}}u.push(q),$.push(f.isWordLike[D]),R.push(f.kinds[D]),H.push(f.starts[D])}return{len:u.length,texts:u,isWordLike:$,kinds:R,starts:H}}function bu(f){let u=[],$=[],R=[],H=[],D=0;while(D<f.len){let q=[f.texts[D]],_=f.isWordLike[D],Y=f.kinds[D],O=f.starts[D];if(Y==="glue"){let M=[q[0]],X=O;D++;while(D<f.len&&f.kinds[D]==="glue")M.push(f.texts[D]),D++;let V=I(M);if(D<f.len&&f.kinds[D]==="text")q[0]=V,q.push(f.texts[D]),_=f.isWordLike[D],Y="text",O=X,D++;else{u.push(V),$.push(!1),R.push("glue"),H.push(X);continue}}else D++;if(Y==="text")while(D<f.len&&f.kinds[D]==="glue"){let M=[];while(D<f.len&&f.kinds[D]==="glue")M.push(f.texts[D]),D++;let X=I(M);if(D<f.len&&f.kinds[D]==="text"){q.push(X,f.texts[D]),_=_||f.isWordLike[D],D++;continue}q.push(X)}u.push(I(q)),$.push(_),R.push(Y),H.push(O)}return{len:u.length,texts:u,isWordLike:$,kinds:R,starts:H}}function zu(f){let u=f.texts.slice(),$=f.isWordLike.slice(),R=f.kinds.slice(),H=f.starts.slice();for(let D=0;D<u.length-1;D++){if(R[D]!=="text"||R[D+1]!=="text")continue;if(!l(u[D])||!l(u[D+1]))continue;let q=Hu(u[D]);if(q===null)continue;u[D]=q.head,u[D+1]=q.tail+u[D+1],H[D+1]=H[D]+q.head.length}return{len:u.length,texts:u,isWordLike:$,kinds:R,starts:H}}function Ku(f,u,$){let R=tf(),H=0,D=[],q=[],_=[],Y=[];for(let V of R.segment(f))for(let J of Yu(V.segment,V.isWordLike??!1,V.index,$)){let b=J.kind==="text";if(u.carryCJKAfterClosingQuote&&b&&H>0&&_[H-1]==="text"&&l(J.text)&&l(D[H-1])&&Vf(D[H-1]))D[H-1]+=J.text,q[H-1]=q[H-1]||J.isWordLike;else if(b&&H>0&&_[H-1]==="text"&&Du(J.text)&&l(D[H-1]))D[H-1]+=J.text,q[H-1]=q[H-1]||J.isWordLike;else if(b&&H>0&&_[H-1]==="text"&&Ru(D[H-1]))D[H-1]+=J.text,q[H-1]=q[H-1]||J.isWordLike;else if(b&&H>0&&_[H-1]==="text"&&J.isWordLike&&Of(J.text)&&Mu(D[H-1]))D[H-1]+=J.text,q[H-1]=!0;else if(b&&!J.isWordLike&&H>0&&_[H-1]==="text"&&J.text.length===1&&J.text!=="-"&&J.text!=="—"&&qu(D[H-1],J.text))D[H-1]+=J.text;else if(b&&!J.isWordLike&&H>0&&_[H-1]==="text"&&($u(J.text)||J.text==="-"&&q[H-1]))D[H-1]+=J.text;else D[H]=J.text,q[H]=J.isWordLike,_[H]=J.kind,Y[H]=J.start,H++}for(let V=1;V<H;V++)if(_[V]==="text"&&!q[V]&&_f(D[V])&&_[V-1]==="text")D[V-1]+=D[V],q[V-1]=q[V-1]||q[V],D[V]="";for(let V=H-2;V>=0;V--)if(_[V]==="text"&&!q[V]&&Ou(D[V])){let J=V+1;while(J<H&&D[J]==="")J++;if(J<H&&_[J]==="text")D[J]=D[V]+D[J],Y[J]=Y[V],D[V]=""}let O=0;for(let V=0;V<H;V++){let J=D[V];if(J.length===0)continue;if(O!==V)D[O]=J,q[O]=q[V],_[O]=_[V],Y[O]=Y[V];O++}D.length=O,q.length=O,_.length=O,Y.length=O;let M=bu({len:O,texts:D,isWordLike:q,kinds:_,starts:Y}),X=zu(Fu(Uu(Cu(vu(Qu(M))))));for(let V=0;V<X.len-1;V++){let J=_u(X.texts[V]);if(J===null)continue;if(X.kinds[V]!=="space"&&X.kinds[V]!=="preserved-space"||X.kinds[V+1]!=="text"||!Of(X.texts[V+1]))continue;X.texts[V]=J.space,X.isWordLike[V]=!1,X.kinds[V]=X.kinds[V]==="preserved-space"?"preserved-space":"space",X.texts[V+1]=J.marks+X.texts[V+1],X.starts[V+1]=X.starts[V]+J.space.length}return X}function Eu(f,u){if(f.len===0)return[];if(!u.preserveHardBreaks)return[{startSegmentIndex:0,endSegmentIndex:f.len,consumedEndSegmentIndex:f.len}];let $=[],R=0;for(let H=0;H<f.len;H++){if(f.kinds[H]!=="hard-break")continue;$.push({startSegmentIndex:R,endSegmentIndex:H,consumedEndSegmentIndex:H+1}),R=H+1}if(R<f.len)$.push({startSegmentIndex:R,endSegmentIndex:f.len,consumedEndSegmentIndex:f.len});return $}function Ef(f,u,$="normal"){let R=rf($),H=R.mode==="pre-wrap"?sf(f):af(f);if(H.length===0)return{normalized:H,chunks:[],len:0,texts:[],isWordLike:[],kinds:[],starts:[]};let D=Ku(H,u,R);return{normalized:H,chunks:Eu(D,R),...D}}var r=null,jf=new Map,a=null,ju=/\p{Emoji_Presentation}/u,Au=/[\p{Emoji_Presentation}\p{Extended_Pictographic}\p{Regional_Indicator}\uFE0F\u20E3]/u,Yf=null,Af=new Map;function Jf(){if(r!==null)return r;if(typeof OffscreenCanvas<"u")return r=new OffscreenCanvas(1,1).getContext("2d"),r;if(typeof document<"u")return r=document.createElement("canvas").getContext("2d"),r;throw Error("Text measurement requires OffscreenCanvas or a DOM canvas context.")}function Tu(f){let u=jf.get(f);if(!u)u=new Map,jf.set(f,u);return u}function x(f,u){let $=u.get(f);if($===void 0)$={width:Jf().measureText(f).width,containsCJK:l(f)},u.set(f,$);return $}function s(){if(a!==null)return a;if(typeof navigator>"u")return a={lineFitEpsilon:0.005,carryCJKAfterClosingQuote:!1,preferPrefixWidthsForBreakableRuns:!1,preferEarlySoftHyphenBreak:!1},a;let f=navigator.userAgent,$=navigator.vendor==="Apple Computer, Inc."&&f.includes("Safari/")&&!f.includes("Chrome/")&&!f.includes("Chromium/")&&!f.includes("CriOS/")&&!f.includes("FxiOS/")&&!f.includes("EdgiOS/"),R=f.includes("Chrome/")||f.includes("Chromium/")||f.includes("CriOS/")||f.includes("Edg/");return a={lineFitEpsilon:$?0.015625:0.005,carryCJKAfterClosingQuote:R,preferPrefixWidthsForBreakableRuns:$,preferEarlySoftHyphenBreak:$},a}function Gu(f){let u=f.match(/(\d+(?:\.\d+)?)\s*px/);return u?parseFloat(u[1]):16}function Xf(){if(Yf===null)Yf=new Intl.Segmenter(void 0,{granularity:"grapheme"});return Yf}function Pu(f){return ju.test(f)||f.includes("️")}function Tf(f){return Au.test(f)}function Bu(f,u){let $=Af.get(f);if($!==void 0)return $;let R=Jf();R.font=f;let H=R.measureText("\uD83D\uDE00").width;if($=0,H>u+0.5&&typeof document<"u"&&document.body!==null){let D=document.createElement("span");D.style.font=f,D.style.display="inline-block",D.style.visibility="hidden",D.style.position="absolute",D.textContent="\uD83D\uDE00",document.body.appendChild(D);let q=D.getBoundingClientRect().width;if(document.body.removeChild(D),H-q>0.5)$=H-q}return Af.set(f,$),$}function yu(f){let u=0,$=Xf();for(let R of $.segment(f))if(Pu(R.segment))u++;return u}function ou(f,u){if(u.emojiCount===void 0)u.emojiCount=yu(f);return u.emojiCount}function g(f,u,$){if($===0)return u.width;return u.width-ou(f,u)*$}function Gf(f,u,$,R){if(u.graphemeWidths!==void 0)return u.graphemeWidths;let H=[],D=Xf();for(let q of D.segment(f)){let _=x(q.segment,$);H.push(g(q.segment,_,R))}return u.graphemeWidths=H.length>1?H:null,u.graphemeWidths}function Pf(f,u,$,R){if(u.graphemePrefixWidths!==void 0)return u.graphemePrefixWidths;let H=[],D=Xf(),q="";for(let _ of D.segment(f)){q+=_.segment;let Y=x(q,$);H.push(g(q,Y,R))}return u.graphemePrefixWidths=H.length>1?H:null,u.graphemePrefixWidths}function Bf(f,u){let $=Jf();$.font=f;let R=Tu(f),H=Gu(f),D=u?Bu(f,H):0;return{cache:R,fontSize:H,emojiCorrection:D}}function e(f){return f==="space"||f==="preserved-space"||f==="tab"||f==="zero-width-break"||f==="soft-hyphen"}function wu(f,u){while(u<f.widths.length){let $=f.kinds[u];if($!=="space"&&$!=="zero-width-break"&&$!=="soft-hyphen")break;u++}return u}function cu(f,u){if(u<=0)return 0;let $=f%u;if(Math.abs($)<=0.000001)return u;return u-$}function yf(f,u,$,R){if(!R||u===null)return f[$];return u[$]-($>0?u[$-1]:0)}function Lu(f,u,$,R,H,D){let q=0,_=u;while(q<f.length){let Y=D?u+f[q]:_+f[q];if((q+1<f.length?Y+H:Y)>$+R)break;_=Y,q++}return{fitCount:q,fittedWidth:_}}function of(f,u){if(f.simpleLineWalkFastPath)return Wu(f,u);return cf(f,u)}function Wu(f,u){return wf(f,u)}function wf(f,u,$){let{widths:R,kinds:H,breakableWidths:D,breakablePrefixWidths:q}=f;if(R.length===0)return 0;let _=s(),Y=_.lineFitEpsilon,O=0,M=0,X=!1,V=0,J=0,b=0,C=0,A=-1,w=0;function L(){A=-1,w=0}function z(Z=b,U=C,P=M){O++,$?.({startSegmentIndex:V,startGraphemeIndex:J,endSegmentIndex:Z,endGraphemeIndex:U,width:P}),M=0,X=!1,L()}function E(Z,U){X=!0,V=Z,J=0,b=Z+1,C=0,M=U}function T(Z,U,P){X=!0,V=Z,J=U,b=Z,C=U+1,M=P}function W(Z,U){if(!X){E(Z,U);return}M+=U,b=Z+1,C=0}function c(Z,U){if(!e(H[Z]))return;A=Z+1,w=M-U}function K(Z){G(Z,0)}function G(Z,U){let P=D[Z],S=q[Z]??null;for(let o=U;o<P.length;o++){let k=yf(P,S,o,_.preferPrefixWidthsForBreakableRuns);if(!X){T(Z,o,k);continue}if(M+k>u+Y)z(),T(Z,o,k);else M+=k,b=Z,C=o+1}if(X&&b===Z&&C===P.length)b=Z+1,C=0}let F=0;while(F<R.length){if(!X){if(F=wu(f,F),F>=R.length)break}let Z=R[F],U=H[F];if(!X){if(Z>u&&D[F]!==null)K(F);else E(F,Z);c(F,Z),F++;continue}if(M+Z>u+Y){if(e(U)){W(F,Z),z(F+1,0,M-Z),F++;continue}if(A>=0){if(b>A||b===A&&C>0){z();continue}z(A,0,w);continue}if(Z>u&&D[F]!==null){z(),K(F),F++;continue}z();continue}W(F,Z),c(F,Z),F++}if(X)z();return O}function cf(f,u,$){if(f.simpleLineWalkFastPath)return wf(f,u,$);let{widths:R,lineEndFitAdvances:H,lineEndPaintAdvances:D,kinds:q,breakableWidths:_,breakablePrefixWidths:Y,discretionaryHyphenWidth:O,tabStopAdvance:M,chunks:X}=f;if(R.length===0||X.length===0)return 0;let V=s(),J=V.lineFitEpsilon,b=0,C=0,A=!1,w=0,L=0,z=0,E=0,T=-1,W=0,c=0,K=null;function G(){T=-1,W=0,c=0,K=null}function F(Q=z,v=E,N=C){b++,$?.({startSegmentIndex:w,startGraphemeIndex:L,endSegmentIndex:Q,endGraphemeIndex:v,width:N}),C=0,A=!1,G()}function Z(Q,v){A=!0,w=Q,L=0,z=Q+1,E=0,C=v}function U(Q,v,N){A=!0,w=Q,L=v,z=Q,E=v+1,C=N}function P(Q,v){if(!A){Z(Q,v);return}C+=v,z=Q+1,E=0}function S(Q,v){if(!e(q[Q]))return;let N=q[Q]==="tab"?0:H[Q],B=q[Q]==="tab"?v:D[Q];T=Q+1,W=C-v+N,c=C-v+B,K=q[Q]}function o(Q){k(Q,0)}function k(Q,v){let N=_[Q],B=Y[Q]??null;for(let j=v;j<N.length;j++){let p=yf(N,B,j,V.preferPrefixWidthsForBreakableRuns);if(!A){U(Q,j,p);continue}if(C+p>u+J)F(),U(Q,j,p);else C+=p,z=Q,E=j+1}if(A&&z===Q&&E===N.length)z=Q+1,E=0}function y(Q){if(K!=="soft-hyphen")return!1;let v=_[Q];if(v===null)return!1;let N=V.preferPrefixWidthsForBreakableRuns?Y[Q]??v:v,B=N!==v,{fitCount:j,fittedWidth:p}=Lu(N,C,u,J,O,B);if(j===0)return!1;if(C=p,z=Q,E=j,G(),j===v.length)return z=Q+1,E=0,!0;return F(Q,j,p+O),k(Q,j),!0}function h(Q){b++,$?.({startSegmentIndex:Q.startSegmentIndex,startGraphemeIndex:0,endSegmentIndex:Q.consumedEndSegmentIndex,endGraphemeIndex:0,width:0}),G()}for(let Q=0;Q<X.length;Q++){let v=X[Q];if(v.startSegmentIndex===v.endSegmentIndex){h(v);continue}A=!1,C=0,w=v.startSegmentIndex,L=0,z=v.startSegmentIndex,E=0,G();let N=v.startSegmentIndex;while(N<v.endSegmentIndex){let B=q[N],j=B==="tab"?cu(C,M):R[N];if(B==="soft-hyphen"){if(A)z=N+1,E=0,T=N+1,W=C+O,c=C+O,K=B;N++;continue}if(!A){if(j>u&&_[N]!==null)o(N);else Z(N,j);S(N,j),N++;continue}if(C+j>u+J){let kf=C+(B==="tab"?0:H[N]),lf=C+(B==="tab"?j:D[N]);if(K==="soft-hyphen"&&V.preferEarlySoftHyphenBreak&&W<=u+J){F(T,0,c);continue}if(K==="soft-hyphen"&&y(N)){N++;continue}if(e(B)&&kf<=u+J){P(N,j),F(N+1,0,lf),N++;continue}if(T>=0&&W<=u+J){if(z>T||z===T&&E>0){F();continue}let Cf=T;F(Cf,0,c),N=Cf;continue}if(j>u&&_[N]!==null){F(),o(N),N++;continue}F();continue}P(N,j),S(N,j),N++}if(A){let B=T===v.consumedEndSegmentIndex?c:C;F(v.consumedEndSegmentIndex,0,B)}}return b}var Zf=null;function Su(){if(Zf===null)Zf=new Intl.Segmenter(void 0,{granularity:"grapheme"});return Zf}function ku(f){if(f)return{widths:[],lineEndFitAdvances:[],lineEndPaintAdvances:[],kinds:[],simpleLineWalkFastPath:!0,segLevels:null,breakableWidths:[],breakablePrefixWidths:[],discretionaryHyphenWidth:0,tabStopAdvance:0,chunks:[],segments:[]};return{widths:[],lineEndFitAdvances:[],lineEndPaintAdvances:[],kinds:[],simpleLineWalkFastPath:!0,segLevels:null,breakableWidths:[],breakablePrefixWidths:[],discretionaryHyphenWidth:0,tabStopAdvance:0,chunks:[]}}function lu(f,u,$){let R=Su(),H=s(),{cache:D,emojiCorrection:q}=Bf(u,Tf(f.normalized)),_=g("-",x("-",D),q),O=g(" ",x(" ",D),q)*8;if(f.len===0)return ku($);let M=[],X=[],V=[],J=[],b=f.chunks.length<=1,C=$?[]:null,A=[],w=[],L=$?[]:null,z=Array.from({length:f.len}),E=Array.from({length:f.len});function T(K,G,F,Z,U,P,S,o){if(U!=="text"&&U!=="space"&&U!=="zero-width-break")b=!1;if(M.push(G),X.push(F),V.push(Z),J.push(U),C?.push(P),A.push(S),w.push(o),L!==null)L.push(K)}for(let K=0;K<f.len;K++){z[K]=M.length;let G=f.texts[K],F=f.isWordLike[K],Z=f.kinds[K],U=f.starts[K];if(Z==="soft-hyphen"){T(G,0,_,_,Z,U,null,null),E[K]=M.length;continue}if(Z==="hard-break"){T(G,0,0,0,Z,U,null,null),E[K]=M.length;continue}if(Z==="tab"){T(G,0,0,0,Z,U,null,null),E[K]=M.length;continue}let P=x(G,D);if(Z==="text"&&P.containsCJK){let y="",h=0;for(let Q of R.segment(G)){let v=Q.segment;if(y.length===0){y=v,h=Q.index;continue}if(i.has(y)||Mf.has(v)||m.has(v)||H.carryCJKAfterClosingQuote&&l(v)&&Vf(y)){y+=v;continue}let N=x(y,D),B=g(y,N,q);T(y,B,B,B,"text",U+h,null,null),y=v,h=Q.index}if(y.length>0){let Q=x(y,D),v=g(y,Q,q);T(y,v,v,v,"text",U+h,null,null)}E[K]=M.length;continue}let S=g(G,P,q),o=Z==="space"||Z==="preserved-space"||Z==="zero-width-break"?0:S,k=Z==="space"||Z==="zero-width-break"?0:S;if(F&&G.length>1){let y=Gf(G,P,D,q),h=H.preferPrefixWidthsForBreakableRuns?Pf(G,P,D,q):null;T(G,S,o,k,Z,U,y,h)}else T(G,S,o,k,Z,U,null,null);E[K]=M.length}let W=Iu(f.chunks,z,E),c=C===null?null:Ff(f.normalized,C);if(L!==null)return{widths:M,lineEndFitAdvances:X,lineEndPaintAdvances:V,kinds:J,simpleLineWalkFastPath:b,segLevels:c,breakableWidths:A,breakablePrefixWidths:w,discretionaryHyphenWidth:_,tabStopAdvance:O,chunks:W,segments:L};return{widths:M,lineEndFitAdvances:X,lineEndPaintAdvances:V,kinds:J,simpleLineWalkFastPath:b,segLevels:c,breakableWidths:A,breakablePrefixWidths:w,discretionaryHyphenWidth:_,tabStopAdvance:O,chunks:W}}function Iu(f,u,$){let R=[];for(let H=0;H<f.length;H++){let D=f[H],q=D.startSegmentIndex<u.length?u[D.startSegmentIndex]:$[$.length-1]??0,_=D.endSegmentIndex<u.length?u[D.endSegmentIndex]:$[$.length-1]??0,Y=D.consumedEndSegmentIndex<u.length?u[D.consumedEndSegmentIndex]:$[$.length-1]??0;R.push({startSegmentIndex:q,endSegmentIndex:_,consumedEndSegmentIndex:Y})}return R}function hu(f,u,$,R){let H=Ef(f,s(),R?.whiteSpace);return lu(H,u,$)}function Lf(f,u,$){return hu(f,u,!1,$)}function pu(f){return f}function Wf(f,u,$){let R=of(pu(f),u);return{lineCount:R,height:R*$}}var $f=[{id:"gluco",title:"GlucoSolutions",tag:"Startup",text:"Personalized pre-diabetes management platform. Includes a patient-facing app for tracking glucose and metabolic health, plus a dietitian dashboard for monitoring client stability. Built with TypeScript across the full stack."},{id:"tumor",title:"Tumor Detection Prototype",tag:"ML / Healthcare",text:"Proof-of-concept system for identifying tumor-like structures through image analysis pipelines. Combines preprocessing, segmentation, and classification to flag regions of interest in biomedical imagery."},{id:"trading",title:"ML Trading Bot",tag:"ML / Finance",text:"Automated trading system for SPY ETF using sentiment analysis of financial news articles. Combines NLP-driven signal generation with the Alpaca API for trade execution. Built in Python."},{id:"gym",title:"ML Gym App",tag:"Computer Vision",text:"Computer vision application that uses pose estimation to track gym exercises and count repetitions in real time. Analyzes body joint positions frame-by-frame to detect movement patterns."},{id:"afib",title:"Atrial Fibrillation Detection",tag:"Signal Processing",text:"SVM-based classifier for detecting atrial fibrillation from ECG signal data. Handles signal preprocessing, feature extraction, and classification for cardiac arrhythmia detection."},{id:"gene",title:"Gene Sequence Analysis",tag:"Bioinformatics",text:"DNA analysis toolkit for pattern matching, gene finding, and promoter region detection. Parses FASTA files, compares sequences, and identifies biologically relevant motifs in genomic data."}],vf={openId:null},ff={font:"",items:[]};function xu(f){if(ff.font===f)return;ff.font=f,ff.items=$f.map((u)=>Lf(u.text,f))}var t=[],d=null,Nf=null;function gu(){if(d=document.getElementById("projects"),!d)return;d.innerHTML="",t=$f.map((f)=>{let u=document.createElement("article");return u.className="accordion-item",u.innerHTML=`
-      <button type="button" class="accordion-toggle" data-id="${f.id}" aria-expanded="false">
-        <span class="accordion-title">${f.title}</span>
-        <span class="accordion-tag">${f.tag}</span>
-        <span class="accordion-glyph" aria-hidden="true"></span>
-      </button>
-      <div class="accordion-body">
-        <div class="accordion-inner">
-          <p class="accordion-copy">${f.text}</p>
-        </div>
-      </div>
-    `,d.appendChild(u),{root:u,toggle:u.querySelector(".accordion-toggle"),glyph:u.querySelector(".accordion-glyph"),body:u.querySelector(".accordion-body"),inner:u.querySelector(".accordion-inner"),copy:u.querySelector(".accordion-copy")}})}function Qf(f){let u=parseFloat(f);return Number.isFinite(u)?u:0}function mu(f){return f.font.length>0?f.font:`${f.fontStyle} ${f.fontVariant} ${f.fontWeight} ${f.fontSize} / ${f.lineHeight} ${f.fontFamily}`}function ru(){if(Nf=null,t.length===0)return;let f=t[0].copy,u=t[0].inner,$=getComputedStyle(f),R=getComputedStyle(u),H=mu($),D=Qf($.lineHeight),q=f.getBoundingClientRect().width,_=Qf(R.paddingTop)+Qf(R.paddingBottom);xu(H);for(let Y=0;Y<$f.length;Y++){let O=vf.openId===$f[Y].id,M=t[Y];if(O){let X=Wf(ff.items[Y],q,D);M.body.style.height=`${Math.ceil(X.height+_)}px`}else M.body.style.height="0px";M.glyph.style.transform=O?"rotate(90deg)":"rotate(0deg)",M.toggle.setAttribute("aria-expanded",O?"true":"false")}}function uf(){if(Nf!==null)return;Nf=requestAnimationFrame(()=>ru())}function au(f){let u=f.target;if(!(u instanceof Element))return;let $=u.closest(".accordion-toggle");if(!$)return;let R=$.dataset.id;if(!R)return;vf.openId=vf.openId===R?null:R,uf()}function Sf(){if(gu(),!d)return;d.addEventListener("click",au),window.addEventListener("resize",uf),document.fonts.ready.then(uf),uf()}if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",Sf,{once:!0});else Sf();
+// node_modules/@chenglou/pretext/dist/bidi.js
+var baseTypes = [
+  "BN",
+  "BN",
+  "BN",
+  "BN",
+  "BN",
+  "BN",
+  "BN",
+  "BN",
+  "BN",
+  "S",
+  "B",
+  "S",
+  "WS",
+  "B",
+  "BN",
+  "BN",
+  "BN",
+  "BN",
+  "BN",
+  "BN",
+  "BN",
+  "BN",
+  "BN",
+  "BN",
+  "BN",
+  "BN",
+  "BN",
+  "BN",
+  "B",
+  "B",
+  "B",
+  "S",
+  "WS",
+  "ON",
+  "ON",
+  "ET",
+  "ET",
+  "ET",
+  "ON",
+  "ON",
+  "ON",
+  "ON",
+  "ON",
+  "ON",
+  "CS",
+  "ON",
+  "CS",
+  "ON",
+  "EN",
+  "EN",
+  "EN",
+  "EN",
+  "EN",
+  "EN",
+  "EN",
+  "EN",
+  "EN",
+  "EN",
+  "ON",
+  "ON",
+  "ON",
+  "ON",
+  "ON",
+  "ON",
+  "ON",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "ON",
+  "ON",
+  "ON",
+  "ON",
+  "ON",
+  "ON",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "ON",
+  "ON",
+  "ON",
+  "ON",
+  "BN",
+  "BN",
+  "BN",
+  "BN",
+  "BN",
+  "BN",
+  "B",
+  "BN",
+  "BN",
+  "BN",
+  "BN",
+  "BN",
+  "BN",
+  "BN",
+  "BN",
+  "BN",
+  "BN",
+  "BN",
+  "BN",
+  "BN",
+  "BN",
+  "BN",
+  "BN",
+  "BN",
+  "BN",
+  "BN",
+  "BN",
+  "BN",
+  "BN",
+  "BN",
+  "BN",
+  "BN",
+  "BN",
+  "CS",
+  "ON",
+  "ET",
+  "ET",
+  "ET",
+  "ET",
+  "ON",
+  "ON",
+  "ON",
+  "ON",
+  "L",
+  "ON",
+  "ON",
+  "ON",
+  "ON",
+  "ON",
+  "ET",
+  "ET",
+  "EN",
+  "EN",
+  "ON",
+  "L",
+  "ON",
+  "ON",
+  "ON",
+  "EN",
+  "L",
+  "ON",
+  "ON",
+  "ON",
+  "ON",
+  "ON",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "ON",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "ON",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L",
+  "L"
+];
+var arabicTypes = [
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "CS",
+  "AL",
+  "ON",
+  "ON",
+  "NSM",
+  "NSM",
+  "NSM",
+  "NSM",
+  "NSM",
+  "NSM",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "NSM",
+  "NSM",
+  "NSM",
+  "NSM",
+  "NSM",
+  "NSM",
+  "NSM",
+  "NSM",
+  "NSM",
+  "NSM",
+  "NSM",
+  "NSM",
+  "NSM",
+  "NSM",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AN",
+  "AN",
+  "AN",
+  "AN",
+  "AN",
+  "AN",
+  "AN",
+  "AN",
+  "AN",
+  "AN",
+  "ET",
+  "AN",
+  "AN",
+  "AL",
+  "AL",
+  "AL",
+  "NSM",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "NSM",
+  "NSM",
+  "NSM",
+  "NSM",
+  "NSM",
+  "NSM",
+  "NSM",
+  "NSM",
+  "NSM",
+  "NSM",
+  "NSM",
+  "NSM",
+  "NSM",
+  "NSM",
+  "NSM",
+  "NSM",
+  "NSM",
+  "NSM",
+  "NSM",
+  "ON",
+  "NSM",
+  "NSM",
+  "NSM",
+  "NSM",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL",
+  "AL"
+];
+function classifyChar(charCode) {
+  if (charCode <= 255)
+    return baseTypes[charCode];
+  if (1424 <= charCode && charCode <= 1524)
+    return "R";
+  if (1536 <= charCode && charCode <= 1791)
+    return arabicTypes[charCode & 255];
+  if (1792 <= charCode && charCode <= 2220)
+    return "AL";
+  return "L";
+}
+function computeBidiLevels(str) {
+  const len = str.length;
+  if (len === 0)
+    return null;
+  const types = new Array(len);
+  let numBidi = 0;
+  for (let i = 0;i < len; i++) {
+    const t = classifyChar(str.charCodeAt(i));
+    if (t === "R" || t === "AL" || t === "AN")
+      numBidi++;
+    types[i] = t;
+  }
+  if (numBidi === 0)
+    return null;
+  const startLevel = len / numBidi < 0.3 ? 0 : 1;
+  const levels = new Int8Array(len);
+  for (let i = 0;i < len; i++)
+    levels[i] = startLevel;
+  const e = startLevel & 1 ? "R" : "L";
+  const sor = e;
+  let lastType = sor;
+  for (let i = 0;i < len; i++) {
+    if (types[i] === "NSM")
+      types[i] = lastType;
+    else
+      lastType = types[i];
+  }
+  lastType = sor;
+  for (let i = 0;i < len; i++) {
+    const t = types[i];
+    if (t === "EN")
+      types[i] = lastType === "AL" ? "AN" : "EN";
+    else if (t === "R" || t === "L" || t === "AL")
+      lastType = t;
+  }
+  for (let i = 0;i < len; i++) {
+    if (types[i] === "AL")
+      types[i] = "R";
+  }
+  for (let i = 1;i < len - 1; i++) {
+    if (types[i] === "ES" && types[i - 1] === "EN" && types[i + 1] === "EN") {
+      types[i] = "EN";
+    }
+    if (types[i] === "CS" && (types[i - 1] === "EN" || types[i - 1] === "AN") && types[i + 1] === types[i - 1]) {
+      types[i] = types[i - 1];
+    }
+  }
+  for (let i = 0;i < len; i++) {
+    if (types[i] !== "EN")
+      continue;
+    let j;
+    for (j = i - 1;j >= 0 && types[j] === "ET"; j--)
+      types[j] = "EN";
+    for (j = i + 1;j < len && types[j] === "ET"; j++)
+      types[j] = "EN";
+  }
+  for (let i = 0;i < len; i++) {
+    const t = types[i];
+    if (t === "WS" || t === "ES" || t === "ET" || t === "CS")
+      types[i] = "ON";
+  }
+  lastType = sor;
+  for (let i = 0;i < len; i++) {
+    const t = types[i];
+    if (t === "EN")
+      types[i] = lastType === "L" ? "L" : "EN";
+    else if (t === "R" || t === "L")
+      lastType = t;
+  }
+  for (let i = 0;i < len; i++) {
+    if (types[i] !== "ON")
+      continue;
+    let end = i + 1;
+    while (end < len && types[end] === "ON")
+      end++;
+    const before = i > 0 ? types[i - 1] : sor;
+    const after = end < len ? types[end] : sor;
+    const bDir = before !== "L" ? "R" : "L";
+    const aDir = after !== "L" ? "R" : "L";
+    if (bDir === aDir) {
+      for (let j = i;j < end; j++)
+        types[j] = bDir;
+    }
+    i = end - 1;
+  }
+  for (let i = 0;i < len; i++) {
+    if (types[i] === "ON")
+      types[i] = e;
+  }
+  for (let i = 0;i < len; i++) {
+    const t = types[i];
+    if ((levels[i] & 1) === 0) {
+      if (t === "R")
+        levels[i]++;
+      else if (t === "AN" || t === "EN")
+        levels[i] += 2;
+    } else if (t === "L" || t === "AN" || t === "EN") {
+      levels[i]++;
+    }
+  }
+  return levels;
+}
+function computeSegmentLevels(normalized, segStarts) {
+  const bidiLevels = computeBidiLevels(normalized);
+  if (bidiLevels === null)
+    return null;
+  const segLevels = new Int8Array(segStarts.length);
+  for (let i = 0;i < segStarts.length; i++) {
+    segLevels[i] = bidiLevels[segStarts[i]];
+  }
+  return segLevels;
+}
+
+// node_modules/@chenglou/pretext/dist/analysis.js
+var collapsibleWhitespaceRunRe = /[ \t\n\r\f]+/g;
+var needsWhitespaceNormalizationRe = /[\t\n\r\f]| {2,}|^ | $/;
+function getWhiteSpaceProfile(whiteSpace) {
+  const mode = whiteSpace ?? "normal";
+  return mode === "pre-wrap" ? { mode, preserveOrdinarySpaces: true, preserveHardBreaks: true } : { mode, preserveOrdinarySpaces: false, preserveHardBreaks: false };
+}
+function normalizeWhitespaceNormal(text) {
+  if (!needsWhitespaceNormalizationRe.test(text))
+    return text;
+  let normalized = text.replace(collapsibleWhitespaceRunRe, " ");
+  if (normalized.charCodeAt(0) === 32) {
+    normalized = normalized.slice(1);
+  }
+  if (normalized.length > 0 && normalized.charCodeAt(normalized.length - 1) === 32) {
+    normalized = normalized.slice(0, -1);
+  }
+  return normalized;
+}
+function normalizeWhitespacePreWrap(text) {
+  if (!/[\r\f]/.test(text))
+    return text.replace(/\r\n/g, `
+`);
+  return text.replace(/\r\n/g, `
+`).replace(/[\r\f]/g, `
+`);
+}
+var sharedWordSegmenter = null;
+var segmenterLocale;
+function getSharedWordSegmenter() {
+  if (sharedWordSegmenter === null) {
+    sharedWordSegmenter = new Intl.Segmenter(segmenterLocale, { granularity: "word" });
+  }
+  return sharedWordSegmenter;
+}
+var arabicScriptRe = /\p{Script=Arabic}/u;
+var combiningMarkRe = /\p{M}/u;
+var decimalDigitRe = /\p{Nd}/u;
+function containsArabicScript(text) {
+  return arabicScriptRe.test(text);
+}
+function isCJK(s) {
+  for (const ch of s) {
+    const c = ch.codePointAt(0);
+    if (c >= 19968 && c <= 40959 || c >= 13312 && c <= 19903 || c >= 131072 && c <= 173791 || c >= 173824 && c <= 177983 || c >= 177984 && c <= 178207 || c >= 178208 && c <= 183983 || c >= 183984 && c <= 191471 || c >= 196608 && c <= 201551 || c >= 63744 && c <= 64255 || c >= 194560 && c <= 195103 || c >= 12288 && c <= 12351 || c >= 12352 && c <= 12447 || c >= 12448 && c <= 12543 || c >= 44032 && c <= 55215 || c >= 65280 && c <= 65519) {
+      return true;
+    }
+  }
+  return false;
+}
+var kinsokuStart = new Set([
+  "，",
+  "．",
+  "！",
+  "：",
+  "；",
+  "？",
+  "、",
+  "。",
+  "・",
+  "）",
+  "〕",
+  "〉",
+  "》",
+  "」",
+  "』",
+  "】",
+  "〗",
+  "〙",
+  "〛",
+  "ー",
+  "々",
+  "〻",
+  "ゝ",
+  "ゞ",
+  "ヽ",
+  "ヾ"
+]);
+var kinsokuEnd = new Set([
+  '"',
+  "(",
+  "[",
+  "{",
+  "“",
+  "‘",
+  "«",
+  "‹",
+  "（",
+  "〔",
+  "〈",
+  "《",
+  "「",
+  "『",
+  "【",
+  "〖",
+  "〘",
+  "〚"
+]);
+var forwardStickyGlue = new Set([
+  "'",
+  "’"
+]);
+var leftStickyPunctuation = new Set([
+  ".",
+  ",",
+  "!",
+  "?",
+  ":",
+  ";",
+  "،",
+  "؛",
+  "؟",
+  "।",
+  "॥",
+  "၊",
+  "။",
+  "၌",
+  "၍",
+  "၏",
+  ")",
+  "]",
+  "}",
+  "%",
+  '"',
+  "”",
+  "’",
+  "»",
+  "›",
+  "…"
+]);
+var arabicNoSpaceTrailingPunctuation = new Set([
+  ":",
+  ".",
+  "،",
+  "؛"
+]);
+var myanmarMedialGlue = new Set([
+  "၏"
+]);
+var closingQuoteChars = new Set([
+  "”",
+  "’",
+  "»",
+  "›",
+  "」",
+  "』",
+  "】",
+  "》",
+  "〉",
+  "〕",
+  "）"
+]);
+function isLeftStickyPunctuationSegment(segment) {
+  if (isEscapedQuoteClusterSegment(segment))
+    return true;
+  let sawPunctuation = false;
+  for (const ch of segment) {
+    if (leftStickyPunctuation.has(ch)) {
+      sawPunctuation = true;
+      continue;
+    }
+    if (sawPunctuation && combiningMarkRe.test(ch))
+      continue;
+    return false;
+  }
+  return sawPunctuation;
+}
+function isCJKLineStartProhibitedSegment(segment) {
+  for (const ch of segment) {
+    if (!kinsokuStart.has(ch) && !leftStickyPunctuation.has(ch))
+      return false;
+  }
+  return segment.length > 0;
+}
+function isForwardStickyClusterSegment(segment) {
+  if (isEscapedQuoteClusterSegment(segment))
+    return true;
+  for (const ch of segment) {
+    if (!kinsokuEnd.has(ch) && !forwardStickyGlue.has(ch) && !combiningMarkRe.test(ch))
+      return false;
+  }
+  return segment.length > 0;
+}
+function isEscapedQuoteClusterSegment(segment) {
+  let sawQuote = false;
+  for (const ch of segment) {
+    if (ch === "\\" || combiningMarkRe.test(ch))
+      continue;
+    if (kinsokuEnd.has(ch) || leftStickyPunctuation.has(ch) || forwardStickyGlue.has(ch)) {
+      sawQuote = true;
+      continue;
+    }
+    return false;
+  }
+  return sawQuote;
+}
+function splitTrailingForwardStickyCluster(text) {
+  const chars = Array.from(text);
+  let splitIndex = chars.length;
+  while (splitIndex > 0) {
+    const ch = chars[splitIndex - 1];
+    if (combiningMarkRe.test(ch)) {
+      splitIndex--;
+      continue;
+    }
+    if (kinsokuEnd.has(ch) || forwardStickyGlue.has(ch)) {
+      splitIndex--;
+      continue;
+    }
+    break;
+  }
+  if (splitIndex <= 0 || splitIndex === chars.length)
+    return null;
+  return {
+    head: chars.slice(0, splitIndex).join(""),
+    tail: chars.slice(splitIndex).join("")
+  };
+}
+function isRepeatedSingleCharRun(segment, ch) {
+  if (segment.length === 0)
+    return false;
+  for (const part of segment) {
+    if (part !== ch)
+      return false;
+  }
+  return true;
+}
+function endsWithArabicNoSpacePunctuation(segment) {
+  if (!containsArabicScript(segment) || segment.length === 0)
+    return false;
+  return arabicNoSpaceTrailingPunctuation.has(segment[segment.length - 1]);
+}
+function endsWithMyanmarMedialGlue(segment) {
+  if (segment.length === 0)
+    return false;
+  return myanmarMedialGlue.has(segment[segment.length - 1]);
+}
+function splitLeadingSpaceAndMarks(segment) {
+  if (segment.length < 2 || segment[0] !== " ")
+    return null;
+  const marks = segment.slice(1);
+  if (/^\p{M}+$/u.test(marks)) {
+    return { space: " ", marks };
+  }
+  return null;
+}
+function endsWithClosingQuote(text) {
+  for (let i = text.length - 1;i >= 0; i--) {
+    const ch = text[i];
+    if (closingQuoteChars.has(ch))
+      return true;
+    if (!leftStickyPunctuation.has(ch))
+      return false;
+  }
+  return false;
+}
+function classifySegmentBreakChar(ch, whiteSpaceProfile) {
+  if (whiteSpaceProfile.preserveOrdinarySpaces || whiteSpaceProfile.preserveHardBreaks) {
+    if (ch === " ")
+      return "preserved-space";
+    if (ch === "\t")
+      return "tab";
+    if (whiteSpaceProfile.preserveHardBreaks && ch === `
+`)
+      return "hard-break";
+  }
+  if (ch === " ")
+    return "space";
+  if (ch === " " || ch === " " || ch === "⁠" || ch === "\uFEFF") {
+    return "glue";
+  }
+  if (ch === "​")
+    return "zero-width-break";
+  if (ch === "­")
+    return "soft-hyphen";
+  return "text";
+}
+function joinTextParts(parts) {
+  return parts.length === 1 ? parts[0] : parts.join("");
+}
+function splitSegmentByBreakKind(segment, isWordLike, start, whiteSpaceProfile) {
+  const pieces = [];
+  let currentKind = null;
+  let currentTextParts = [];
+  let currentStart = start;
+  let currentWordLike = false;
+  let offset = 0;
+  for (const ch of segment) {
+    const kind = classifySegmentBreakChar(ch, whiteSpaceProfile);
+    const wordLike = kind === "text" && isWordLike;
+    if (currentKind !== null && kind === currentKind && wordLike === currentWordLike) {
+      currentTextParts.push(ch);
+      offset += ch.length;
+      continue;
+    }
+    if (currentKind !== null) {
+      pieces.push({
+        text: joinTextParts(currentTextParts),
+        isWordLike: currentWordLike,
+        kind: currentKind,
+        start: currentStart
+      });
+    }
+    currentKind = kind;
+    currentTextParts = [ch];
+    currentStart = start + offset;
+    currentWordLike = wordLike;
+    offset += ch.length;
+  }
+  if (currentKind !== null) {
+    pieces.push({
+      text: joinTextParts(currentTextParts),
+      isWordLike: currentWordLike,
+      kind: currentKind,
+      start: currentStart
+    });
+  }
+  return pieces;
+}
+function isTextRunBoundary(kind) {
+  return kind === "space" || kind === "preserved-space" || kind === "zero-width-break" || kind === "hard-break";
+}
+var urlSchemeSegmentRe = /^[A-Za-z][A-Za-z0-9+.-]*:$/;
+function isUrlLikeRunStart(segmentation, index) {
+  const text = segmentation.texts[index];
+  if (text.startsWith("www."))
+    return true;
+  return urlSchemeSegmentRe.test(text) && index + 1 < segmentation.len && segmentation.kinds[index + 1] === "text" && segmentation.texts[index + 1] === "//";
+}
+function isUrlQueryBoundarySegment(text) {
+  return text.includes("?") && (text.includes("://") || text.startsWith("www."));
+}
+function mergeUrlLikeRuns(segmentation) {
+  const texts = segmentation.texts.slice();
+  const isWordLike = segmentation.isWordLike.slice();
+  const kinds = segmentation.kinds.slice();
+  const starts = segmentation.starts.slice();
+  for (let i = 0;i < segmentation.len; i++) {
+    if (kinds[i] !== "text" || !isUrlLikeRunStart(segmentation, i))
+      continue;
+    const mergedParts = [texts[i]];
+    let j = i + 1;
+    while (j < segmentation.len && !isTextRunBoundary(kinds[j])) {
+      mergedParts.push(texts[j]);
+      isWordLike[i] = true;
+      const endsQueryPrefix = texts[j].includes("?");
+      kinds[j] = "text";
+      texts[j] = "";
+      j++;
+      if (endsQueryPrefix)
+        break;
+    }
+    texts[i] = joinTextParts(mergedParts);
+  }
+  let compactLen = 0;
+  for (let read = 0;read < texts.length; read++) {
+    const text = texts[read];
+    if (text.length === 0)
+      continue;
+    if (compactLen !== read) {
+      texts[compactLen] = text;
+      isWordLike[compactLen] = isWordLike[read];
+      kinds[compactLen] = kinds[read];
+      starts[compactLen] = starts[read];
+    }
+    compactLen++;
+  }
+  texts.length = compactLen;
+  isWordLike.length = compactLen;
+  kinds.length = compactLen;
+  starts.length = compactLen;
+  return {
+    len: compactLen,
+    texts,
+    isWordLike,
+    kinds,
+    starts
+  };
+}
+function mergeUrlQueryRuns(segmentation) {
+  const texts = [];
+  const isWordLike = [];
+  const kinds = [];
+  const starts = [];
+  for (let i = 0;i < segmentation.len; i++) {
+    const text = segmentation.texts[i];
+    texts.push(text);
+    isWordLike.push(segmentation.isWordLike[i]);
+    kinds.push(segmentation.kinds[i]);
+    starts.push(segmentation.starts[i]);
+    if (!isUrlQueryBoundarySegment(text))
+      continue;
+    const nextIndex = i + 1;
+    if (nextIndex >= segmentation.len || isTextRunBoundary(segmentation.kinds[nextIndex])) {
+      continue;
+    }
+    const queryParts = [];
+    const queryStart = segmentation.starts[nextIndex];
+    let j = nextIndex;
+    while (j < segmentation.len && !isTextRunBoundary(segmentation.kinds[j])) {
+      queryParts.push(segmentation.texts[j]);
+      j++;
+    }
+    if (queryParts.length > 0) {
+      texts.push(joinTextParts(queryParts));
+      isWordLike.push(true);
+      kinds.push("text");
+      starts.push(queryStart);
+      i = j - 1;
+    }
+  }
+  return {
+    len: texts.length,
+    texts,
+    isWordLike,
+    kinds,
+    starts
+  };
+}
+var numericJoinerChars = new Set([
+  ":",
+  "-",
+  "/",
+  "×",
+  ",",
+  ".",
+  "+",
+  "–",
+  "—"
+]);
+var asciiPunctuationChainSegmentRe = /^[A-Za-z0-9_]+[,:;]*$/;
+var asciiPunctuationChainTrailingJoinersRe = /[,:;]+$/;
+function segmentContainsDecimalDigit(text) {
+  for (const ch of text) {
+    if (decimalDigitRe.test(ch))
+      return true;
+  }
+  return false;
+}
+function isNumericRunSegment(text) {
+  if (text.length === 0)
+    return false;
+  for (const ch of text) {
+    if (decimalDigitRe.test(ch) || numericJoinerChars.has(ch))
+      continue;
+    return false;
+  }
+  return true;
+}
+function mergeNumericRuns(segmentation) {
+  const texts = [];
+  const isWordLike = [];
+  const kinds = [];
+  const starts = [];
+  for (let i = 0;i < segmentation.len; i++) {
+    const text = segmentation.texts[i];
+    const kind = segmentation.kinds[i];
+    if (kind === "text" && isNumericRunSegment(text) && segmentContainsDecimalDigit(text)) {
+      const mergedParts = [text];
+      let j = i + 1;
+      while (j < segmentation.len && segmentation.kinds[j] === "text" && isNumericRunSegment(segmentation.texts[j])) {
+        mergedParts.push(segmentation.texts[j]);
+        j++;
+      }
+      texts.push(joinTextParts(mergedParts));
+      isWordLike.push(true);
+      kinds.push("text");
+      starts.push(segmentation.starts[i]);
+      i = j - 1;
+      continue;
+    }
+    texts.push(text);
+    isWordLike.push(segmentation.isWordLike[i]);
+    kinds.push(kind);
+    starts.push(segmentation.starts[i]);
+  }
+  return {
+    len: texts.length,
+    texts,
+    isWordLike,
+    kinds,
+    starts
+  };
+}
+function mergeAsciiPunctuationChains(segmentation) {
+  const texts = [];
+  const isWordLike = [];
+  const kinds = [];
+  const starts = [];
+  for (let i = 0;i < segmentation.len; i++) {
+    const text = segmentation.texts[i];
+    const kind = segmentation.kinds[i];
+    const wordLike = segmentation.isWordLike[i];
+    if (kind === "text" && wordLike && asciiPunctuationChainSegmentRe.test(text)) {
+      const mergedParts = [text];
+      let endsWithJoiners = asciiPunctuationChainTrailingJoinersRe.test(text);
+      let j = i + 1;
+      while (endsWithJoiners && j < segmentation.len && segmentation.kinds[j] === "text" && segmentation.isWordLike[j] && asciiPunctuationChainSegmentRe.test(segmentation.texts[j])) {
+        const nextText = segmentation.texts[j];
+        mergedParts.push(nextText);
+        endsWithJoiners = asciiPunctuationChainTrailingJoinersRe.test(nextText);
+        j++;
+      }
+      texts.push(joinTextParts(mergedParts));
+      isWordLike.push(true);
+      kinds.push("text");
+      starts.push(segmentation.starts[i]);
+      i = j - 1;
+      continue;
+    }
+    texts.push(text);
+    isWordLike.push(wordLike);
+    kinds.push(kind);
+    starts.push(segmentation.starts[i]);
+  }
+  return {
+    len: texts.length,
+    texts,
+    isWordLike,
+    kinds,
+    starts
+  };
+}
+function splitHyphenatedNumericRuns(segmentation) {
+  const texts = [];
+  const isWordLike = [];
+  const kinds = [];
+  const starts = [];
+  for (let i = 0;i < segmentation.len; i++) {
+    const text = segmentation.texts[i];
+    if (segmentation.kinds[i] === "text" && text.includes("-")) {
+      const parts = text.split("-");
+      let shouldSplit = parts.length > 1;
+      for (let j = 0;j < parts.length; j++) {
+        const part = parts[j];
+        if (!shouldSplit)
+          break;
+        if (part.length === 0 || !segmentContainsDecimalDigit(part) || !isNumericRunSegment(part)) {
+          shouldSplit = false;
+        }
+      }
+      if (shouldSplit) {
+        let offset = 0;
+        for (let j = 0;j < parts.length; j++) {
+          const part = parts[j];
+          const splitText = j < parts.length - 1 ? `${part}-` : part;
+          texts.push(splitText);
+          isWordLike.push(true);
+          kinds.push("text");
+          starts.push(segmentation.starts[i] + offset);
+          offset += splitText.length;
+        }
+        continue;
+      }
+    }
+    texts.push(text);
+    isWordLike.push(segmentation.isWordLike[i]);
+    kinds.push(segmentation.kinds[i]);
+    starts.push(segmentation.starts[i]);
+  }
+  return {
+    len: texts.length,
+    texts,
+    isWordLike,
+    kinds,
+    starts
+  };
+}
+function mergeGlueConnectedTextRuns(segmentation) {
+  const texts = [];
+  const isWordLike = [];
+  const kinds = [];
+  const starts = [];
+  let read = 0;
+  while (read < segmentation.len) {
+    const textParts = [segmentation.texts[read]];
+    let wordLike = segmentation.isWordLike[read];
+    let kind = segmentation.kinds[read];
+    let start = segmentation.starts[read];
+    if (kind === "glue") {
+      const glueParts = [textParts[0]];
+      const glueStart = start;
+      read++;
+      while (read < segmentation.len && segmentation.kinds[read] === "glue") {
+        glueParts.push(segmentation.texts[read]);
+        read++;
+      }
+      const glueText = joinTextParts(glueParts);
+      if (read < segmentation.len && segmentation.kinds[read] === "text") {
+        textParts[0] = glueText;
+        textParts.push(segmentation.texts[read]);
+        wordLike = segmentation.isWordLike[read];
+        kind = "text";
+        start = glueStart;
+        read++;
+      } else {
+        texts.push(glueText);
+        isWordLike.push(false);
+        kinds.push("glue");
+        starts.push(glueStart);
+        continue;
+      }
+    } else {
+      read++;
+    }
+    if (kind === "text") {
+      while (read < segmentation.len && segmentation.kinds[read] === "glue") {
+        const glueParts = [];
+        while (read < segmentation.len && segmentation.kinds[read] === "glue") {
+          glueParts.push(segmentation.texts[read]);
+          read++;
+        }
+        const glueText = joinTextParts(glueParts);
+        if (read < segmentation.len && segmentation.kinds[read] === "text") {
+          textParts.push(glueText, segmentation.texts[read]);
+          wordLike = wordLike || segmentation.isWordLike[read];
+          read++;
+          continue;
+        }
+        textParts.push(glueText);
+      }
+    }
+    texts.push(joinTextParts(textParts));
+    isWordLike.push(wordLike);
+    kinds.push(kind);
+    starts.push(start);
+  }
+  return {
+    len: texts.length,
+    texts,
+    isWordLike,
+    kinds,
+    starts
+  };
+}
+function carryTrailingForwardStickyAcrossCJKBoundary(segmentation) {
+  const texts = segmentation.texts.slice();
+  const isWordLike = segmentation.isWordLike.slice();
+  const kinds = segmentation.kinds.slice();
+  const starts = segmentation.starts.slice();
+  for (let i = 0;i < texts.length - 1; i++) {
+    if (kinds[i] !== "text" || kinds[i + 1] !== "text")
+      continue;
+    if (!isCJK(texts[i]) || !isCJK(texts[i + 1]))
+      continue;
+    const split = splitTrailingForwardStickyCluster(texts[i]);
+    if (split === null)
+      continue;
+    texts[i] = split.head;
+    texts[i + 1] = split.tail + texts[i + 1];
+    starts[i + 1] = starts[i] + split.head.length;
+  }
+  return {
+    len: texts.length,
+    texts,
+    isWordLike,
+    kinds,
+    starts
+  };
+}
+function buildMergedSegmentation(normalized, profile, whiteSpaceProfile) {
+  const wordSegmenter = getSharedWordSegmenter();
+  let mergedLen = 0;
+  const mergedTexts = [];
+  const mergedWordLike = [];
+  const mergedKinds = [];
+  const mergedStarts = [];
+  for (const s of wordSegmenter.segment(normalized)) {
+    for (const piece of splitSegmentByBreakKind(s.segment, s.isWordLike ?? false, s.index, whiteSpaceProfile)) {
+      const isText = piece.kind === "text";
+      if (profile.carryCJKAfterClosingQuote && isText && mergedLen > 0 && mergedKinds[mergedLen - 1] === "text" && isCJK(piece.text) && isCJK(mergedTexts[mergedLen - 1]) && endsWithClosingQuote(mergedTexts[mergedLen - 1])) {
+        mergedTexts[mergedLen - 1] += piece.text;
+        mergedWordLike[mergedLen - 1] = mergedWordLike[mergedLen - 1] || piece.isWordLike;
+      } else if (isText && mergedLen > 0 && mergedKinds[mergedLen - 1] === "text" && isCJKLineStartProhibitedSegment(piece.text) && isCJK(mergedTexts[mergedLen - 1])) {
+        mergedTexts[mergedLen - 1] += piece.text;
+        mergedWordLike[mergedLen - 1] = mergedWordLike[mergedLen - 1] || piece.isWordLike;
+      } else if (isText && mergedLen > 0 && mergedKinds[mergedLen - 1] === "text" && endsWithMyanmarMedialGlue(mergedTexts[mergedLen - 1])) {
+        mergedTexts[mergedLen - 1] += piece.text;
+        mergedWordLike[mergedLen - 1] = mergedWordLike[mergedLen - 1] || piece.isWordLike;
+      } else if (isText && mergedLen > 0 && mergedKinds[mergedLen - 1] === "text" && piece.isWordLike && containsArabicScript(piece.text) && endsWithArabicNoSpacePunctuation(mergedTexts[mergedLen - 1])) {
+        mergedTexts[mergedLen - 1] += piece.text;
+        mergedWordLike[mergedLen - 1] = true;
+      } else if (isText && !piece.isWordLike && mergedLen > 0 && mergedKinds[mergedLen - 1] === "text" && piece.text.length === 1 && piece.text !== "-" && piece.text !== "—" && isRepeatedSingleCharRun(mergedTexts[mergedLen - 1], piece.text)) {
+        mergedTexts[mergedLen - 1] += piece.text;
+      } else if (isText && !piece.isWordLike && mergedLen > 0 && mergedKinds[mergedLen - 1] === "text" && (isLeftStickyPunctuationSegment(piece.text) || piece.text === "-" && mergedWordLike[mergedLen - 1])) {
+        mergedTexts[mergedLen - 1] += piece.text;
+      } else {
+        mergedTexts[mergedLen] = piece.text;
+        mergedWordLike[mergedLen] = piece.isWordLike;
+        mergedKinds[mergedLen] = piece.kind;
+        mergedStarts[mergedLen] = piece.start;
+        mergedLen++;
+      }
+    }
+  }
+  for (let i = 1;i < mergedLen; i++) {
+    if (mergedKinds[i] === "text" && !mergedWordLike[i] && isEscapedQuoteClusterSegment(mergedTexts[i]) && mergedKinds[i - 1] === "text") {
+      mergedTexts[i - 1] += mergedTexts[i];
+      mergedWordLike[i - 1] = mergedWordLike[i - 1] || mergedWordLike[i];
+      mergedTexts[i] = "";
+    }
+  }
+  for (let i = mergedLen - 2;i >= 0; i--) {
+    if (mergedKinds[i] === "text" && !mergedWordLike[i] && isForwardStickyClusterSegment(mergedTexts[i])) {
+      let j = i + 1;
+      while (j < mergedLen && mergedTexts[j] === "")
+        j++;
+      if (j < mergedLen && mergedKinds[j] === "text") {
+        mergedTexts[j] = mergedTexts[i] + mergedTexts[j];
+        mergedStarts[j] = mergedStarts[i];
+        mergedTexts[i] = "";
+      }
+    }
+  }
+  let compactLen = 0;
+  for (let read = 0;read < mergedLen; read++) {
+    const text = mergedTexts[read];
+    if (text.length === 0)
+      continue;
+    if (compactLen !== read) {
+      mergedTexts[compactLen] = text;
+      mergedWordLike[compactLen] = mergedWordLike[read];
+      mergedKinds[compactLen] = mergedKinds[read];
+      mergedStarts[compactLen] = mergedStarts[read];
+    }
+    compactLen++;
+  }
+  mergedTexts.length = compactLen;
+  mergedWordLike.length = compactLen;
+  mergedKinds.length = compactLen;
+  mergedStarts.length = compactLen;
+  const compacted = mergeGlueConnectedTextRuns({
+    len: compactLen,
+    texts: mergedTexts,
+    isWordLike: mergedWordLike,
+    kinds: mergedKinds,
+    starts: mergedStarts
+  });
+  const withMergedUrls = carryTrailingForwardStickyAcrossCJKBoundary(mergeAsciiPunctuationChains(splitHyphenatedNumericRuns(mergeNumericRuns(mergeUrlQueryRuns(mergeUrlLikeRuns(compacted))))));
+  for (let i = 0;i < withMergedUrls.len - 1; i++) {
+    const split = splitLeadingSpaceAndMarks(withMergedUrls.texts[i]);
+    if (split === null)
+      continue;
+    if (withMergedUrls.kinds[i] !== "space" && withMergedUrls.kinds[i] !== "preserved-space" || withMergedUrls.kinds[i + 1] !== "text" || !containsArabicScript(withMergedUrls.texts[i + 1])) {
+      continue;
+    }
+    withMergedUrls.texts[i] = split.space;
+    withMergedUrls.isWordLike[i] = false;
+    withMergedUrls.kinds[i] = withMergedUrls.kinds[i] === "preserved-space" ? "preserved-space" : "space";
+    withMergedUrls.texts[i + 1] = split.marks + withMergedUrls.texts[i + 1];
+    withMergedUrls.starts[i + 1] = withMergedUrls.starts[i] + split.space.length;
+  }
+  return withMergedUrls;
+}
+function compileAnalysisChunks(segmentation, whiteSpaceProfile) {
+  if (segmentation.len === 0)
+    return [];
+  if (!whiteSpaceProfile.preserveHardBreaks) {
+    return [{
+      startSegmentIndex: 0,
+      endSegmentIndex: segmentation.len,
+      consumedEndSegmentIndex: segmentation.len
+    }];
+  }
+  const chunks = [];
+  let startSegmentIndex = 0;
+  for (let i = 0;i < segmentation.len; i++) {
+    if (segmentation.kinds[i] !== "hard-break")
+      continue;
+    chunks.push({
+      startSegmentIndex,
+      endSegmentIndex: i,
+      consumedEndSegmentIndex: i + 1
+    });
+    startSegmentIndex = i + 1;
+  }
+  if (startSegmentIndex < segmentation.len) {
+    chunks.push({
+      startSegmentIndex,
+      endSegmentIndex: segmentation.len,
+      consumedEndSegmentIndex: segmentation.len
+    });
+  }
+  return chunks;
+}
+function analyzeText(text, profile, whiteSpace = "normal") {
+  const whiteSpaceProfile = getWhiteSpaceProfile(whiteSpace);
+  const normalized = whiteSpaceProfile.mode === "pre-wrap" ? normalizeWhitespacePreWrap(text) : normalizeWhitespaceNormal(text);
+  if (normalized.length === 0) {
+    return {
+      normalized,
+      chunks: [],
+      len: 0,
+      texts: [],
+      isWordLike: [],
+      kinds: [],
+      starts: []
+    };
+  }
+  const segmentation = buildMergedSegmentation(normalized, profile, whiteSpaceProfile);
+  return {
+    normalized,
+    chunks: compileAnalysisChunks(segmentation, whiteSpaceProfile),
+    ...segmentation
+  };
+}
+
+// node_modules/@chenglou/pretext/dist/measurement.js
+var measureContext = null;
+var segmentMetricCaches = new Map;
+var cachedEngineProfile = null;
+var emojiPresentationRe = /\p{Emoji_Presentation}/u;
+var maybeEmojiRe = /[\p{Emoji_Presentation}\p{Extended_Pictographic}\p{Regional_Indicator}\uFE0F\u20E3]/u;
+var sharedGraphemeSegmenter = null;
+var emojiCorrectionCache = new Map;
+function getMeasureContext() {
+  if (measureContext !== null)
+    return measureContext;
+  if (typeof OffscreenCanvas !== "undefined") {
+    measureContext = new OffscreenCanvas(1, 1).getContext("2d");
+    return measureContext;
+  }
+  if (typeof document !== "undefined") {
+    measureContext = document.createElement("canvas").getContext("2d");
+    return measureContext;
+  }
+  throw new Error("Text measurement requires OffscreenCanvas or a DOM canvas context.");
+}
+function getSegmentMetricCache(font) {
+  let cache = segmentMetricCaches.get(font);
+  if (!cache) {
+    cache = new Map;
+    segmentMetricCaches.set(font, cache);
+  }
+  return cache;
+}
+function getSegmentMetrics(seg, cache) {
+  let metrics = cache.get(seg);
+  if (metrics === undefined) {
+    const ctx = getMeasureContext();
+    metrics = {
+      width: ctx.measureText(seg).width,
+      containsCJK: isCJK(seg)
+    };
+    cache.set(seg, metrics);
+  }
+  return metrics;
+}
+function getEngineProfile() {
+  if (cachedEngineProfile !== null)
+    return cachedEngineProfile;
+  if (typeof navigator === "undefined") {
+    cachedEngineProfile = {
+      lineFitEpsilon: 0.005,
+      carryCJKAfterClosingQuote: false,
+      preferPrefixWidthsForBreakableRuns: false,
+      preferEarlySoftHyphenBreak: false
+    };
+    return cachedEngineProfile;
+  }
+  const ua = navigator.userAgent;
+  const vendor = navigator.vendor;
+  const isSafari = vendor === "Apple Computer, Inc." && ua.includes("Safari/") && !ua.includes("Chrome/") && !ua.includes("Chromium/") && !ua.includes("CriOS/") && !ua.includes("FxiOS/") && !ua.includes("EdgiOS/");
+  const isChromium = ua.includes("Chrome/") || ua.includes("Chromium/") || ua.includes("CriOS/") || ua.includes("Edg/");
+  cachedEngineProfile = {
+    lineFitEpsilon: isSafari ? 1 / 64 : 0.005,
+    carryCJKAfterClosingQuote: isChromium,
+    preferPrefixWidthsForBreakableRuns: isSafari,
+    preferEarlySoftHyphenBreak: isSafari
+  };
+  return cachedEngineProfile;
+}
+function parseFontSize(font) {
+  const m = font.match(/(\d+(?:\.\d+)?)\s*px/);
+  return m ? parseFloat(m[1]) : 16;
+}
+function getSharedGraphemeSegmenter() {
+  if (sharedGraphemeSegmenter === null) {
+    sharedGraphemeSegmenter = new Intl.Segmenter(undefined, { granularity: "grapheme" });
+  }
+  return sharedGraphemeSegmenter;
+}
+function isEmojiGrapheme(g) {
+  return emojiPresentationRe.test(g) || g.includes("️");
+}
+function textMayContainEmoji(text) {
+  return maybeEmojiRe.test(text);
+}
+function getEmojiCorrection(font, fontSize) {
+  let correction = emojiCorrectionCache.get(font);
+  if (correction !== undefined)
+    return correction;
+  const ctx = getMeasureContext();
+  ctx.font = font;
+  const canvasW = ctx.measureText("\uD83D\uDE00").width;
+  correction = 0;
+  if (canvasW > fontSize + 0.5 && typeof document !== "undefined" && document.body !== null) {
+    const span = document.createElement("span");
+    span.style.font = font;
+    span.style.display = "inline-block";
+    span.style.visibility = "hidden";
+    span.style.position = "absolute";
+    span.textContent = "\uD83D\uDE00";
+    document.body.appendChild(span);
+    const domW = span.getBoundingClientRect().width;
+    document.body.removeChild(span);
+    if (canvasW - domW > 0.5) {
+      correction = canvasW - domW;
+    }
+  }
+  emojiCorrectionCache.set(font, correction);
+  return correction;
+}
+function countEmojiGraphemes(text) {
+  let count = 0;
+  const graphemeSegmenter = getSharedGraphemeSegmenter();
+  for (const g of graphemeSegmenter.segment(text)) {
+    if (isEmojiGrapheme(g.segment))
+      count++;
+  }
+  return count;
+}
+function getEmojiCount(seg, metrics) {
+  if (metrics.emojiCount === undefined) {
+    metrics.emojiCount = countEmojiGraphemes(seg);
+  }
+  return metrics.emojiCount;
+}
+function getCorrectedSegmentWidth(seg, metrics, emojiCorrection) {
+  if (emojiCorrection === 0)
+    return metrics.width;
+  return metrics.width - getEmojiCount(seg, metrics) * emojiCorrection;
+}
+function getSegmentGraphemeWidths(seg, metrics, cache, emojiCorrection) {
+  if (metrics.graphemeWidths !== undefined)
+    return metrics.graphemeWidths;
+  const widths = [];
+  const graphemeSegmenter = getSharedGraphemeSegmenter();
+  for (const gs of graphemeSegmenter.segment(seg)) {
+    const graphemeMetrics = getSegmentMetrics(gs.segment, cache);
+    widths.push(getCorrectedSegmentWidth(gs.segment, graphemeMetrics, emojiCorrection));
+  }
+  metrics.graphemeWidths = widths.length > 1 ? widths : null;
+  return metrics.graphemeWidths;
+}
+function getSegmentGraphemePrefixWidths(seg, metrics, cache, emojiCorrection) {
+  if (metrics.graphemePrefixWidths !== undefined)
+    return metrics.graphemePrefixWidths;
+  const prefixWidths = [];
+  const graphemeSegmenter = getSharedGraphemeSegmenter();
+  let prefix = "";
+  for (const gs of graphemeSegmenter.segment(seg)) {
+    prefix += gs.segment;
+    const prefixMetrics = getSegmentMetrics(prefix, cache);
+    prefixWidths.push(getCorrectedSegmentWidth(prefix, prefixMetrics, emojiCorrection));
+  }
+  metrics.graphemePrefixWidths = prefixWidths.length > 1 ? prefixWidths : null;
+  return metrics.graphemePrefixWidths;
+}
+function getFontMeasurementState(font, needsEmojiCorrection) {
+  const ctx = getMeasureContext();
+  ctx.font = font;
+  const cache = getSegmentMetricCache(font);
+  const fontSize = parseFontSize(font);
+  const emojiCorrection = needsEmojiCorrection ? getEmojiCorrection(font, fontSize) : 0;
+  return { cache, fontSize, emojiCorrection };
+}
+
+// node_modules/@chenglou/pretext/dist/line-break.js
+function canBreakAfter(kind) {
+  return kind === "space" || kind === "preserved-space" || kind === "tab" || kind === "zero-width-break" || kind === "soft-hyphen";
+}
+function normalizeSimpleLineStartSegmentIndex(prepared, segmentIndex) {
+  while (segmentIndex < prepared.widths.length) {
+    const kind = prepared.kinds[segmentIndex];
+    if (kind !== "space" && kind !== "zero-width-break" && kind !== "soft-hyphen")
+      break;
+    segmentIndex++;
+  }
+  return segmentIndex;
+}
+function getTabAdvance(lineWidth, tabStopAdvance) {
+  if (tabStopAdvance <= 0)
+    return 0;
+  const remainder = lineWidth % tabStopAdvance;
+  if (Math.abs(remainder) <= 0.000001)
+    return tabStopAdvance;
+  return tabStopAdvance - remainder;
+}
+function getBreakableAdvance(graphemeWidths, graphemePrefixWidths, graphemeIndex, preferPrefixWidths) {
+  if (!preferPrefixWidths || graphemePrefixWidths === null) {
+    return graphemeWidths[graphemeIndex];
+  }
+  return graphemePrefixWidths[graphemeIndex] - (graphemeIndex > 0 ? graphemePrefixWidths[graphemeIndex - 1] : 0);
+}
+function fitSoftHyphenBreak(graphemeWidths, initialWidth, maxWidth, lineFitEpsilon, discretionaryHyphenWidth, cumulativeWidths) {
+  let fitCount = 0;
+  let fittedWidth = initialWidth;
+  while (fitCount < graphemeWidths.length) {
+    const nextWidth = cumulativeWidths ? initialWidth + graphemeWidths[fitCount] : fittedWidth + graphemeWidths[fitCount];
+    const nextLineWidth = fitCount + 1 < graphemeWidths.length ? nextWidth + discretionaryHyphenWidth : nextWidth;
+    if (nextLineWidth > maxWidth + lineFitEpsilon)
+      break;
+    fittedWidth = nextWidth;
+    fitCount++;
+  }
+  return { fitCount, fittedWidth };
+}
+function findChunkIndexForStart(prepared, segmentIndex) {
+  let lo = 0;
+  let hi = prepared.chunks.length;
+  while (lo < hi) {
+    const mid = Math.floor((lo + hi) / 2);
+    if (segmentIndex < prepared.chunks[mid].consumedEndSegmentIndex) {
+      hi = mid;
+    } else {
+      lo = mid + 1;
+    }
+  }
+  return lo < prepared.chunks.length ? lo : -1;
+}
+function normalizeLineStartWithChunk(prepared, start) {
+  let segmentIndex = start.segmentIndex;
+  const graphemeIndex = start.graphemeIndex;
+  if (segmentIndex >= prepared.widths.length)
+    return null;
+  const chunkIndex = findChunkIndexForStart(prepared, segmentIndex);
+  if (chunkIndex < 0)
+    return null;
+  if (graphemeIndex > 0) {
+    return { cursor: start, chunkIndex };
+  }
+  const chunk = prepared.chunks[chunkIndex];
+  if (chunk.startSegmentIndex === chunk.endSegmentIndex && segmentIndex === chunk.startSegmentIndex) {
+    return { cursor: { segmentIndex, graphemeIndex: 0 }, chunkIndex };
+  }
+  if (segmentIndex < chunk.startSegmentIndex)
+    segmentIndex = chunk.startSegmentIndex;
+  while (segmentIndex < chunk.endSegmentIndex) {
+    const kind = prepared.kinds[segmentIndex];
+    if (kind !== "space" && kind !== "zero-width-break" && kind !== "soft-hyphen") {
+      return { cursor: { segmentIndex, graphemeIndex: 0 }, chunkIndex };
+    }
+    segmentIndex++;
+  }
+  if (chunk.consumedEndSegmentIndex >= prepared.widths.length)
+    return null;
+  return {
+    cursor: { segmentIndex: chunk.consumedEndSegmentIndex, graphemeIndex: 0 },
+    chunkIndex: chunkIndex + 1
+  };
+}
+function countPreparedLines(prepared, maxWidth) {
+  if (prepared.simpleLineWalkFastPath) {
+    return countPreparedLinesSimple(prepared, maxWidth);
+  }
+  return walkPreparedLines(prepared, maxWidth);
+}
+function countPreparedLinesSimple(prepared, maxWidth) {
+  return walkPreparedLinesSimple(prepared, maxWidth);
+}
+function walkPreparedLinesSimple(prepared, maxWidth, onLine) {
+  const { widths, kinds, breakableWidths, breakablePrefixWidths } = prepared;
+  if (widths.length === 0)
+    return 0;
+  const engineProfile = getEngineProfile();
+  const lineFitEpsilon = engineProfile.lineFitEpsilon;
+  let lineCount = 0;
+  let lineW = 0;
+  let hasContent = false;
+  let lineStartSegmentIndex = 0;
+  let lineStartGraphemeIndex = 0;
+  let lineEndSegmentIndex = 0;
+  let lineEndGraphemeIndex = 0;
+  let pendingBreakSegmentIndex = -1;
+  let pendingBreakPaintWidth = 0;
+  function clearPendingBreak() {
+    pendingBreakSegmentIndex = -1;
+    pendingBreakPaintWidth = 0;
+  }
+  function emitCurrentLine(endSegmentIndex = lineEndSegmentIndex, endGraphemeIndex = lineEndGraphemeIndex, width = lineW) {
+    lineCount++;
+    onLine?.({
+      startSegmentIndex: lineStartSegmentIndex,
+      startGraphemeIndex: lineStartGraphemeIndex,
+      endSegmentIndex,
+      endGraphemeIndex,
+      width
+    });
+    lineW = 0;
+    hasContent = false;
+    clearPendingBreak();
+  }
+  function startLineAtSegment(segmentIndex, width) {
+    hasContent = true;
+    lineStartSegmentIndex = segmentIndex;
+    lineStartGraphemeIndex = 0;
+    lineEndSegmentIndex = segmentIndex + 1;
+    lineEndGraphemeIndex = 0;
+    lineW = width;
+  }
+  function startLineAtGrapheme(segmentIndex, graphemeIndex, width) {
+    hasContent = true;
+    lineStartSegmentIndex = segmentIndex;
+    lineStartGraphemeIndex = graphemeIndex;
+    lineEndSegmentIndex = segmentIndex;
+    lineEndGraphemeIndex = graphemeIndex + 1;
+    lineW = width;
+  }
+  function appendWholeSegment(segmentIndex, width) {
+    if (!hasContent) {
+      startLineAtSegment(segmentIndex, width);
+      return;
+    }
+    lineW += width;
+    lineEndSegmentIndex = segmentIndex + 1;
+    lineEndGraphemeIndex = 0;
+  }
+  function updatePendingBreak(segmentIndex, segmentWidth) {
+    if (!canBreakAfter(kinds[segmentIndex]))
+      return;
+    pendingBreakSegmentIndex = segmentIndex + 1;
+    pendingBreakPaintWidth = lineW - segmentWidth;
+  }
+  function appendBreakableSegment(segmentIndex) {
+    appendBreakableSegmentFrom(segmentIndex, 0);
+  }
+  function appendBreakableSegmentFrom(segmentIndex, startGraphemeIndex) {
+    const gWidths = breakableWidths[segmentIndex];
+    const gPrefixWidths = breakablePrefixWidths[segmentIndex] ?? null;
+    for (let g = startGraphemeIndex;g < gWidths.length; g++) {
+      const gw = getBreakableAdvance(gWidths, gPrefixWidths, g, engineProfile.preferPrefixWidthsForBreakableRuns);
+      if (!hasContent) {
+        startLineAtGrapheme(segmentIndex, g, gw);
+        continue;
+      }
+      if (lineW + gw > maxWidth + lineFitEpsilon) {
+        emitCurrentLine();
+        startLineAtGrapheme(segmentIndex, g, gw);
+      } else {
+        lineW += gw;
+        lineEndSegmentIndex = segmentIndex;
+        lineEndGraphemeIndex = g + 1;
+      }
+    }
+    if (hasContent && lineEndSegmentIndex === segmentIndex && lineEndGraphemeIndex === gWidths.length) {
+      lineEndSegmentIndex = segmentIndex + 1;
+      lineEndGraphemeIndex = 0;
+    }
+  }
+  let i = 0;
+  while (i < widths.length) {
+    if (!hasContent) {
+      i = normalizeSimpleLineStartSegmentIndex(prepared, i);
+      if (i >= widths.length)
+        break;
+    }
+    const w = widths[i];
+    const kind = kinds[i];
+    if (!hasContent) {
+      if (w > maxWidth && breakableWidths[i] !== null) {
+        appendBreakableSegment(i);
+      } else {
+        startLineAtSegment(i, w);
+      }
+      updatePendingBreak(i, w);
+      i++;
+      continue;
+    }
+    const newW = lineW + w;
+    if (newW > maxWidth + lineFitEpsilon) {
+      if (canBreakAfter(kind)) {
+        appendWholeSegment(i, w);
+        emitCurrentLine(i + 1, 0, lineW - w);
+        i++;
+        continue;
+      }
+      if (pendingBreakSegmentIndex >= 0) {
+        if (lineEndSegmentIndex > pendingBreakSegmentIndex || lineEndSegmentIndex === pendingBreakSegmentIndex && lineEndGraphemeIndex > 0) {
+          emitCurrentLine();
+          continue;
+        }
+        emitCurrentLine(pendingBreakSegmentIndex, 0, pendingBreakPaintWidth);
+        continue;
+      }
+      if (w > maxWidth && breakableWidths[i] !== null) {
+        emitCurrentLine();
+        appendBreakableSegment(i);
+        i++;
+        continue;
+      }
+      emitCurrentLine();
+      continue;
+    }
+    appendWholeSegment(i, w);
+    updatePendingBreak(i, w);
+    i++;
+  }
+  if (hasContent)
+    emitCurrentLine();
+  return lineCount;
+}
+function walkPreparedLines(prepared, maxWidth, onLine) {
+  if (prepared.simpleLineWalkFastPath) {
+    return walkPreparedLinesSimple(prepared, maxWidth, onLine);
+  }
+  const { widths, lineEndFitAdvances, lineEndPaintAdvances, kinds, breakableWidths, breakablePrefixWidths, discretionaryHyphenWidth, tabStopAdvance, chunks } = prepared;
+  if (widths.length === 0 || chunks.length === 0)
+    return 0;
+  const engineProfile = getEngineProfile();
+  const lineFitEpsilon = engineProfile.lineFitEpsilon;
+  let lineCount = 0;
+  let lineW = 0;
+  let hasContent = false;
+  let lineStartSegmentIndex = 0;
+  let lineStartGraphemeIndex = 0;
+  let lineEndSegmentIndex = 0;
+  let lineEndGraphemeIndex = 0;
+  let pendingBreakSegmentIndex = -1;
+  let pendingBreakFitWidth = 0;
+  let pendingBreakPaintWidth = 0;
+  let pendingBreakKind = null;
+  function clearPendingBreak() {
+    pendingBreakSegmentIndex = -1;
+    pendingBreakFitWidth = 0;
+    pendingBreakPaintWidth = 0;
+    pendingBreakKind = null;
+  }
+  function emitCurrentLine(endSegmentIndex = lineEndSegmentIndex, endGraphemeIndex = lineEndGraphemeIndex, width = lineW) {
+    lineCount++;
+    onLine?.({
+      startSegmentIndex: lineStartSegmentIndex,
+      startGraphemeIndex: lineStartGraphemeIndex,
+      endSegmentIndex,
+      endGraphemeIndex,
+      width
+    });
+    lineW = 0;
+    hasContent = false;
+    clearPendingBreak();
+  }
+  function startLineAtSegment(segmentIndex, width) {
+    hasContent = true;
+    lineStartSegmentIndex = segmentIndex;
+    lineStartGraphemeIndex = 0;
+    lineEndSegmentIndex = segmentIndex + 1;
+    lineEndGraphemeIndex = 0;
+    lineW = width;
+  }
+  function startLineAtGrapheme(segmentIndex, graphemeIndex, width) {
+    hasContent = true;
+    lineStartSegmentIndex = segmentIndex;
+    lineStartGraphemeIndex = graphemeIndex;
+    lineEndSegmentIndex = segmentIndex;
+    lineEndGraphemeIndex = graphemeIndex + 1;
+    lineW = width;
+  }
+  function appendWholeSegment(segmentIndex, width) {
+    if (!hasContent) {
+      startLineAtSegment(segmentIndex, width);
+      return;
+    }
+    lineW += width;
+    lineEndSegmentIndex = segmentIndex + 1;
+    lineEndGraphemeIndex = 0;
+  }
+  function updatePendingBreakForWholeSegment(segmentIndex, segmentWidth) {
+    if (!canBreakAfter(kinds[segmentIndex]))
+      return;
+    const fitAdvance = kinds[segmentIndex] === "tab" ? 0 : lineEndFitAdvances[segmentIndex];
+    const paintAdvance = kinds[segmentIndex] === "tab" ? segmentWidth : lineEndPaintAdvances[segmentIndex];
+    pendingBreakSegmentIndex = segmentIndex + 1;
+    pendingBreakFitWidth = lineW - segmentWidth + fitAdvance;
+    pendingBreakPaintWidth = lineW - segmentWidth + paintAdvance;
+    pendingBreakKind = kinds[segmentIndex];
+  }
+  function appendBreakableSegment(segmentIndex) {
+    appendBreakableSegmentFrom(segmentIndex, 0);
+  }
+  function appendBreakableSegmentFrom(segmentIndex, startGraphemeIndex) {
+    const gWidths = breakableWidths[segmentIndex];
+    const gPrefixWidths = breakablePrefixWidths[segmentIndex] ?? null;
+    for (let g = startGraphemeIndex;g < gWidths.length; g++) {
+      const gw = getBreakableAdvance(gWidths, gPrefixWidths, g, engineProfile.preferPrefixWidthsForBreakableRuns);
+      if (!hasContent) {
+        startLineAtGrapheme(segmentIndex, g, gw);
+        continue;
+      }
+      if (lineW + gw > maxWidth + lineFitEpsilon) {
+        emitCurrentLine();
+        startLineAtGrapheme(segmentIndex, g, gw);
+      } else {
+        lineW += gw;
+        lineEndSegmentIndex = segmentIndex;
+        lineEndGraphemeIndex = g + 1;
+      }
+    }
+    if (hasContent && lineEndSegmentIndex === segmentIndex && lineEndGraphemeIndex === gWidths.length) {
+      lineEndSegmentIndex = segmentIndex + 1;
+      lineEndGraphemeIndex = 0;
+    }
+  }
+  function continueSoftHyphenBreakableSegment(segmentIndex) {
+    if (pendingBreakKind !== "soft-hyphen")
+      return false;
+    const gWidths = breakableWidths[segmentIndex];
+    if (gWidths === null)
+      return false;
+    const fitWidths = engineProfile.preferPrefixWidthsForBreakableRuns ? breakablePrefixWidths[segmentIndex] ?? gWidths : gWidths;
+    const usesPrefixWidths = fitWidths !== gWidths;
+    const { fitCount, fittedWidth } = fitSoftHyphenBreak(fitWidths, lineW, maxWidth, lineFitEpsilon, discretionaryHyphenWidth, usesPrefixWidths);
+    if (fitCount === 0)
+      return false;
+    lineW = fittedWidth;
+    lineEndSegmentIndex = segmentIndex;
+    lineEndGraphemeIndex = fitCount;
+    clearPendingBreak();
+    if (fitCount === gWidths.length) {
+      lineEndSegmentIndex = segmentIndex + 1;
+      lineEndGraphemeIndex = 0;
+      return true;
+    }
+    emitCurrentLine(segmentIndex, fitCount, fittedWidth + discretionaryHyphenWidth);
+    appendBreakableSegmentFrom(segmentIndex, fitCount);
+    return true;
+  }
+  function emitEmptyChunk(chunk) {
+    lineCount++;
+    onLine?.({
+      startSegmentIndex: chunk.startSegmentIndex,
+      startGraphemeIndex: 0,
+      endSegmentIndex: chunk.consumedEndSegmentIndex,
+      endGraphemeIndex: 0,
+      width: 0
+    });
+    clearPendingBreak();
+  }
+  for (let chunkIndex = 0;chunkIndex < chunks.length; chunkIndex++) {
+    const chunk = chunks[chunkIndex];
+    if (chunk.startSegmentIndex === chunk.endSegmentIndex) {
+      emitEmptyChunk(chunk);
+      continue;
+    }
+    hasContent = false;
+    lineW = 0;
+    lineStartSegmentIndex = chunk.startSegmentIndex;
+    lineStartGraphemeIndex = 0;
+    lineEndSegmentIndex = chunk.startSegmentIndex;
+    lineEndGraphemeIndex = 0;
+    clearPendingBreak();
+    let i = chunk.startSegmentIndex;
+    while (i < chunk.endSegmentIndex) {
+      const kind = kinds[i];
+      const w = kind === "tab" ? getTabAdvance(lineW, tabStopAdvance) : widths[i];
+      if (kind === "soft-hyphen") {
+        if (hasContent) {
+          lineEndSegmentIndex = i + 1;
+          lineEndGraphemeIndex = 0;
+          pendingBreakSegmentIndex = i + 1;
+          pendingBreakFitWidth = lineW + discretionaryHyphenWidth;
+          pendingBreakPaintWidth = lineW + discretionaryHyphenWidth;
+          pendingBreakKind = kind;
+        }
+        i++;
+        continue;
+      }
+      if (!hasContent) {
+        if (w > maxWidth && breakableWidths[i] !== null) {
+          appendBreakableSegment(i);
+        } else {
+          startLineAtSegment(i, w);
+        }
+        updatePendingBreakForWholeSegment(i, w);
+        i++;
+        continue;
+      }
+      const newW = lineW + w;
+      if (newW > maxWidth + lineFitEpsilon) {
+        const currentBreakFitWidth = lineW + (kind === "tab" ? 0 : lineEndFitAdvances[i]);
+        const currentBreakPaintWidth = lineW + (kind === "tab" ? w : lineEndPaintAdvances[i]);
+        if (pendingBreakKind === "soft-hyphen" && engineProfile.preferEarlySoftHyphenBreak && pendingBreakFitWidth <= maxWidth + lineFitEpsilon) {
+          emitCurrentLine(pendingBreakSegmentIndex, 0, pendingBreakPaintWidth);
+          continue;
+        }
+        if (pendingBreakKind === "soft-hyphen" && continueSoftHyphenBreakableSegment(i)) {
+          i++;
+          continue;
+        }
+        if (canBreakAfter(kind) && currentBreakFitWidth <= maxWidth + lineFitEpsilon) {
+          appendWholeSegment(i, w);
+          emitCurrentLine(i + 1, 0, currentBreakPaintWidth);
+          i++;
+          continue;
+        }
+        if (pendingBreakSegmentIndex >= 0 && pendingBreakFitWidth <= maxWidth + lineFitEpsilon) {
+          if (lineEndSegmentIndex > pendingBreakSegmentIndex || lineEndSegmentIndex === pendingBreakSegmentIndex && lineEndGraphemeIndex > 0) {
+            emitCurrentLine();
+            continue;
+          }
+          const nextSegmentIndex = pendingBreakSegmentIndex;
+          emitCurrentLine(nextSegmentIndex, 0, pendingBreakPaintWidth);
+          i = nextSegmentIndex;
+          continue;
+        }
+        if (w > maxWidth && breakableWidths[i] !== null) {
+          emitCurrentLine();
+          appendBreakableSegment(i);
+          i++;
+          continue;
+        }
+        emitCurrentLine();
+        continue;
+      }
+      appendWholeSegment(i, w);
+      updatePendingBreakForWholeSegment(i, w);
+      i++;
+    }
+    if (hasContent) {
+      const finalPaintWidth = pendingBreakSegmentIndex === chunk.consumedEndSegmentIndex ? pendingBreakPaintWidth : lineW;
+      emitCurrentLine(chunk.consumedEndSegmentIndex, 0, finalPaintWidth);
+    }
+  }
+  return lineCount;
+}
+function layoutNextLineRange(prepared, start, maxWidth) {
+  const normalized = normalizeLineStartWithChunk(prepared, start);
+  if (normalized === null)
+    return null;
+  if (prepared.simpleLineWalkFastPath) {
+    return layoutNextLineRangeSimple(prepared, normalized.cursor, maxWidth);
+  }
+  const chunk = prepared.chunks[normalized.chunkIndex];
+  if (chunk.startSegmentIndex === chunk.endSegmentIndex) {
+    return {
+      startSegmentIndex: chunk.startSegmentIndex,
+      startGraphemeIndex: 0,
+      endSegmentIndex: chunk.consumedEndSegmentIndex,
+      endGraphemeIndex: 0,
+      width: 0
+    };
+  }
+  const { widths, lineEndFitAdvances, lineEndPaintAdvances, kinds, breakableWidths, breakablePrefixWidths, discretionaryHyphenWidth, tabStopAdvance } = prepared;
+  const engineProfile = getEngineProfile();
+  const lineFitEpsilon = engineProfile.lineFitEpsilon;
+  let lineW = 0;
+  let hasContent = false;
+  const lineStartSegmentIndex = normalized.cursor.segmentIndex;
+  const lineStartGraphemeIndex = normalized.cursor.graphemeIndex;
+  let lineEndSegmentIndex = lineStartSegmentIndex;
+  let lineEndGraphemeIndex = lineStartGraphemeIndex;
+  let pendingBreakSegmentIndex = -1;
+  let pendingBreakFitWidth = 0;
+  let pendingBreakPaintWidth = 0;
+  let pendingBreakKind = null;
+  function clearPendingBreak() {
+    pendingBreakSegmentIndex = -1;
+    pendingBreakFitWidth = 0;
+    pendingBreakPaintWidth = 0;
+    pendingBreakKind = null;
+  }
+  function finishLine(endSegmentIndex = lineEndSegmentIndex, endGraphemeIndex = lineEndGraphemeIndex, width = lineW) {
+    if (!hasContent)
+      return null;
+    return {
+      startSegmentIndex: lineStartSegmentIndex,
+      startGraphemeIndex: lineStartGraphemeIndex,
+      endSegmentIndex,
+      endGraphemeIndex,
+      width
+    };
+  }
+  function startLineAtSegment(segmentIndex, width) {
+    hasContent = true;
+    lineEndSegmentIndex = segmentIndex + 1;
+    lineEndGraphemeIndex = 0;
+    lineW = width;
+  }
+  function startLineAtGrapheme(segmentIndex, graphemeIndex, width) {
+    hasContent = true;
+    lineEndSegmentIndex = segmentIndex;
+    lineEndGraphemeIndex = graphemeIndex + 1;
+    lineW = width;
+  }
+  function appendWholeSegment(segmentIndex, width) {
+    if (!hasContent) {
+      startLineAtSegment(segmentIndex, width);
+      return;
+    }
+    lineW += width;
+    lineEndSegmentIndex = segmentIndex + 1;
+    lineEndGraphemeIndex = 0;
+  }
+  function updatePendingBreakForWholeSegment(segmentIndex, segmentWidth) {
+    if (!canBreakAfter(kinds[segmentIndex]))
+      return;
+    const fitAdvance = kinds[segmentIndex] === "tab" ? 0 : lineEndFitAdvances[segmentIndex];
+    const paintAdvance = kinds[segmentIndex] === "tab" ? segmentWidth : lineEndPaintAdvances[segmentIndex];
+    pendingBreakSegmentIndex = segmentIndex + 1;
+    pendingBreakFitWidth = lineW - segmentWidth + fitAdvance;
+    pendingBreakPaintWidth = lineW - segmentWidth + paintAdvance;
+    pendingBreakKind = kinds[segmentIndex];
+  }
+  function appendBreakableSegmentFrom(segmentIndex, startGraphemeIndex) {
+    const gWidths = breakableWidths[segmentIndex];
+    const gPrefixWidths = breakablePrefixWidths[segmentIndex] ?? null;
+    for (let g = startGraphemeIndex;g < gWidths.length; g++) {
+      const gw = getBreakableAdvance(gWidths, gPrefixWidths, g, engineProfile.preferPrefixWidthsForBreakableRuns);
+      if (!hasContent) {
+        startLineAtGrapheme(segmentIndex, g, gw);
+        continue;
+      }
+      if (lineW + gw > maxWidth + lineFitEpsilon) {
+        return finishLine();
+      }
+      lineW += gw;
+      lineEndSegmentIndex = segmentIndex;
+      lineEndGraphemeIndex = g + 1;
+    }
+    if (hasContent && lineEndSegmentIndex === segmentIndex && lineEndGraphemeIndex === gWidths.length) {
+      lineEndSegmentIndex = segmentIndex + 1;
+      lineEndGraphemeIndex = 0;
+    }
+    return null;
+  }
+  function maybeFinishAtSoftHyphen(segmentIndex) {
+    if (pendingBreakKind !== "soft-hyphen" || pendingBreakSegmentIndex < 0)
+      return null;
+    const gWidths = breakableWidths[segmentIndex] ?? null;
+    if (gWidths !== null) {
+      const fitWidths = engineProfile.preferPrefixWidthsForBreakableRuns ? breakablePrefixWidths[segmentIndex] ?? gWidths : gWidths;
+      const usesPrefixWidths = fitWidths !== gWidths;
+      const { fitCount, fittedWidth } = fitSoftHyphenBreak(fitWidths, lineW, maxWidth, lineFitEpsilon, discretionaryHyphenWidth, usesPrefixWidths);
+      if (fitCount === gWidths.length) {
+        lineW = fittedWidth;
+        lineEndSegmentIndex = segmentIndex + 1;
+        lineEndGraphemeIndex = 0;
+        clearPendingBreak();
+        return null;
+      }
+      if (fitCount > 0) {
+        return finishLine(segmentIndex, fitCount, fittedWidth + discretionaryHyphenWidth);
+      }
+    }
+    if (pendingBreakFitWidth <= maxWidth + lineFitEpsilon) {
+      return finishLine(pendingBreakSegmentIndex, 0, pendingBreakPaintWidth);
+    }
+    return null;
+  }
+  for (let i = normalized.cursor.segmentIndex;i < chunk.endSegmentIndex; i++) {
+    const kind = kinds[i];
+    const startGraphemeIndex = i === normalized.cursor.segmentIndex ? normalized.cursor.graphemeIndex : 0;
+    const w = kind === "tab" ? getTabAdvance(lineW, tabStopAdvance) : widths[i];
+    if (kind === "soft-hyphen" && startGraphemeIndex === 0) {
+      if (hasContent) {
+        lineEndSegmentIndex = i + 1;
+        lineEndGraphemeIndex = 0;
+        pendingBreakSegmentIndex = i + 1;
+        pendingBreakFitWidth = lineW + discretionaryHyphenWidth;
+        pendingBreakPaintWidth = lineW + discretionaryHyphenWidth;
+        pendingBreakKind = kind;
+      }
+      continue;
+    }
+    if (!hasContent) {
+      if (startGraphemeIndex > 0) {
+        const line = appendBreakableSegmentFrom(i, startGraphemeIndex);
+        if (line !== null)
+          return line;
+      } else if (w > maxWidth && breakableWidths[i] !== null) {
+        const line = appendBreakableSegmentFrom(i, 0);
+        if (line !== null)
+          return line;
+      } else {
+        startLineAtSegment(i, w);
+      }
+      updatePendingBreakForWholeSegment(i, w);
+      continue;
+    }
+    const newW = lineW + w;
+    if (newW > maxWidth + lineFitEpsilon) {
+      const currentBreakFitWidth = lineW + (kind === "tab" ? 0 : lineEndFitAdvances[i]);
+      const currentBreakPaintWidth = lineW + (kind === "tab" ? w : lineEndPaintAdvances[i]);
+      if (pendingBreakKind === "soft-hyphen" && engineProfile.preferEarlySoftHyphenBreak && pendingBreakFitWidth <= maxWidth + lineFitEpsilon) {
+        return finishLine(pendingBreakSegmentIndex, 0, pendingBreakPaintWidth);
+      }
+      const softBreakLine = maybeFinishAtSoftHyphen(i);
+      if (softBreakLine !== null)
+        return softBreakLine;
+      if (canBreakAfter(kind) && currentBreakFitWidth <= maxWidth + lineFitEpsilon) {
+        appendWholeSegment(i, w);
+        return finishLine(i + 1, 0, currentBreakPaintWidth);
+      }
+      if (pendingBreakSegmentIndex >= 0 && pendingBreakFitWidth <= maxWidth + lineFitEpsilon) {
+        if (lineEndSegmentIndex > pendingBreakSegmentIndex || lineEndSegmentIndex === pendingBreakSegmentIndex && lineEndGraphemeIndex > 0) {
+          return finishLine();
+        }
+        return finishLine(pendingBreakSegmentIndex, 0, pendingBreakPaintWidth);
+      }
+      if (w > maxWidth && breakableWidths[i] !== null) {
+        const currentLine = finishLine();
+        if (currentLine !== null)
+          return currentLine;
+        const line = appendBreakableSegmentFrom(i, 0);
+        if (line !== null)
+          return line;
+      }
+      return finishLine();
+    }
+    appendWholeSegment(i, w);
+    updatePendingBreakForWholeSegment(i, w);
+  }
+  if (pendingBreakSegmentIndex === chunk.consumedEndSegmentIndex && lineEndGraphemeIndex === 0) {
+    return finishLine(chunk.consumedEndSegmentIndex, 0, pendingBreakPaintWidth);
+  }
+  return finishLine(chunk.consumedEndSegmentIndex, 0, lineW);
+}
+function layoutNextLineRangeSimple(prepared, normalizedStart, maxWidth) {
+  const { widths, kinds, breakableWidths, breakablePrefixWidths } = prepared;
+  const engineProfile = getEngineProfile();
+  const lineFitEpsilon = engineProfile.lineFitEpsilon;
+  let lineW = 0;
+  let hasContent = false;
+  const lineStartSegmentIndex = normalizedStart.segmentIndex;
+  const lineStartGraphemeIndex = normalizedStart.graphemeIndex;
+  let lineEndSegmentIndex = lineStartSegmentIndex;
+  let lineEndGraphemeIndex = lineStartGraphemeIndex;
+  let pendingBreakSegmentIndex = -1;
+  let pendingBreakPaintWidth = 0;
+  function finishLine(endSegmentIndex = lineEndSegmentIndex, endGraphemeIndex = lineEndGraphemeIndex, width = lineW) {
+    if (!hasContent)
+      return null;
+    return {
+      startSegmentIndex: lineStartSegmentIndex,
+      startGraphemeIndex: lineStartGraphemeIndex,
+      endSegmentIndex,
+      endGraphemeIndex,
+      width
+    };
+  }
+  function startLineAtSegment(segmentIndex, width) {
+    hasContent = true;
+    lineEndSegmentIndex = segmentIndex + 1;
+    lineEndGraphemeIndex = 0;
+    lineW = width;
+  }
+  function startLineAtGrapheme(segmentIndex, graphemeIndex, width) {
+    hasContent = true;
+    lineEndSegmentIndex = segmentIndex;
+    lineEndGraphemeIndex = graphemeIndex + 1;
+    lineW = width;
+  }
+  function appendWholeSegment(segmentIndex, width) {
+    if (!hasContent) {
+      startLineAtSegment(segmentIndex, width);
+      return;
+    }
+    lineW += width;
+    lineEndSegmentIndex = segmentIndex + 1;
+    lineEndGraphemeIndex = 0;
+  }
+  function updatePendingBreak(segmentIndex, segmentWidth) {
+    if (!canBreakAfter(kinds[segmentIndex]))
+      return;
+    pendingBreakSegmentIndex = segmentIndex + 1;
+    pendingBreakPaintWidth = lineW - segmentWidth;
+  }
+  function appendBreakableSegmentFrom(segmentIndex, startGraphemeIndex) {
+    const gWidths = breakableWidths[segmentIndex];
+    const gPrefixWidths = breakablePrefixWidths[segmentIndex] ?? null;
+    for (let g = startGraphemeIndex;g < gWidths.length; g++) {
+      const gw = getBreakableAdvance(gWidths, gPrefixWidths, g, engineProfile.preferPrefixWidthsForBreakableRuns);
+      if (!hasContent) {
+        startLineAtGrapheme(segmentIndex, g, gw);
+        continue;
+      }
+      if (lineW + gw > maxWidth + lineFitEpsilon) {
+        return finishLine();
+      }
+      lineW += gw;
+      lineEndSegmentIndex = segmentIndex;
+      lineEndGraphemeIndex = g + 1;
+    }
+    if (hasContent && lineEndSegmentIndex === segmentIndex && lineEndGraphemeIndex === gWidths.length) {
+      lineEndSegmentIndex = segmentIndex + 1;
+      lineEndGraphemeIndex = 0;
+    }
+    return null;
+  }
+  for (let i = normalizedStart.segmentIndex;i < widths.length; i++) {
+    const w = widths[i];
+    const kind = kinds[i];
+    const startGraphemeIndex = i === normalizedStart.segmentIndex ? normalizedStart.graphemeIndex : 0;
+    if (!hasContent) {
+      if (startGraphemeIndex > 0) {
+        const line = appendBreakableSegmentFrom(i, startGraphemeIndex);
+        if (line !== null)
+          return line;
+      } else if (w > maxWidth && breakableWidths[i] !== null) {
+        const line = appendBreakableSegmentFrom(i, 0);
+        if (line !== null)
+          return line;
+      } else {
+        startLineAtSegment(i, w);
+      }
+      updatePendingBreak(i, w);
+      continue;
+    }
+    const newW = lineW + w;
+    if (newW > maxWidth + lineFitEpsilon) {
+      if (canBreakAfter(kind)) {
+        appendWholeSegment(i, w);
+        return finishLine(i + 1, 0, lineW - w);
+      }
+      if (pendingBreakSegmentIndex >= 0) {
+        if (lineEndSegmentIndex > pendingBreakSegmentIndex || lineEndSegmentIndex === pendingBreakSegmentIndex && lineEndGraphemeIndex > 0) {
+          return finishLine();
+        }
+        return finishLine(pendingBreakSegmentIndex, 0, pendingBreakPaintWidth);
+      }
+      if (w > maxWidth && breakableWidths[i] !== null) {
+        const currentLine = finishLine();
+        if (currentLine !== null)
+          return currentLine;
+        const line = appendBreakableSegmentFrom(i, 0);
+        if (line !== null)
+          return line;
+      }
+      return finishLine();
+    }
+    appendWholeSegment(i, w);
+    updatePendingBreak(i, w);
+  }
+  return finishLine();
+}
+
+// node_modules/@chenglou/pretext/dist/layout.js
+var sharedGraphemeSegmenter2 = null;
+var sharedLineTextCaches = new WeakMap;
+function getSharedGraphemeSegmenter2() {
+  if (sharedGraphemeSegmenter2 === null) {
+    sharedGraphemeSegmenter2 = new Intl.Segmenter(undefined, { granularity: "grapheme" });
+  }
+  return sharedGraphemeSegmenter2;
+}
+function createEmptyPrepared(includeSegments) {
+  if (includeSegments) {
+    return {
+      widths: [],
+      lineEndFitAdvances: [],
+      lineEndPaintAdvances: [],
+      kinds: [],
+      simpleLineWalkFastPath: true,
+      segLevels: null,
+      breakableWidths: [],
+      breakablePrefixWidths: [],
+      discretionaryHyphenWidth: 0,
+      tabStopAdvance: 0,
+      chunks: [],
+      segments: []
+    };
+  }
+  return {
+    widths: [],
+    lineEndFitAdvances: [],
+    lineEndPaintAdvances: [],
+    kinds: [],
+    simpleLineWalkFastPath: true,
+    segLevels: null,
+    breakableWidths: [],
+    breakablePrefixWidths: [],
+    discretionaryHyphenWidth: 0,
+    tabStopAdvance: 0,
+    chunks: []
+  };
+}
+function measureAnalysis(analysis, font, includeSegments) {
+  const graphemeSegmenter = getSharedGraphemeSegmenter2();
+  const engineProfile = getEngineProfile();
+  const { cache, emojiCorrection } = getFontMeasurementState(font, textMayContainEmoji(analysis.normalized));
+  const discretionaryHyphenWidth = getCorrectedSegmentWidth("-", getSegmentMetrics("-", cache), emojiCorrection);
+  const spaceWidth = getCorrectedSegmentWidth(" ", getSegmentMetrics(" ", cache), emojiCorrection);
+  const tabStopAdvance = spaceWidth * 8;
+  if (analysis.len === 0)
+    return createEmptyPrepared(includeSegments);
+  const widths = [];
+  const lineEndFitAdvances = [];
+  const lineEndPaintAdvances = [];
+  const kinds = [];
+  let simpleLineWalkFastPath = analysis.chunks.length <= 1;
+  const segStarts = includeSegments ? [] : null;
+  const breakableWidths = [];
+  const breakablePrefixWidths = [];
+  const segments = includeSegments ? [] : null;
+  const preparedStartByAnalysisIndex = Array.from({ length: analysis.len });
+  const preparedEndByAnalysisIndex = Array.from({ length: analysis.len });
+  function pushMeasuredSegment(text, width, lineEndFitAdvance, lineEndPaintAdvance, kind, start, breakable, breakablePrefix) {
+    if (kind !== "text" && kind !== "space" && kind !== "zero-width-break") {
+      simpleLineWalkFastPath = false;
+    }
+    widths.push(width);
+    lineEndFitAdvances.push(lineEndFitAdvance);
+    lineEndPaintAdvances.push(lineEndPaintAdvance);
+    kinds.push(kind);
+    segStarts?.push(start);
+    breakableWidths.push(breakable);
+    breakablePrefixWidths.push(breakablePrefix);
+    if (segments !== null)
+      segments.push(text);
+  }
+  for (let mi = 0;mi < analysis.len; mi++) {
+    preparedStartByAnalysisIndex[mi] = widths.length;
+    const segText = analysis.texts[mi];
+    const segWordLike = analysis.isWordLike[mi];
+    const segKind = analysis.kinds[mi];
+    const segStart = analysis.starts[mi];
+    if (segKind === "soft-hyphen") {
+      pushMeasuredSegment(segText, 0, discretionaryHyphenWidth, discretionaryHyphenWidth, segKind, segStart, null, null);
+      preparedEndByAnalysisIndex[mi] = widths.length;
+      continue;
+    }
+    if (segKind === "hard-break") {
+      pushMeasuredSegment(segText, 0, 0, 0, segKind, segStart, null, null);
+      preparedEndByAnalysisIndex[mi] = widths.length;
+      continue;
+    }
+    if (segKind === "tab") {
+      pushMeasuredSegment(segText, 0, 0, 0, segKind, segStart, null, null);
+      preparedEndByAnalysisIndex[mi] = widths.length;
+      continue;
+    }
+    const segMetrics = getSegmentMetrics(segText, cache);
+    if (segKind === "text" && segMetrics.containsCJK) {
+      let unitText = "";
+      let unitStart = 0;
+      for (const gs of graphemeSegmenter.segment(segText)) {
+        const grapheme = gs.segment;
+        if (unitText.length === 0) {
+          unitText = grapheme;
+          unitStart = gs.index;
+          continue;
+        }
+        if (kinsokuEnd.has(unitText) || kinsokuStart.has(grapheme) || leftStickyPunctuation.has(grapheme) || engineProfile.carryCJKAfterClosingQuote && isCJK(grapheme) && endsWithClosingQuote(unitText)) {
+          unitText += grapheme;
+          continue;
+        }
+        const unitMetrics = getSegmentMetrics(unitText, cache);
+        const w2 = getCorrectedSegmentWidth(unitText, unitMetrics, emojiCorrection);
+        pushMeasuredSegment(unitText, w2, w2, w2, "text", segStart + unitStart, null, null);
+        unitText = grapheme;
+        unitStart = gs.index;
+      }
+      if (unitText.length > 0) {
+        const unitMetrics = getSegmentMetrics(unitText, cache);
+        const w2 = getCorrectedSegmentWidth(unitText, unitMetrics, emojiCorrection);
+        pushMeasuredSegment(unitText, w2, w2, w2, "text", segStart + unitStart, null, null);
+      }
+      preparedEndByAnalysisIndex[mi] = widths.length;
+      continue;
+    }
+    const w = getCorrectedSegmentWidth(segText, segMetrics, emojiCorrection);
+    const lineEndFitAdvance = segKind === "space" || segKind === "preserved-space" || segKind === "zero-width-break" ? 0 : w;
+    const lineEndPaintAdvance = segKind === "space" || segKind === "zero-width-break" ? 0 : w;
+    if (segWordLike && segText.length > 1) {
+      const graphemeWidths = getSegmentGraphemeWidths(segText, segMetrics, cache, emojiCorrection);
+      const graphemePrefixWidths = engineProfile.preferPrefixWidthsForBreakableRuns ? getSegmentGraphemePrefixWidths(segText, segMetrics, cache, emojiCorrection) : null;
+      pushMeasuredSegment(segText, w, lineEndFitAdvance, lineEndPaintAdvance, segKind, segStart, graphemeWidths, graphemePrefixWidths);
+    } else {
+      pushMeasuredSegment(segText, w, lineEndFitAdvance, lineEndPaintAdvance, segKind, segStart, null, null);
+    }
+    preparedEndByAnalysisIndex[mi] = widths.length;
+  }
+  const chunks = mapAnalysisChunksToPreparedChunks(analysis.chunks, preparedStartByAnalysisIndex, preparedEndByAnalysisIndex);
+  const segLevels = segStarts === null ? null : computeSegmentLevels(analysis.normalized, segStarts);
+  if (segments !== null) {
+    return {
+      widths,
+      lineEndFitAdvances,
+      lineEndPaintAdvances,
+      kinds,
+      simpleLineWalkFastPath,
+      segLevels,
+      breakableWidths,
+      breakablePrefixWidths,
+      discretionaryHyphenWidth,
+      tabStopAdvance,
+      chunks,
+      segments
+    };
+  }
+  return {
+    widths,
+    lineEndFitAdvances,
+    lineEndPaintAdvances,
+    kinds,
+    simpleLineWalkFastPath,
+    segLevels,
+    breakableWidths,
+    breakablePrefixWidths,
+    discretionaryHyphenWidth,
+    tabStopAdvance,
+    chunks
+  };
+}
+function mapAnalysisChunksToPreparedChunks(chunks, preparedStartByAnalysisIndex, preparedEndByAnalysisIndex) {
+  const preparedChunks = [];
+  for (let i = 0;i < chunks.length; i++) {
+    const chunk = chunks[i];
+    const startSegmentIndex = chunk.startSegmentIndex < preparedStartByAnalysisIndex.length ? preparedStartByAnalysisIndex[chunk.startSegmentIndex] : preparedEndByAnalysisIndex[preparedEndByAnalysisIndex.length - 1] ?? 0;
+    const endSegmentIndex = chunk.endSegmentIndex < preparedStartByAnalysisIndex.length ? preparedStartByAnalysisIndex[chunk.endSegmentIndex] : preparedEndByAnalysisIndex[preparedEndByAnalysisIndex.length - 1] ?? 0;
+    const consumedEndSegmentIndex = chunk.consumedEndSegmentIndex < preparedStartByAnalysisIndex.length ? preparedStartByAnalysisIndex[chunk.consumedEndSegmentIndex] : preparedEndByAnalysisIndex[preparedEndByAnalysisIndex.length - 1] ?? 0;
+    preparedChunks.push({
+      startSegmentIndex,
+      endSegmentIndex,
+      consumedEndSegmentIndex
+    });
+  }
+  return preparedChunks;
+}
+function prepareInternal(text, font, includeSegments, options) {
+  const analysis = analyzeText(text, getEngineProfile(), options?.whiteSpace);
+  return measureAnalysis(analysis, font, includeSegments);
+}
+function prepare(text, font, options) {
+  return prepareInternal(text, font, false, options);
+}
+function prepareWithSegments(text, font, options) {
+  return prepareInternal(text, font, true, options);
+}
+function getInternalPrepared(prepared) {
+  return prepared;
+}
+function layout(prepared, maxWidth, lineHeight) {
+  const lineCount = countPreparedLines(getInternalPrepared(prepared), maxWidth);
+  return { lineCount, height: lineCount * lineHeight };
+}
+function getSegmentGraphemes(segmentIndex, segments, cache) {
+  let graphemes = cache.get(segmentIndex);
+  if (graphemes !== undefined)
+    return graphemes;
+  graphemes = [];
+  const graphemeSegmenter = getSharedGraphemeSegmenter2();
+  for (const gs of graphemeSegmenter.segment(segments[segmentIndex])) {
+    graphemes.push(gs.segment);
+  }
+  cache.set(segmentIndex, graphemes);
+  return graphemes;
+}
+function getLineTextCache(prepared) {
+  let cache = sharedLineTextCaches.get(prepared);
+  if (cache !== undefined)
+    return cache;
+  cache = new Map;
+  sharedLineTextCaches.set(prepared, cache);
+  return cache;
+}
+function lineHasDiscretionaryHyphen(kinds, startSegmentIndex, startGraphemeIndex, endSegmentIndex) {
+  return endSegmentIndex > 0 && kinds[endSegmentIndex - 1] === "soft-hyphen" && !(startSegmentIndex === endSegmentIndex && startGraphemeIndex > 0);
+}
+function buildLineTextFromRange(segments, kinds, cache, startSegmentIndex, startGraphemeIndex, endSegmentIndex, endGraphemeIndex) {
+  let text = "";
+  const endsWithDiscretionaryHyphen = lineHasDiscretionaryHyphen(kinds, startSegmentIndex, startGraphemeIndex, endSegmentIndex);
+  for (let i = startSegmentIndex;i < endSegmentIndex; i++) {
+    if (kinds[i] === "soft-hyphen" || kinds[i] === "hard-break")
+      continue;
+    if (i === startSegmentIndex && startGraphemeIndex > 0) {
+      text += getSegmentGraphemes(i, segments, cache).slice(startGraphemeIndex).join("");
+    } else {
+      text += segments[i];
+    }
+  }
+  if (endGraphemeIndex > 0) {
+    if (endsWithDiscretionaryHyphen)
+      text += "-";
+    text += getSegmentGraphemes(endSegmentIndex, segments, cache).slice(startSegmentIndex === endSegmentIndex ? startGraphemeIndex : 0, endGraphemeIndex).join("");
+  } else if (endsWithDiscretionaryHyphen) {
+    text += "-";
+  }
+  return text;
+}
+function createLayoutLine(prepared, cache, width, startSegmentIndex, startGraphemeIndex, endSegmentIndex, endGraphemeIndex) {
+  return {
+    text: buildLineTextFromRange(prepared.segments, prepared.kinds, cache, startSegmentIndex, startGraphemeIndex, endSegmentIndex, endGraphemeIndex),
+    width,
+    start: {
+      segmentIndex: startSegmentIndex,
+      graphemeIndex: startGraphemeIndex
+    },
+    end: {
+      segmentIndex: endSegmentIndex,
+      graphemeIndex: endGraphemeIndex
+    }
+  };
+}
+function toLayoutLineRange(line) {
+  return {
+    width: line.width,
+    start: {
+      segmentIndex: line.startSegmentIndex,
+      graphemeIndex: line.startGraphemeIndex
+    },
+    end: {
+      segmentIndex: line.endSegmentIndex,
+      graphemeIndex: line.endGraphemeIndex
+    }
+  };
+}
+function stepLineRange(prepared, start, maxWidth) {
+  const line = layoutNextLineRange(prepared, start, maxWidth);
+  if (line === null)
+    return null;
+  return toLayoutLineRange(line);
+}
+function materializeLine(prepared, line) {
+  return createLayoutLine(prepared, getLineTextCache(prepared), line.width, line.start.segmentIndex, line.start.graphemeIndex, line.end.segmentIndex, line.end.graphemeIndex);
+}
+function walkLineRanges(prepared, maxWidth, onLine) {
+  if (prepared.widths.length === 0)
+    return 0;
+  return walkPreparedLines(getInternalPrepared(prepared), maxWidth, (line) => {
+    onLine(toLayoutLineRange(line));
+  });
+}
+function layoutNextLine(prepared, start, maxWidth) {
+  const line = stepLineRange(prepared, start, maxWidth);
+  if (line === null)
+    return null;
+  return materializeLine(prepared, line);
+}
+
+// wrap-geometry.ts
+function getPolygonIntervalForBand(points, bandTop, bandBottom, horizontalPadding, verticalPadding) {
+  const sampleTop = bandTop - verticalPadding;
+  const sampleBottom = bandBottom + verticalPadding;
+  const startY = Math.floor(sampleTop);
+  const endY = Math.ceil(sampleBottom);
+  let left = Infinity;
+  let right = -Infinity;
+  for (let y = startY;y <= endY; y++) {
+    const xs = getPolygonXsAtY(points, y + 0.5);
+    for (let index = 0;index + 1 < xs.length; index += 2) {
+      const runLeft = xs[index];
+      const runRight = xs[index + 1];
+      if (runLeft < left)
+        left = runLeft;
+      if (runRight > right)
+        right = runRight;
+    }
+  }
+  if (!Number.isFinite(left) || !Number.isFinite(right))
+    return null;
+  return { left: left - horizontalPadding, right: right + horizontalPadding };
+}
+function carveTextLineSlots(base, blocked) {
+  let slots = [base];
+  for (let blockedIndex = 0;blockedIndex < blocked.length; blockedIndex++) {
+    const interval = blocked[blockedIndex];
+    const next = [];
+    for (let slotIndex = 0;slotIndex < slots.length; slotIndex++) {
+      const slot = slots[slotIndex];
+      if (interval.right <= slot.left || interval.left >= slot.right) {
+        next.push(slot);
+        continue;
+      }
+      if (interval.left > slot.left)
+        next.push({ left: slot.left, right: interval.left });
+      if (interval.right < slot.right)
+        next.push({ left: interval.right, right: slot.right });
+    }
+    slots = next;
+  }
+  return slots.filter((slot) => slot.right - slot.left >= 24);
+}
+function getPolygonXsAtY(points, y) {
+  const xs = [];
+  let a = points[points.length - 1];
+  if (!a)
+    return xs;
+  for (let index = 0;index < points.length; index++) {
+    const b = points[index];
+    if (a.y <= y && y < b.y || b.y <= y && y < a.y) {
+      xs.push(a.x + (y - a.y) * (b.x - a.x) / (b.y - a.y));
+    }
+    a = b;
+  }
+  xs.sort((a2, b) => a2 - b);
+  return xs;
+}
+
+// layout-engine.ts
+var preparedCache = new Map;
+var preparedSimpleCache = new Map;
+function getPrepared(text, font) {
+  const key = `${font}::${text}`;
+  const cached = preparedCache.get(key);
+  if (cached)
+    return cached;
+  const prepared = prepareWithSegments(text, font);
+  preparedCache.set(key, prepared);
+  return prepared;
+}
+function getPreparedSimple(text, font) {
+  const key = `${font}::${text}`;
+  const cached = preparedSimpleCache.get(key);
+  if (cached)
+    return cached;
+  const prepared = prepare(text, font);
+  preparedSimpleCache.set(key, prepared);
+  return prepared;
+}
+function breaksInsideWord(prepared, maxWidth) {
+  let breaks = false;
+  walkLineRanges(prepared, maxWidth, (line) => {
+    if (line.end.graphemeIndex !== 0)
+      breaks = true;
+  });
+  return breaks;
+}
+function fitHeadline(text, fontFamily, maxWidth, minSize, maxSize) {
+  let low = minSize;
+  let high = maxSize;
+  let bestSize = low;
+  while (low <= high) {
+    const size = Math.floor((low + high) / 2);
+    const font = `700 ${size}px ${fontFamily}`;
+    const prepared2 = getPrepared(text, font);
+    if (!breaksInsideWord(prepared2, maxWidth)) {
+      bestSize = size;
+      low = size + 1;
+    } else {
+      high = size - 1;
+    }
+  }
+  const finalFont = `700 ${bestSize}px ${fontFamily}`;
+  const lineHeight = Math.round(bestSize * 0.95);
+  const prepared = getPrepared(text, finalFont);
+  const lines = [];
+  let cursor = { segmentIndex: 0, graphemeIndex: 0 };
+  let y = 0;
+  while (true) {
+    const line = layoutNextLine(prepared, cursor, maxWidth);
+    if (!line)
+      break;
+    lines.push({ x: 0, y, width: line.width, text: line.text });
+    cursor = line.end;
+    y += lineHeight;
+  }
+  return { font: finalFont, size: bestSize, lines, lineHeight };
+}
+function layoutColumn(text, font, startCursor, region, lineHeight, obstacles, obstaclePadH, obstaclePadV) {
+  const prepared = getPrepared(text, font);
+  let cursor = startCursor;
+  let lineTop = region.y;
+  const lines = [];
+  while (lineTop + lineHeight <= region.y + region.height) {
+    const bandTop = lineTop;
+    const bandBottom = lineTop + lineHeight;
+    const blocked = [];
+    for (const hull of obstacles) {
+      const interval = getPolygonIntervalForBand(hull, bandTop, bandBottom, obstaclePadH, obstaclePadV);
+      if (interval)
+        blocked.push(interval);
+    }
+    const slots = carveTextLineSlots({ left: region.x, right: region.x + region.width }, blocked);
+    if (slots.length === 0) {
+      lineTop += lineHeight;
+      continue;
+    }
+    let bestSlot = slots[0];
+    for (let i = 1;i < slots.length; i++) {
+      if (slots[i].right - slots[i].left > bestSlot.right - bestSlot.left) {
+        bestSlot = slots[i];
+      }
+    }
+    const slotWidth = bestSlot.right - bestSlot.left;
+    const line = layoutNextLine(prepared, cursor, slotWidth);
+    if (!line)
+      break;
+    lines.push({
+      x: Math.round(bestSlot.left),
+      y: Math.round(lineTop),
+      width: line.width,
+      text: line.text
+    });
+    cursor = line.end;
+    lineTop += lineHeight;
+  }
+  return { lines, cursor };
+}
+function layoutMasonry(texts, font, lineHeight, containerWidth, colCount, colGap, cardPaddingX, cardPaddingY, titleHeight) {
+  const colWidth = (containerWidth - (colCount - 1) * colGap) / colCount;
+  const textWidth = colWidth - cardPaddingX * 2;
+  const colHeights = new Float64Array(colCount);
+  const cards = [];
+  for (let i = 0;i < texts.length; i++) {
+    let shortest = 0;
+    for (let c = 1;c < colCount; c++) {
+      if (colHeights[c] < colHeights[shortest])
+        shortest = c;
+    }
+    const prepared = getPreparedSimple(texts[i], font);
+    const { height } = layout(prepared, textWidth, lineHeight);
+    const totalH = height + cardPaddingY * 2 + titleHeight;
+    cards.push({
+      index: i,
+      x: shortest * (colWidth + colGap),
+      y: colHeights[shortest],
+      width: colWidth,
+      height: totalH
+    });
+    colHeights[shortest] += totalH + colGap;
+  }
+  let contentHeight = 0;
+  for (let c = 0;c < colCount; c++) {
+    if (colHeights[c] > contentHeight)
+      contentHeight = colHeights[c];
+  }
+  return { cards, contentHeight: contentHeight - colGap, colWidth };
+}
+
+// ecg-waveform.ts
+function generatePQRST(seed) {
+  const samples = 200;
+  const result = new Array(samples);
+  let s = seed;
+  function rand() {
+    s = s * 1664525 + 1013904223 & 4294967295;
+    return (s >>> 0) / 4294967296;
+  }
+  const heartRate = 0.7 + rand() * 0.6;
+  const pAmp = 0.08 + rand() * 0.06;
+  const qAmp = -(0.05 + rand() * 0.04);
+  const rAmp = 0.7 + rand() * 0.3;
+  const sAmp = -(0.1 + rand() * 0.08);
+  const tAmp = 0.15 + rand() * 0.12;
+  function gaussian(x, center, width, amplitude) {
+    const d = (x - center) / width;
+    return amplitude * Math.exp(-d * d * 0.5);
+  }
+  for (let i = 0;i < samples; i++) {
+    const t = i / samples;
+    let v = 0;
+    for (let beat = 0;beat < 3; beat++) {
+      const offset = beat * 0.4 * heartRate;
+      const x = t - offset;
+      v += gaussian(x, 0.1, 0.025, pAmp);
+      v += gaussian(x, 0.17, 0.012, qAmp);
+      v += gaussian(x, 0.2, 0.015, rAmp);
+      v += gaussian(x, 0.23, 0.012, sAmp);
+      v += gaussian(x, 0.32, 0.035, tAmp);
+    }
+    v += (rand() - 0.5) * 0.01;
+    result[i] = v;
+  }
+  return result;
+}
+function waveformToPoints(samples) {
+  return samples.map((v, i) => ({
+    x: i / (samples.length - 1),
+    y: 0.5 - v * 0.45
+  }));
+}
+function computeHull(points, rect, padding) {
+  const steps = 20;
+  const top = [];
+  const bottom = [];
+  for (let i = 0;i <= steps; i++) {
+    const t = i / steps;
+    const x = rect.x + t * rect.width;
+    const sliceStart = Math.floor(t * (points.length - 1) - points.length * 0.05);
+    const sliceEnd = Math.ceil(t * (points.length - 1) + points.length * 0.05);
+    let minY = 1, maxY = 0;
+    for (let j = Math.max(0, sliceStart);j <= Math.min(points.length - 1, sliceEnd); j++) {
+      const py = points[j].y;
+      if (py < minY)
+        minY = py;
+      if (py > maxY)
+        maxY = py;
+    }
+    top.push({ x, y: rect.y + minY * rect.height - padding });
+    bottom.push({ x, y: rect.y + maxY * rect.height + padding });
+  }
+  return [...top, ...bottom.reverse()];
+}
+function createWaveform(seed) {
+  const canvas = document.createElement("canvas");
+  canvas.className = "ecg-canvas";
+  canvas.style.position = "absolute";
+  canvas.style.pointerEvents = "auto";
+  canvas.style.cursor = "pointer";
+  const samples = generatePQRST(seed);
+  const points = waveformToPoints(samples);
+  return {
+    points,
+    rect: { x: 0, y: 0, width: 0, height: 0 },
+    hullPoints: [],
+    canvas,
+    seed
+  };
+}
+function updateWaveformRect(state, rect, padding) {
+  state.rect = rect;
+  state.hullPoints = computeHull(state.points, rect, padding);
+  const dpr = window.devicePixelRatio || 1;
+  state.canvas.width = Math.ceil(rect.width * dpr);
+  state.canvas.height = Math.ceil(rect.height * dpr);
+  state.canvas.style.left = `${rect.x}px`;
+  state.canvas.style.top = `${rect.y}px`;
+  state.canvas.style.width = `${rect.width}px`;
+  state.canvas.style.height = `${rect.height}px`;
+}
+function drawWaveform(state, color) {
+  const { canvas, points, rect } = state;
+  const dpr = window.devicePixelRatio || 1;
+  const ctx = canvas.getContext("2d");
+  if (!ctx)
+    return;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.save();
+  ctx.scale(dpr, dpr);
+  ctx.strokeStyle = color;
+  ctx.globalAlpha = 0.08;
+  ctx.lineWidth = 0.5;
+  const gridSpacing = 20;
+  for (let x = 0;x < rect.width; x += gridSpacing) {
+    ctx.beginPath();
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x, rect.height);
+    ctx.stroke();
+  }
+  for (let y = 0;y < rect.height; y += gridSpacing) {
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(rect.width, y);
+    ctx.stroke();
+  }
+  ctx.globalAlpha = 0.7;
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2;
+  ctx.lineJoin = "round";
+  ctx.lineCap = "round";
+  ctx.beginPath();
+  for (let i = 0;i < points.length; i++) {
+    const px = points[i].x * rect.width;
+    const py = points[i].y * rect.height;
+    if (i === 0)
+      ctx.moveTo(px, py);
+    else
+      ctx.lineTo(px, py);
+  }
+  ctx.stroke();
+  ctx.globalAlpha = 0.15;
+  ctx.lineWidth = 6;
+  ctx.stroke();
+  ctx.restore();
+}
+function randomizeWaveform(state) {
+  state.seed = Date.now();
+  const samples = generatePQRST(state.seed);
+  state.points = waveformToPoints(samples);
+}
+function isPointInWaveformArea(state, x, y) {
+  const { rect } = state;
+  return x >= rect.x && x <= rect.x + rect.width && y >= rect.y && y <= rect.y + rect.height;
+}
+
+// data.ts
+var HEADLINE_TEXT = "TENZIN DHONYOE";
+var SUBTITLE_TEXT = "Biomedical Engineering · GlucoSolutions · Toronto";
+var BIO_TEXT = "I'm a final-year Biomedical Engineering student at Toronto Metropolitan University and Co-Founder of GlucoSolutions, where we're building personalized tools for pre-diabetes management. " + "I spend most of my time at the intersection of healthcare and AI, from tumor detection prototypes to cardiac arrhythmia classification, gene sequence analysis to computer vision for fitness tracking. " + "The work that excites me most is the kind that bridges a real gap: taking a signal from the body, running it through something smart, and turning it into something a patient or clinician can actually use. " + "I believe the best software disappears into the problem it solves. " + "Right now I'm focused on making glucose monitoring more accessible and actionable, so that people at risk of diabetes can intervene before it's too late. " + "When I'm not writing code, I'm probably reading about signal processing, training ML models, or figuring out how to make biomedical data tell a clearer story.";
+var PROJECTS = [
+  {
+    id: "gluco",
+    title: "GlucoSolutions",
+    tag: "Startup",
+    text: "Personalized pre-diabetes management platform. Patient-facing app for glucose and metabolic health tracking, plus a dietitian dashboard for monitoring client stability. Full-stack TypeScript.",
+    url: "https://glucosolutions.ca"
+  },
+  {
+    id: "tumor",
+    title: "Tumor Detection",
+    tag: "ML / Healthcare",
+    text: "Proof-of-concept for identifying tumor-like structures through image analysis. Preprocessing, segmentation, and classification pipeline for flagging regions of interest in biomedical imagery.",
+    url: "https://github.com/TenzinDhonyoe/Tumor-Detection-Prototype"
+  },
+  {
+    id: "trading",
+    title: "ML Trading Bot",
+    tag: "ML / Finance",
+    text: "Automated trading system for SPY ETF using sentiment analysis of financial news. NLP-driven signal generation combined with the Alpaca API for live trade execution.",
+    url: "https://github.com/TenzinDhonyoe/TradingBot-Using-ML"
+  },
+  {
+    id: "gym",
+    title: "ML Gym App",
+    tag: "Computer Vision",
+    text: "Real-time exercise tracking using pose estimation. Analyzes body joint positions frame-by-frame to detect movement patterns and count repetitions automatically.",
+    url: "https://github.com/TenzinDhonyoe/ML-Gym-App"
+  },
+  {
+    id: "afib",
+    title: "AFib Detection",
+    tag: "Signal Processing",
+    text: "SVM-based classifier for detecting atrial fibrillation from ECG signal data. Signal preprocessing, feature extraction, and classification for cardiac arrhythmia detection.",
+    url: "https://github.com/TenzinDhonyoe/SVM_data_processing_for_atrial_fibrillation_detection"
+  },
+  {
+    id: "gene",
+    title: "Gene Sequence Analysis",
+    tag: "Bioinformatics",
+    text: "DNA analysis toolkit for pattern matching, gene finding, and promoter region detection. Parses FASTA files, compares sequences, and identifies biologically relevant motifs.",
+    url: "https://github.com/TenzinDhonyoe/Gene-Sequence-Analysis"
+  }
+];
+var LINKS = [
+  { label: "GitHub", url: "https://github.com/TenzinDhonyoe", icon: "github" },
+  { label: "LinkedIn", url: "https://www.linkedin.com/in/tenzindhonyoe/", icon: "linkedin" },
+  { label: "GlucoSolutions", url: "https://glucosolutions.ca", icon: "globe" }
+];
+
+// main.ts
+var HEADLINE_FONT = '"Newsreader", Georgia, serif';
+var BODY_FONT_STR = '17px "Inter", -apple-system, BlinkMacSystemFont, sans-serif';
+var BODY_LINE_HEIGHT = 28;
+var SUBTITLE_FONT = '15px "Inter", -apple-system, BlinkMacSystemFont, sans-serif';
+var CARD_FONT = '15px "Inter", -apple-system, BlinkMacSystemFont, sans-serif';
+var CARD_LINE_HEIGHT = 23;
+var CARD_TITLE_HEIGHT = 52;
+var CARD_PAD_X = 20;
+var CARD_PAD_Y = 16;
+var CARD_GAP = 14;
+var NARROW = 850;
+var MOBILE = 500;
+var waveform;
+var hasInteracted = false;
+var raf = null;
+var dom = {
+  stage: document.getElementById("stage"),
+  headlineLines: [],
+  subtitle: document.createElement("span"),
+  bodyLines: [],
+  linksNav: document.createElement("nav"),
+  projectsLabel: document.createElement("span"),
+  projectsContainer: document.createElement("div"),
+  projectCards: [],
+  footer: document.createElement("footer"),
+  hint: document.createElement("span")
+};
+function syncPool(pool, count, parent, className) {
+  while (pool.length < count) {
+    const el = document.createElement("span");
+    el.className = className;
+    pool.push(el);
+    parent.appendChild(el);
+  }
+  while (pool.length > count) {
+    pool.pop().remove();
+  }
+}
+function buildStaticDOM() {
+  const stage = dom.stage;
+  dom.subtitle.className = "subtitle";
+  dom.subtitle.textContent = SUBTITLE_TEXT;
+  stage.appendChild(dom.subtitle);
+  dom.linksNav.className = "links-nav";
+  dom.linksNav.innerHTML = LINKS.map((link) => {
+    const icons = {
+      github: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>',
+      linkedin: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>',
+      globe: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>'
+    };
+    return `<a href="${link.url}" target="_blank" rel="noopener">${icons[link.icon] || ""}${link.label}</a>`;
+  }).join("");
+  stage.appendChild(dom.linksNav);
+  waveform = createWaveform(42);
+  stage.appendChild(waveform.canvas);
+  dom.hint.className = "ecg-hint";
+  dom.hint.textContent = "click the heartbeat";
+  stage.appendChild(dom.hint);
+  dom.projectsLabel.className = "section-label";
+  dom.projectsLabel.textContent = "PROJECTS";
+  dom.projectsContainer.className = "masonry-container";
+  dom.projectsContainer.appendChild(dom.projectsLabel);
+  dom.projectCards = PROJECTS.map((project) => {
+    const card = document.createElement("div");
+    card.className = "project-card";
+    card.innerHTML = `
+      <a href="${project.url}" target="_blank" rel="noopener" class="card-link">
+        <span class="card-title">${project.title}</span>
+        <span class="card-tag">${project.tag}</span>
+        <p class="card-text">${project.text}</p>
+      </a>
+    `;
+    dom.projectsContainer.appendChild(card);
+    return card;
+  });
+  stage.appendChild(dom.projectsContainer);
+  dom.footer.className = "footer";
+  dom.footer.textContent = "Tenzin Dhonyoe · Toronto, Canada";
+  stage.appendChild(dom.footer);
+}
+function render() {
+  raf = null;
+  const stage = dom.stage;
+  const pageWidth = stage.clientWidth;
+  const isNarrow = pageWidth < NARROW;
+  const isMobile = pageWidth < MOBILE;
+  const gutter = isMobile ? 20 : isNarrow ? 32 : Math.max(40, pageWidth * 0.06);
+  const contentWidth = pageWidth - gutter * 2;
+  const headlineMaxSize = isMobile ? 60 : isNarrow ? 80 : Math.min(120, pageWidth * 0.1);
+  const headlineMinSize = isMobile ? 28 : 36;
+  const headline = fitHeadline(HEADLINE_TEXT, HEADLINE_FONT, contentWidth, headlineMinSize, headlineMaxSize);
+  syncPool(dom.headlineLines, headline.lines.length, stage, "headline-line");
+  for (let i = 0;i < headline.lines.length; i++) {
+    const line = headline.lines[i];
+    const el = dom.headlineLines[i];
+    el.textContent = line.text;
+    el.style.left = `${gutter + line.x}px`;
+    el.style.top = `${40 + line.y}px`;
+    el.style.font = headline.font;
+    el.style.lineHeight = `${headline.lineHeight}px`;
+  }
+  const headlineBottom = 40 + headline.lines.length * headline.lineHeight;
+  dom.subtitle.style.left = `${gutter}px`;
+  dom.subtitle.style.top = `${headlineBottom + 12}px`;
+  dom.subtitle.style.font = SUBTITLE_FONT;
+  const subtitleBottom = headlineBottom + 12 + 22;
+  dom.linksNav.style.left = `${gutter}px`;
+  dom.linksNav.style.top = `${subtitleBottom + 20}px`;
+  const linksBottom = subtitleBottom + 20 + 28;
+  const bodyTop = linksBottom + 32;
+  if (isNarrow) {
+    const ecgW = Math.min(contentWidth, 320);
+    const ecgH = Math.round(ecgW * 0.35);
+    const ecgX = gutter + (contentWidth - ecgW) / 2;
+    const ecgY = bodyTop;
+    updateWaveformRect(waveform, { x: ecgX, y: ecgY, width: ecgW, height: ecgH }, 10);
+    drawWaveform(waveform, getAccentColor());
+    dom.hint.style.left = `${ecgX}px`;
+    dom.hint.style.top = `${ecgY + ecgH + 6}px`;
+    dom.hint.style.width = `${ecgW}px`;
+    const textTop = ecgY + ecgH + 28;
+    const bodyRegion = { x: gutter, y: textTop, width: contentWidth, height: 800 };
+    const { lines } = layoutColumn(BIO_TEXT, BODY_FONT_STR, { segmentIndex: 0, graphemeIndex: 0 }, bodyRegion, BODY_LINE_HEIGHT, [], 0, 0);
+    syncPool(dom.bodyLines, lines.length, stage, "body-line");
+    for (let i = 0;i < lines.length; i++) {
+      const line = lines[i];
+      const el = dom.bodyLines[i];
+      el.textContent = line.text;
+      el.style.left = `${line.x}px`;
+      el.style.top = `${line.y}px`;
+      el.style.font = BODY_FONT_STR;
+      el.style.lineHeight = `${BODY_LINE_HEIGHT}px`;
+    }
+    const bodyBottom = lines.length > 0 ? lines[lines.length - 1].y + BODY_LINE_HEIGHT : textTop;
+    layoutProjects(gutter, bodyBottom + 48, contentWidth, isMobile ? 1 : 2);
+  } else {
+    const columnGap = Math.round(contentWidth * 0.04);
+    const leftWidth = Math.round((contentWidth - columnGap) * 0.48);
+    const rightWidth = contentWidth - columnGap - leftWidth;
+    const rightX = gutter + leftWidth + columnGap;
+    const ecgW = Math.min(rightWidth * 0.75, 260);
+    const ecgH = Math.round(ecgW * 0.45);
+    const ecgX = rightX + (rightWidth - ecgW) / 2;
+    const ecgY = bodyTop + BODY_LINE_HEIGHT * 2;
+    updateWaveformRect(waveform, { x: ecgX, y: ecgY, width: ecgW, height: ecgH }, 12);
+    drawWaveform(waveform, getAccentColor());
+    dom.hint.style.left = `${ecgX}px`;
+    dom.hint.style.top = `${ecgY + ecgH + 4}px`;
+    dom.hint.style.width = `${ecgW}px`;
+    const leftMaxLines = 6;
+    const leftHeight = leftMaxLines * BODY_LINE_HEIGHT;
+    const leftRegion = { x: gutter, y: bodyTop, width: leftWidth, height: leftHeight };
+    const leftResult = layoutColumn(BIO_TEXT, BODY_FONT_STR, { segmentIndex: 0, graphemeIndex: 0 }, leftRegion, BODY_LINE_HEIGHT, [], 0, 0);
+    const rightHeight = Math.max(ecgY + ecgH + BODY_LINE_HEIGHT * 4 - bodyTop, leftHeight + BODY_LINE_HEIGHT * 4);
+    const rightRegion = { x: rightX, y: bodyTop, width: rightWidth, height: rightHeight };
+    const rightResult = layoutColumn(BIO_TEXT, BODY_FONT_STR, leftResult.cursor, rightRegion, BODY_LINE_HEIGHT, [waveform.hullPoints], Math.round(BODY_LINE_HEIGHT * 0.6), Math.round(BODY_LINE_HEIGHT * 0.2));
+    const allLines = [...leftResult.lines, ...rightResult.lines];
+    syncPool(dom.bodyLines, allLines.length, stage, "body-line");
+    for (let i = 0;i < allLines.length; i++) {
+      const line = allLines[i];
+      const el = dom.bodyLines[i];
+      el.textContent = line.text;
+      el.style.left = `${line.x}px`;
+      el.style.top = `${line.y}px`;
+      el.style.font = BODY_FONT_STR;
+      el.style.lineHeight = `${BODY_LINE_HEIGHT}px`;
+    }
+    const bodyBottom = allLines.length > 0 ? Math.max(...allLines.map((l) => l.y)) + BODY_LINE_HEIGHT : bodyTop + 200;
+    layoutProjects(gutter, bodyBottom + 56, contentWidth, 3);
+  }
+}
+function layoutProjects(left, top, width, colCount) {
+  dom.projectsLabel.style.left = `${left}px`;
+  dom.projectsLabel.style.top = `${top}px`;
+  dom.projectsLabel.style.position = "absolute";
+  const gridTop = top + 32;
+  const texts = PROJECTS.map((p) => p.text);
+  const { cards, contentHeight, colWidth } = layoutMasonry(texts, CARD_FONT, CARD_LINE_HEIGHT, width, colCount, CARD_GAP, CARD_PAD_X, CARD_PAD_Y, CARD_TITLE_HEIGHT);
+  dom.projectsContainer.style.left = `${left}px`;
+  dom.projectsContainer.style.top = `${gridTop}px`;
+  dom.projectsContainer.style.width = `${width}px`;
+  dom.projectsContainer.style.height = `${contentHeight}px`;
+  for (let i = 0;i < cards.length; i++) {
+    const card = cards[i];
+    const el = dom.projectCards[card.index];
+    el.style.left = `${card.x}px`;
+    el.style.top = `${card.y}px`;
+    el.style.width = `${card.width}px`;
+    el.style.height = `${card.height}px`;
+  }
+  const footerTop = gridTop + contentHeight + 48;
+  dom.footer.style.top = `${footerTop}px`;
+  dom.footer.style.left = `${left}px`;
+  dom.footer.style.width = `${width}px`;
+  dom.stage.style.height = `${footerTop + 60}px`;
+}
+function getAccentColor() {
+  return getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#c44d2b";
+}
+function scheduleRender() {
+  if (raf !== null)
+    return;
+  raf = requestAnimationFrame(() => render());
+}
+function handleClick(e) {
+  const stageRect = dom.stage.getBoundingClientRect();
+  const x = e.clientX - stageRect.left;
+  const y = e.clientY - stageRect.top + window.scrollY;
+  if (isPointInWaveformArea(waveform, x, y)) {
+    randomizeWaveform(waveform);
+    if (!hasInteracted) {
+      hasInteracted = true;
+      dom.hint.classList.add("faded");
+    }
+    scheduleRender();
+  }
+}
+function boot() {
+  buildStaticDOM();
+  dom.stage.addEventListener("click", handleClick);
+  window.addEventListener("resize", scheduleRender);
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", scheduleRender);
+  document.fonts.ready.then(scheduleRender);
+  scheduleRender();
+}
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", boot, { once: true });
+} else {
+  boot();
+}

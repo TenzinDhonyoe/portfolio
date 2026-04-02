@@ -1,0 +1,5 @@
+[2026-04-02T16:50:50.573Z] GET http://localhost:3000/ → 200 (10ms, 5299B)
+[2026-04-02T16:50:50.589Z] GET https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,700;1,6..72,400&display=swap → 200 (107ms, 12693B)
+[2026-04-02T16:50:50.589Z] GET http://localhost:3000/main.js → 200 (57ms, 102762B)
+[2026-04-02T16:50:50.711Z] GET https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7W0Q5nw.woff2 → 200 (57ms, 48432B)
+[2026-04-02T16:50:50.767Z] GET https://fonts.gstatic.com/s/newsreader/v26/cY9AfjOCX1hbuyalUrK4397yjIJFJpc.woff2 → 200 (29ms, 131848B)
