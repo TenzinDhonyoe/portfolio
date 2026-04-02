@@ -229,7 +229,8 @@ function render(): void {
     )
 
     // Right column: text wraps around ECG, continues from left cursor
-    const rightHeight = Math.max(ecgY + ecgH + BODY_LINE_HEIGHT * 4 - bodyTop, leftHeight + BODY_LINE_HEIGHT * 4)
+    // Height must be large enough to fit all remaining text after ECG
+    const rightHeight = Math.max(ecgY + ecgH + BODY_LINE_HEIGHT * 10 - bodyTop, leftHeight + BODY_LINE_HEIGHT * 10)
     const rightRegion = { x: rightX, y: bodyTop, width: rightWidth, height: rightHeight }
     const rightResult = layoutColumn(
       BIO_TEXT, BODY_FONT_STR,
