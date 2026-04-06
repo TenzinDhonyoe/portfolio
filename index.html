@@ -3,215 +3,562 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tenzin Dhonyoe</title>
+    <title>Tenzin Dhonyoe — Biomedical Engineering</title>
+    <meta name="description" content="Biomedical engineering student and co-founder of GlucoSolutions. Building at the intersection of healthcare and AI." />
+    <meta property="og:title" content="Tenzin Dhonyoe — Biomedical Engineering" />
+    <meta property="og:description" content="Biomedical engineering student and co-founder of GlucoSolutions. Building at the intersection of healthcare and AI." />
+    <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#0a0a0f" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🫀</text></svg>" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,700;1,6..72,400&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
     <style>
       * { box-sizing: border-box; margin: 0; padding: 0; }
 
       :root {
-        --page: #faf9f7;
-        --ink: #1a1a1a;
-        --muted: #6b6560;
-        --rule: #e0dbd5;
-        --accent: #c44d2b;
-        --panel: #ffffff;
-        --hover: rgba(0, 0, 0, 0.015);
+        --bg: #0a0a0f;
+        --bg-panel: #0f1118;
+        --text: #c8d0d8;
+        --text-dim: #7b8594;
+        --accent: #00e676;
+        --accent-warn: #ff6d3a;
+        --accent-blue: #42a5f5;
+        --grid: #1a1e28;
+        --scanline: rgba(0, 230, 118, 0.03);
       }
+
+      html { scroll-behavior: smooth; }
 
       body {
-        background: var(--page);
-        color: var(--ink);
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        font-family: 'IBM Plex Mono', monospace;
         -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
       }
 
-      ::selection {
-        background: var(--accent);
-        color: white;
+      ::selection { background: var(--accent); color: var(--bg); }
+
+      a { color: var(--accent); text-decoration: none; }
+      a:hover { text-decoration: underline; }
+
+      /* ---- CRT Scanline Overlay ---- */
+      body::after {
+        content: '';
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 9999;
+        background: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 2px,
+          var(--scanline) 2px,
+          var(--scanline) 4px
+        );
       }
 
-      a { color: inherit; text-decoration: none; }
-
-      /* ---- Stage ---- */
-      #stage {
-        position: relative;
-        width: min(1100px, 100%);
-        margin: 0 auto;
-        min-height: 100vh;
-        overflow: hidden;
+      /* ---- Background Grid ---- */
+      body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        background-image:
+          linear-gradient(var(--grid) 1px, transparent 1px),
+          linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+        background-size: 30px 30px;
+        opacity: 0.4;
       }
 
-      /* ---- Headline (Pretext-fitted) ---- */
-      .headline-line {
-        position: absolute;
-        font-family: 'Newsreader', Georgia, serif;
-        font-weight: 700;
-        letter-spacing: -0.02em;
-        color: var(--ink);
+      /* ---- Vignette ---- */
+      .vignette {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 1;
+        background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.6) 100%);
+      }
+
+      /* ---- Boot Sequence ---- */
+      .boot-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 10000;
+        background: var(--bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: opacity 0.6s ease;
+      }
+      .boot-overlay.done { opacity: 0; pointer-events: none; }
+      .boot-text {
+        font: 500 15px 'JetBrains Mono', monospace;
+        color: var(--accent);
+        max-width: 600px;
+        padding: 20px;
+      }
+      .boot-line {
+        opacity: 0;
+        margin-bottom: 8px;
         white-space: nowrap;
       }
+      .boot-line.visible { opacity: 1; }
+      .boot-cursor {
+        display: inline-block;
+        width: 8px;
+        height: 15px;
+        background: var(--accent);
+        vertical-align: middle;
+        animation: blink 0.8s step-end infinite;
+      }
+      @keyframes blink { 50% { opacity: 0; } }
 
-      /* ---- Subtitle ---- */
-      .subtitle {
-        position: absolute;
-        font: 15px 'Inter', sans-serif;
-        color: var(--muted);
-        letter-spacing: 0.01em;
+      /* ---- Hero Section ---- */
+      .hero {
+        position: relative;
+        width: 100%;
+        height: 100vh;
+        min-height: 600px;
+        overflow: hidden;
+        z-index: 2;
       }
 
-      /* ---- Links ---- */
-      .links-nav {
+      .hero-canvas {
         position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      .dna-canvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.12;
+        z-index: 0;
+      }
+
+      /* ---- Vitals Panel ---- */
+      .vitals {
+        position: absolute;
+        top: 24px;
+        left: 24px;
+        z-index: 5;
+        font: 500 13px 'JetBrains Mono', monospace;
+        font-variant-numeric: tabular-nums;
+        color: var(--accent);
         display: flex;
-        gap: 20px;
-        font-size: 14px;
-        font-weight: 500;
+        flex-direction: column;
+        gap: 4px;
       }
+      .vital-row { display: flex; gap: 16px; }
+      .vital-label { color: var(--text-dim); }
+      .vital-value { min-width: 48px; }
 
-      .links-nav a {
+      /* ---- Hero Name ---- */
+      .hero-name {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 4;
+        text-align: center;
+        pointer-events: none;
+      }
+      .hero-name h1 {
+        font: 700 clamp(36px, 8vw, 100px) 'JetBrains Mono', monospace;
+        letter-spacing: 0.08em;
+        color: var(--text);
+        line-height: 1.1;
+        text-shadow: 0 0 40px rgba(0, 230, 118, 0.15);
+      }
+      .hero-subtitle {
+        font: 400 clamp(12px, 1.4vw, 16px) 'IBM Plex Mono', monospace;
+        color: var(--text-dim);
+        margin-top: 12px;
+        letter-spacing: 0.05em;
+        opacity: 0;
+        transition: opacity 0.6s ease;
+      }
+      .hero-subtitle.visible { opacity: 1; }
+
+      /* ---- Hero Links ---- */
+      .hero-links {
+        position: absolute;
+        bottom: 32px;
+        right: 32px;
+        z-index: 5;
+        display: flex;
+        gap: 12px;
+      }
+      .hero-link {
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        color: var(--muted);
-        transition: color 150ms ease;
-      }
-
-      .links-nav a:hover {
-        color: var(--ink);
-      }
-
-      .links-nav svg {
-        width: 15px;
-        height: 15px;
-        flex-shrink: 0;
-      }
-
-      /* ---- Body lines (Pretext-laid) ---- */
-      .body-line {
-        position: absolute;
-        font: 17px 'Inter', -apple-system, sans-serif;
-        line-height: 28px;
-        color: var(--ink);
-        white-space: nowrap;
-      }
-
-      /* ---- ECG Canvas ---- */
-      .ecg-canvas {
-        position: absolute;
-        cursor: pointer;
-        pointer-events: auto !important;
-        border-radius: 8px;
-      }
-
-      .ecg-hint {
-        position: absolute;
-        font: 11px 'Inter', sans-serif;
-        font-weight: 500;
+        font: 500 12px 'JetBrains Mono', monospace;
         letter-spacing: 0.05em;
+        color: var(--text-dim);
+        padding: 6px 12px;
+        border: 1px solid var(--grid);
+        border-radius: 4px;
+        transition: color 0.2s, border-color 0.2s;
+        text-decoration: none;
+      }
+      .hero-link:hover {
+        color: var(--accent);
+        border-color: var(--accent);
+        text-decoration: none;
+      }
+      .hero-link svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+      /* ---- Hero Hint ---- */
+      .hero-hint {
+        position: absolute;
+        bottom: 32px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 5;
+        font: 400 11px 'JetBrains Mono', monospace;
+        color: var(--text-dim);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        opacity: 0.5;
+        animation: pulse-hint 3s ease-in-out infinite;
+      }
+      @keyframes pulse-hint { 50% { opacity: 0.2; } }
+
+      /* ---- Shock Pulse ---- */
+      .shock-flash {
+        position: fixed;
+        inset: 0;
+        z-index: 8000;
+        pointer-events: none;
+        opacity: 0;
+      }
+      .shock-flash.active {
+        animation: shock-ring 0.5s ease-out forwards;
+      }
+      @keyframes shock-ring {
+        0% { opacity: 1; background: radial-gradient(circle at var(--sx, 50%) var(--sy, 50%), rgba(0, 230, 118, 0.25) 0%, transparent 10%); }
+        100% { opacity: 0; background: radial-gradient(circle at var(--sx, 50%) var(--sy, 50%), rgba(0, 230, 118, 0) 0%, transparent 50%); }
+      }
+
+      /* ---- Sticky ECG Strip ---- */
+      .ecg-strip {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        width: 100%;
+        height: 32px;
+        background: var(--bg);
+        border-bottom: 1px solid var(--grid);
+      }
+      .ecg-strip canvas {
+        width: 100%;
+        height: 100%;
+      }
+
+      /* ---- Content Sections ---- */
+      .section {
+        position: relative;
+        z-index: 2;
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 48px 24px;
+      }
+
+      .section-label {
+        font: 700 11px 'JetBrains Mono', monospace;
+        letter-spacing: 0.15em;
         text-transform: uppercase;
         color: var(--accent);
-        text-align: center;
-        opacity: 0.6;
-        transition: opacity 0.6s ease;
+        margin-bottom: 20px;
       }
 
-      .ecg-hint.faded {
-        opacity: 0;
-        pointer-events: none;
+      /* ---- Bio ---- */
+      .bio-text {
+        font: 400 15px/1.8 'IBM Plex Mono', monospace;
+        color: var(--text);
+        max-width: 860px;
+      }
+      .bio-cursor {
+        display: inline-block;
+        width: 8px;
+        height: 16px;
+        background: var(--accent);
+        vertical-align: middle;
+        animation: blink 0.8s step-end infinite;
+        margin-left: 2px;
       }
 
-      /* ---- Section label ---- */
-      .section-label {
-        position: absolute;
-        font: 600 11px 'Inter', sans-serif;
+      /* ---- Project Grid ---- */
+      .project-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 14px;
+      }
+
+      .project-card {
+        background: var(--bg-panel);
+        border: 1px solid var(--grid);
+        border-radius: 6px;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+      .project-card:hover {
+        border-color: var(--accent);
+        box-shadow: 0 0 20px rgba(0, 230, 118, 0.08);
+      }
+
+      .card-status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .status-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--accent);
+        animation: pulse-dot 2s ease-in-out infinite;
+      }
+      @keyframes pulse-dot { 50% { opacity: 0.3; } }
+      .card-tag {
+        font: 500 10px 'JetBrains Mono', monospace;
         letter-spacing: 0.1em;
         text-transform: uppercase;
         color: var(--accent);
       }
 
-      /* ---- Masonry ---- */
-      .masonry-container {
-        position: absolute;
+      .card-title {
+        font: 700 16px 'JetBrains Mono', monospace;
+        color: var(--text);
+        letter-spacing: 0.02em;
       }
 
-      /* ---- Project cards ---- */
-      .project-card {
-        position: absolute;
-        background: var(--panel);
-        border: 1px solid var(--rule);
-        border-radius: 12px;
-        overflow: hidden;
-        transition: transform 200ms ease, box-shadow 200ms ease;
+      .card-desc {
+        font: 400 13px/1.6 'IBM Plex Mono', monospace;
+        color: var(--text-dim);
       }
 
-      .project-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+      .card-signal {
+        width: 100%;
+        height: 160px;
+        margin-top: auto;
+        border-radius: 4px;
+        background: rgba(0, 230, 118, 0.03);
+        cursor: crosshair;
       }
 
       .card-link {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-        padding: 16px 20px;
-        height: 100%;
-        color: inherit;
-        text-decoration: none;
-      }
-
-      .card-title {
-        font: 600 15px/1.3 'Inter', sans-serif;
-        color: var(--ink);
-      }
-
-      .card-tag {
-        font: 500 11px 'Inter', sans-serif;
+        font: 500 12px 'JetBrains Mono', monospace;
         color: var(--accent);
-        letter-spacing: 0.03em;
-        margin-bottom: 6px;
+        letter-spacing: 0.05em;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
       }
+      .card-link::before { content: '\2192'; }
 
-      .card-text {
-        font: 400 15px/23px 'Inter', sans-serif;
-        color: var(--muted);
-        margin: 0;
+      .scan-label {
+        position: absolute;
+        top: 10px;
+        right: 12px;
+        font: 500 9px 'JetBrains Mono', monospace;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--accent);
+        opacity: 0;
+        transition: opacity 0.3s ease;
       }
+      .project-card:hover .scan-label { opacity: 0.7; }
 
       /* ---- Footer ---- */
       .footer {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        padding: 28px 24px;
+        font: 400 12px 'JetBrains Mono', monospace;
+        color: var(--text-dim);
+        letter-spacing: 0.08em;
+        border-top: 1px solid var(--grid);
+      }
+      .footer-cursor {
+        display: inline-block;
+        width: 7px;
+        height: 12px;
+        background: var(--accent);
+        vertical-align: middle;
+        animation: blink 0.8s step-end infinite;
+        margin-left: 6px;
+      }
+
+      /* ---- Scroll Indicator ---- */
+      .scroll-indicator {
         position: absolute;
-        font: 13px 'Inter', sans-serif;
-        color: var(--muted);
-        padding-top: 20px;
-        border-top: 1px solid var(--rule);
+        bottom: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 5;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        opacity: 0.35;
+        animation: scroll-bob 2s ease-in-out infinite;
+      }
+      .scroll-indicator span {
+        font: 400 10px 'JetBrains Mono', monospace;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--text-dim);
+      }
+      .scroll-arrow {
+        width: 12px;
+        height: 12px;
+        border-right: 1.5px solid var(--text-dim);
+        border-bottom: 1.5px solid var(--text-dim);
+        transform: rotate(45deg);
+      }
+      @keyframes scroll-bob {
+        0%, 100% { transform: translateX(-50%) translateY(0); }
+        50% { transform: translateX(-50%) translateY(6px); }
       }
 
-      /* ---- Dark Mode ---- */
-      @media (prefers-color-scheme: dark) {
-        :root {
-          --page: #141312;
-          --ink: #e8e4df;
-          --muted: #908880;
-          --rule: #2a2725;
-          --accent: #e8734f;
-          --panel: #1c1a18;
-          --hover: rgba(255, 255, 255, 0.03);
-        }
+      /* ---- Boot Skip ---- */
+      .boot-skip {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        font: 400 11px 'JetBrains Mono', monospace;
+        color: var(--text-dim);
+        letter-spacing: 0.05em;
+        opacity: 0;
+        transition: opacity 0.3s ease;
       }
+      .boot-skip.visible { opacity: 0.5; }
 
+      /* ---- Reduced Motion ---- */
       @media (prefers-reduced-motion: reduce) {
-        .project-card,
-        .ecg-hint,
-        .links-nav a {
-          transition: none;
+        .boot-overlay { display: none; }
+        .status-dot, .boot-cursor, .bio-cursor, .footer-cursor { animation: none; }
+        body::after { display: none; }
+        .scroll-indicator { animation: none; }
+      }
+
+      /* ---- Mobile ---- */
+      @media (max-width: 640px) {
+        .vitals {
+          top: 12px;
+          left: 12px;
+          font-size: 11px;
+          gap: 2px;
+        }
+        .vital-row { gap: 10px; }
+        .hero-name h1 {
+          font-size: clamp(28px, 10vw, 48px);
+          letter-spacing: 0.04em;
+        }
+        .hero-subtitle { font-size: 11px; }
+        .hero-links {
+          bottom: auto;
+          top: 12px;
+          right: 12px;
+          flex-direction: column;
+          gap: 8px;
+        }
+        .hero-link { font-size: 10px; padding: 5px 8px; }
+        .hero-hint { bottom: 60px; font-size: 10px; }
+        .scroll-indicator { bottom: 24px; }
+        .section { padding: 32px 16px; }
+        .card-signal { height: 130px; }
+        .section-label { margin-bottom: 20px; }
+        .bio-text { font-size: 13px; line-height: 1.7; }
+        .project-grid {
+          grid-template-columns: 1fr;
+          gap: 12px;
+        }
+        .project-card { padding: 16px; }
+        .card-title { font-size: 14px; }
+        .card-desc { font-size: 12px; }
+        .footer { padding: 24px 16px; font-size: 10px; }
+      }
+
+      /* ---- Tablet ---- */
+      @media (min-width: 641px) and (max-width: 900px) {
+        .hero-links { gap: 8px; }
+        .hero-link { font-size: 11px; }
+        .project-grid {
+          grid-template-columns: repeat(2, 1fr);
         }
       }
     </style>
   </head>
   <body>
-    <div id="stage"></div>
+    <!-- Boot Sequence -->
+    <div class="boot-overlay" id="boot">
+      <div class="boot-text" id="boot-text"></div>
+      <div class="boot-skip" id="boot-skip">press any key to skip</div>
+    </div>
+
+    <!-- Vignette -->
+    <div class="vignette"></div>
+
+    <!-- Shock Flash -->
+    <div class="shock-flash" id="shock"></div>
+
+    <!-- Hero -->
+    <section class="hero" id="hero">
+      <canvas class="dna-canvas" id="dna-canvas"></canvas>
+      <canvas class="hero-canvas" id="hero-canvas"></canvas>
+
+      <div class="vitals" id="vitals"></div>
+
+      <div class="hero-name">
+        <h1 id="hero-title"></h1>
+        <div class="hero-subtitle" id="hero-subtitle"></div>
+      </div>
+
+      <div class="hero-links" id="hero-links"></div>
+      <div class="hero-hint" id="hero-hint">hover to elevate heart rate</div>
+      <div class="scroll-indicator" id="scroll-indicator">
+        <span>scroll</span>
+        <div class="scroll-arrow"></div>
+      </div>
+    </section>
+
+    <!-- Sticky ECG Strip -->
+    <div class="ecg-strip" id="ecg-strip">
+      <canvas id="strip-canvas"></canvas>
+    </div>
+
+    <!-- Bio -->
+    <section class="section" id="bio-section">
+      <div class="section-label">SUBJECT ANALYSIS</div>
+      <div class="bio-text" id="bio-text"></div><span class="bio-cursor" id="bio-cursor"></span>
+    </section>
+
+    <!-- Projects -->
+    <section class="section" id="projects-section">
+      <div class="section-label">DETECTED ANOMALIES</div>
+      <div class="project-grid" id="project-grid"></div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      SESSION ACTIVE &middot; TORONTO, CANADA &middot; 2026 <span class="footer-cursor"></span>
+    </footer>
+
     <script type="module" src="./main.js"></script>
   </body>
 </html>
