@@ -26,6 +26,20 @@ export const PROJECTS: Project[] = [
     url: 'https://glucosolutions.ca',
   },
   {
+    id: 'zerisk',
+    title: '0risk.ai',
+    tag: 'AI / Surgical Tech',
+    text: 'Real-time intraoperative risk monitoring overlay for surgical teams. Surfaces situational awareness cues during knee replacement surgery without diagnoses or predictions. React + TypeScript.',
+    url: 'https://github.com/TenzinDhonyoe/0risk.ai',
+  },
+  {
+    id: 'mobileqa',
+    title: 'Mobile QA Engine',
+    tag: 'Dev Tools / Open Source',
+    text: 'Fully automated mobile QA tool for iOS apps. Appium-backed simulator testing with Revyl cloud device support, auto-permission config, and real-time bug fixing. Zero-dep pure HTTP client. Contributed to gstack.',
+    url: 'https://github.com/TenzinDhonyoe/gstack/tree/feat/browse-mobile',
+  },
+  {
     id: 'tumor',
     title: 'Tumor Detection',
     tag: 'ML / Healthcare',

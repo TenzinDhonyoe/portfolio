@@ -779,9 +779,337 @@ const geneSequence: SimRenderer = (ctx, w, h, t, s) => {
   ctx.fillText('hover codons', w - 82, h - 4)
 }
 
+// ---- Mobile QA Engine: Automated Device Testing ----
+// Phone outline with test steps executing, pass/fail results, and a live progress bar.
+// Hover over completed steps to see the action type.
+const mobileQA: SimRenderer = (ctx, w, h, t, s) => {
+  // --- Phone outline (left side) ---
+  const phoneX = 8
+  const phoneY = 8
+  const phoneW = w * 0.28
+  const phoneH = h - 16
+  const cornerR = 8
+  const notchW = phoneW * 0.35
+
+  // Phone bezel
+  ctx.strokeStyle = 'rgba(0, 230, 118, 0.3)'
+  ctx.lineWidth = 1.5
+  ctx.beginPath()
+  ctx.roundRect(phoneX, phoneY, phoneW, phoneH, cornerR)
+  ctx.stroke()
+
+  // Notch
+  ctx.fillStyle = '#0a0a0f'
+  ctx.strokeStyle = 'rgba(0, 230, 118, 0.2)'
+  ctx.lineWidth = 1
+  ctx.beginPath()
+  ctx.roundRect(phoneX + (phoneW - notchW) / 2, phoneY - 1, notchW, 8, [0, 0, 4, 4])
+  ctx.fill()
+  ctx.stroke()
+
+  // Screen content — fake app elements
+  const screenX = phoneX + 4
+  const screenY = phoneY + 12
+  const screenW = phoneW - 8
+  const screenH = phoneH - 20
+
+  // Status bar
+  ctx.fillStyle = 'rgba(0, 230, 118, 0.2)'
+  ctx.fillRect(screenX, screenY, screenW, 2)
+
+  // Nav bar placeholder
+  ctx.fillStyle = 'rgba(200, 208, 216, 0.08)'
+  ctx.fillRect(screenX, screenY + 5, screenW, 8)
+  ctx.fillStyle = 'rgba(200, 208, 216, 0.2)'
+  ctx.font = '5px JetBrains Mono'
+  ctx.fillText('App Under Test', screenX + 2, screenY + 11)
+
+  // Content blocks (simulated UI)
+  for (let i = 0; i < 4; i++) {
+    const bY = screenY + 18 + i * (screenH * 0.18)
+    const bH = screenH * 0.13
+    ctx.fillStyle = 'rgba(200, 208, 216, 0.04)'
+    ctx.fillRect(screenX + 2, bY, screenW - 4, bH)
+
+    // Animated tap indicator
+    const tapPhase = (t * 1.5 + i * 2.3) % 8
+    if (tapPhase > 0 && tapPhase < 0.6) {
+      const rippleR = tapPhase * 18
+      ctx.strokeStyle = `rgba(0, 230, 118, ${0.5 - tapPhase * 0.7})`
+      ctx.lineWidth = 1
+      ctx.beginPath()
+      ctx.arc(screenX + screenW / 2, bY + bH / 2, rippleR, 0, Math.PI * 2)
+      ctx.stroke()
+    }
+  }
+
+  // --- Test execution log (right side) ---
+  const logX = phoneX + phoneW + 14
+  const logW = w - logX - 4
+  const steps = [
+    { action: 'launch', target: 'com.app.test', icon: '\u25B6' },
+    { action: 'tap', target: 'Sign In button', icon: '\u25CF' },
+    { action: 'type', target: 'email field', icon: '\u2328' },
+    { action: 'swipe', target: 'scroll down', icon: '\u2195' },
+    { action: 'assert', target: 'dashboard visible', icon: '\u2714' },
+    { action: 'screenshot', target: 'capture state', icon: '\u25A3' },
+    { action: 'tap', target: 'Settings tab', icon: '\u25CF' },
+    { action: 'assert', target: 'profile loaded', icon: '\u2714' },
+  ]
+
+  const totalCycle = 12
+  const progress = (t * 0.8) % totalCycle
+  const completedSteps = Math.min(steps.length, Math.floor(progress * steps.length / totalCycle))
+
+  ctx.fillStyle = 'rgba(200, 208, 216, 0.35)'
+  ctx.font = '7px JetBrains Mono'
+  ctx.fillText('QA EXECUTION LOG', logX, 12)
+
+  // Progress bar
+  const barY = 18
+  const barH = 3
+  ctx.fillStyle = 'rgba(0, 230, 118, 0.1)'
+  ctx.fillRect(logX, barY, logW, barH)
+  const pct = completedSteps / steps.length
+  ctx.fillStyle = pct >= 1 ? '#00e676' : 'rgba(0, 230, 118, 0.5)'
+  ctx.fillRect(logX, barY, logW * pct, barH)
+
+  // Step list
+  const stepH = 14
+  const listY = 28
+  for (let i = 0; i < steps.length; i++) {
+    const sy = listY + i * stepH
+    if (sy + stepH > h - 12) break
+    const step = steps[i]!
+    const done = i < completedSteps
+    const active = i === completedSteps && progress < totalCycle
+
+    const hovered = s.mouseX >= logX && s.mouseX <= logX + logW &&
+      s.mouseY >= sy && s.mouseY <= sy + stepH
+
+    // Status indicator
+    if (done) {
+      ctx.fillStyle = '#00e676'
+      ctx.font = '8px JetBrains Mono'
+      ctx.fillText('\u2713', logX, sy + 9)
+    } else if (active) {
+      ctx.fillStyle = `rgba(0, 230, 118, ${0.4 + Math.sin(t * 6) * 0.3})`
+      ctx.beginPath()
+      ctx.arc(logX + 3, sy + 6, 2, 0, Math.PI * 2)
+      ctx.fill()
+    } else {
+      ctx.fillStyle = 'rgba(123, 133, 148, 0.3)'
+      ctx.beginPath()
+      ctx.arc(logX + 3, sy + 6, 2, 0, Math.PI * 2)
+      ctx.fill()
+    }
+
+    // Step text
+    ctx.fillStyle = done ? 'rgba(200, 208, 216, 0.7)' : active ? '#c8d0d8' : 'rgba(123, 133, 148, 0.4)'
+    ctx.font = '8px JetBrains Mono'
+    ctx.fillText(`${step.icon} ${step.action}`, logX + 10, sy + 9)
+
+    // Show target on hover
+    if (hovered && done) {
+      ctx.fillStyle = 'rgba(0, 230, 118, 0.5)'
+      ctx.font = '7px JetBrains Mono'
+      ctx.fillText(step.target, logX + 10, sy + 9 + stepH * 0.7)
+    }
+  }
+
+  // Summary when all done
+  if (completedSteps >= steps.length) {
+    const sumY = h - 16
+    ctx.fillStyle = '#00e676'
+    ctx.font = '9px JetBrains Mono'
+    ctx.fillText(`${steps.length}/${steps.length} PASSED`, logX, sumY)
+    ctx.fillStyle = 'rgba(0, 230, 118, 0.3)'
+    ctx.font = '7px JetBrains Mono'
+    ctx.fillText('0 failures', logX + 70, sumY)
+  }
+
+  ctx.fillStyle = 'rgba(200,208,216,0.3)'
+  ctx.font = '9px JetBrains Mono'
+  ctx.fillText('hover steps', logX, h - 4)
+}
+
+// ---- 0risk.ai: Intraoperative OR Monitor ----
+// Live vital-sign waveforms with risk indicators that surface based on phase.
+// Hover over a risk card to see the driver text.
+const orMonitor: SimRenderer = (ctx, w, h, t, s) => {
+  // --- Vitals waveforms (left 55%) ---
+  const vitalW = w * 0.52
+  const waveforms = [
+    { label: 'ECG II', color: '#00e676', freq: 4.2, amp: 0.8, spike: true },
+    { label: 'ART', color: '#ff6d3a', freq: 1.8, amp: 0.6, spike: false },
+    { label: 'PLETH', color: '#42a5f5', freq: 1.8, amp: 0.5, spike: false },
+  ]
+  const wfH = (h - 30) / waveforms.length
+
+  for (let wi = 0; wi < waveforms.length; wi++) {
+    const wf = waveforms[wi]!
+    const baseY = 14 + wi * wfH + wfH / 2
+
+    // Label
+    ctx.fillStyle = wf.color
+    ctx.globalAlpha = 0.5
+    ctx.font = '7px JetBrains Mono'
+    ctx.fillText(wf.label, 4, baseY - wfH * 0.35)
+    ctx.globalAlpha = 1
+
+    // Waveform
+    ctx.strokeStyle = wf.color
+    ctx.lineWidth = 1.2
+    ctx.beginPath()
+    for (let px = 0; px < vitalW; px++) {
+      const phase = (px / vitalW) * Math.PI * 8 + t * wf.freq
+      let y: number
+      if (wf.spike) {
+        // ECG-like QRS complex
+        const p = ((phase % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2)
+        const norm = p / (Math.PI * 2)
+        if (norm > 0.38 && norm < 0.42) y = -wf.amp * 3.5
+        else if (norm > 0.42 && norm < 0.44) y = wf.amp * 1.2
+        else if (norm > 0.44 && norm < 0.46) y = -wf.amp * 0.3
+        else y = Math.sin(phase * 0.3) * wf.amp * 0.08
+      } else {
+        y = Math.sin(phase) * wf.amp
+        if (wf.label === 'ART') y += Math.sin(phase * 2.1) * wf.amp * 0.3
+      }
+      const py = baseY + y * wfH * 0.35
+      px === 0 ? ctx.moveTo(px + 2, py) : ctx.lineTo(px + 2, py)
+    }
+    ctx.stroke()
+
+    // Glow
+    ctx.globalAlpha = 0.1
+    ctx.lineWidth = 4
+    ctx.stroke()
+    ctx.globalAlpha = 1
+    ctx.lineWidth = 1
+  }
+
+  // Separator line
+  ctx.strokeStyle = 'rgba(0, 230, 118, 0.15)'
+  ctx.lineWidth = 1
+  ctx.beginPath()
+  ctx.moveTo(vitalW + 6, 4)
+  ctx.lineTo(vitalW + 6, h - 4)
+  ctx.stroke()
+
+  // --- Vitals readout row (bottom left) ---
+  const vitals = [
+    { label: 'HR', value: 72 + Math.floor(Math.sin(t * 0.4) * 3), color: '#00e676' },
+    { label: 'MAP', value: 85 + Math.floor(Math.sin(t * 0.25) * 4), color: '#ff6d3a' },
+    { label: 'SpO\u2082', value: 98 + Math.floor(Math.sin(t * 0.15) * 1), color: '#42a5f5' },
+  ]
+  const vRowY = h - 10
+  const vSpacing = vitalW / vitals.length
+  for (let i = 0; i < vitals.length; i++) {
+    const v = vitals[i]!
+    const vx = 4 + i * vSpacing
+    ctx.fillStyle = 'rgba(200,208,216,0.35)'
+    ctx.font = '7px JetBrains Mono'
+    ctx.fillText(v.label, vx, vRowY)
+    ctx.fillStyle = v.color
+    ctx.font = '10px JetBrains Mono'
+    ctx.fillText(`${v.value}`, vx + 26, vRowY)
+  }
+
+  // --- Right panel: Situational Awareness ---
+  const panelX = vitalW + 14
+  const panelW = w - panelX - 4
+
+  // Phase indicator
+  const phases = ['PRE-OP', 'INCISION', 'BONE PREP', 'IMPLANT', 'CLOSURE']
+  const phaseIdx = Math.floor((t * 0.15) % phases.length)
+  ctx.fillStyle = 'rgba(200,208,216,0.35)'
+  ctx.font = '7px JetBrains Mono'
+  ctx.fillText('PHASE', panelX, 12)
+  ctx.fillStyle = '#00e676'
+  ctx.font = '9px JetBrains Mono'
+  ctx.fillText(phases[phaseIdx]!, panelX, 23)
+
+  // Risk cards
+  type RiskCard = { level: string; color: string; driver: string; detail: string }
+  const risks: RiskCard[] = [
+    { level: 'YELLOW', color: '#ffd740', driver: 'MAP trending low', detail: 'Systolic drift >15%' },
+    { level: 'RED', color: '#ff6d3a', driver: 'HR above baseline', detail: 'Sustained +20 bpm' },
+  ]
+
+  // Show 0-2 risks based on time cycle
+  const cycle = (t * 0.3) % 10
+  const activeRisks = cycle < 3 ? 0 : cycle < 7 ? 1 : 2
+  const cardH = 28
+  const cardGap = 4
+  const cardsY = 32
+
+  if (activeRisks === 0) {
+    ctx.fillStyle = 'rgba(0, 230, 118, 0.25)'
+    ctx.font = '9px JetBrains Mono'
+    ctx.fillText('NO ACTIVE RISKS', panelX, cardsY + 14)
+    ctx.fillStyle = 'rgba(0, 230, 118, 0.12)'
+    ctx.beginPath()
+    ctx.arc(panelX + panelW / 2, cardsY + 40, 12, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.fillStyle = '#00e676'
+    ctx.font = '14px JetBrains Mono'
+    ctx.fillText('\u2713', panelX + panelW / 2 - 5, cardsY + 45)
+  }
+
+  for (let ri = 0; ri < activeRisks && ri < risks.length; ri++) {
+    const risk = risks[ri]!
+    const cy = cardsY + ri * (cardH + cardGap)
+
+    // Card background
+    const hovered = s.mouseX >= panelX && s.mouseX <= panelX + panelW &&
+      s.mouseY >= cy && s.mouseY <= cy + cardH
+    ctx.fillStyle = hovered ? `rgba(${risk.color === '#ffd740' ? '255,215,64' : '255,109,58'},0.12)` : 'rgba(255,255,255,0.03)'
+    ctx.fillRect(panelX, cy, panelW, cardH)
+
+    // Left color bar
+    ctx.fillStyle = risk.color
+    ctx.fillRect(panelX, cy, 3, cardH)
+
+    // Level + driver
+    ctx.fillStyle = risk.color
+    ctx.font = '7px JetBrains Mono'
+    ctx.fillText(risk.level, panelX + 8, cy + 10)
+    ctx.fillStyle = '#c8d0d8'
+    ctx.font = '8px JetBrains Mono'
+    ctx.fillText(risk.driver, panelX + 8, cy + 21)
+
+    // Detail on hover
+    if (hovered) {
+      ctx.fillStyle = 'rgba(200,208,216,0.5)'
+      ctx.font = '7px JetBrains Mono'
+      ctx.fillText(risk.detail, panelX + 8, cy + cardH + 10)
+    }
+  }
+
+  // Separator glow when critical risk active
+  if (activeRisks >= 2) {
+    ctx.strokeStyle = `rgba(255, 109, 58, ${0.15 + Math.sin(t * 3) * 0.1})`
+    ctx.lineWidth = 2
+    ctx.shadowColor = 'rgba(255, 109, 58, 0.4)'
+    ctx.shadowBlur = 8
+    ctx.beginPath()
+    ctx.moveTo(vitalW + 6, 4)
+    ctx.lineTo(vitalW + 6, h - 4)
+    ctx.stroke()
+    ctx.shadowBlur = 0
+  }
+
+  ctx.fillStyle = 'rgba(200,208,216,0.3)'
+  ctx.font = '9px JetBrains Mono'
+  ctx.fillText('hover risks', panelX, h - 4)
+}
+
 // ---- Registry ----
 const SIMS: Record<string, SimRenderer> = {
   gluco: beerLambert,
+  zerisk: orMonitor,
+  mobileqa: mobileQA,
   tumor: cnnConvolution,
   trading: nlpSentiment,
   gym: poseEstimation,
