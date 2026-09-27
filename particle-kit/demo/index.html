@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Particle kit demo</title>
+    <!-- Apply the saved theme before first paint, so dark mode never flashes light. -->
+    <script>
+      try {
+        var t = localStorage.getItem('theme')
+        if (t === 'dark' || t === 'light') document.documentElement.dataset.theme = t
+      } catch (e) {}
+    </script>
+    <style>
+      /* Tokens: the whole look lives here. Dark mode redefines them. */
+      :root {
+        --page: #f6f6f4;
+        --ink-900: #161616;
+        --ink-500: #676764;
+        --ink-400: #8b8b87;
+        --line: #e3e3df;
+        --stage-center: #ffffff;
+        --stage-mid: #fafaf9;
+        color-scheme: light;
+      }
+      :root[data-theme='dark'] {
+        --page: #0f0f10;
+        --ink-900: #f1f0ec;
+        --ink-500: #a09f9a;
+        --ink-400: #797874;
+        --line: #2a2a2d;
+        --stage-center: #1d1d20;
+        --stage-mid: #151517;
+        color-scheme: dark;
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; background: var(--page); color: var(--ink-500); }
+      body { font: 16px/1.6 system-ui, -apple-system, 'Segoe UI', sans-serif; -webkit-font-smoothing: antialiased; }
+      .wrap { max-width: 1320px; margin: 0 auto; padding: 0 24px; }
+      @media (min-width: 768px) { .wrap { padding: 0 40px; } }
+      h1, h2, h3 { color: var(--ink-900); font-weight: 600; letter-spacing: -0.035em; margin: 0; }
+      .kicker { font-size: 13px; font-weight: 500; color: var(--ink-400); margin: 0 0 12px; }
+
+      .toggle {
+        position: fixed; top: 20px; right: 20px; z-index: 10;
+        width: 38px; height: 38px; border-radius: 999px; border: 1px solid var(--line);
+        background: transparent; color: var(--ink-900); cursor: pointer; font-size: 16px;
+      }
+
+      /* The pinned stage: a tall track with a sticky child. */
+      .track { position: relative; height: 220vh; }
+      .stage {
+        position: sticky; top: 0; height: 100svh; overflow: hidden;
+        background: radial-gradient(ellipse 80% 70% at 50% 42%, var(--stage-center) 0%, var(--stage-mid) 55%, var(--page) 100%);
+      }
+      .stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+      .copy { position: absolute; left: 0; right: 0; bottom: 48px; pointer-events: none; }
+      .copy h1 { font-size: clamp(2rem, 1.3rem + 2.2vw, 3.25rem); line-height: 1.05; max-width: 26rem; }
+      .copy p { max-width: 26rem; margin: 16px 0 0; }
+      .caption { opacity: 0; }
+
+      .figures { padding: 128px 0; }
+      .grid { display: grid; gap: 56px 32px; margin-top: 64px; }
+      @media (min-width: 768px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+      .figure {
+        position: relative; aspect-ratio: 5 / 4;
+        background: radial-gradient(ellipse 62% 58% at 50% 52%, var(--stage-center) 0%, transparent 100%);
+      }
+      .figure canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+      .figure + div { margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--line); }
+      .figure + div h3 { font-size: 20px; }
+    </style>
+  </head>
+  <body>
+    <button class="toggle" id="toggle" aria-label="Toggle dark mode">◐</button>
+
+    <section class="track" id="hero">
+      <div class="stage">
+        <canvas id="hero-canvas" aria-hidden="true"></canvas>
+        <div class="copy">
+          <div class="wrap">
+            <div id="intro">
+              <p class="kicker">Particle kit</p>
+              <h1>Dots in 3D that follow your cursor.</h1>
+              <p>Scroll: the sphere reorganises into a word. Move the pointer over it to scatter the dots.</p>
+            </div>
+          </div>
+        </div>
+        <div class="copy caption" id="caption">
+          <div class="wrap">
+            <p class="kicker">Scroll-driven morph</p>
+            <h1>Any shape into any shape.</h1>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="figures">
+      <div class="wrap">
+        <p class="kicker">Live figures</p>
+        <h2 style="font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.6rem); max-width: 34rem">
+          Small scenes that turn slowly and answer the pointer.
+        </h2>
+        <div class="grid">
+          <div>
+            <div class="figure"><canvas id="fig-helix" aria-hidden="true"></canvas></div>
+            <div><h3>Helix</h3><p>Two strands and their rungs.</p></div>
+          </div>
+          <div>
+            <div class="figure"><canvas id="fig-ring" aria-hidden="true"></canvas></div>
+            <div><h3>Ring</h3><p>A strap looped into a band, shaded like a solid.</p></div>
+          </div>
+          <div>
+            <div class="figure"><canvas id="fig-molecule" aria-hidden="true"></canvas></div>
+            <div><h3>Molecule</h3><p>Glucose, ball and stick.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script type="module" src="./demo.js"></script>
+  </body>
+</html>
