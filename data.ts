@@ -1,83 +1,188 @@
-export const HEADLINE_TEXT = 'TENZIN DHONYOE'
-export const SUBTITLE_TEXT = 'Biomedical Engineering · GlucoSolutions · Toronto'
+export const NAME = 'Tenzin Dhonyoe'
 
-export const BIO_TEXT =
-  'I\'m a final-year Biomedical Engineering student at Toronto Metropolitan University and Co-Founder of GlucoSolutions, where we\'re building personalized tools for pre-diabetes management. ' +
-  'I spend most of my time at the intersection of healthcare and AI, from tumor detection prototypes to cardiac arrhythmia classification, gene sequence analysis to computer vision for fitness tracking. ' +
-  'The work that excites me most is the kind that bridges a real gap: taking a signal from the body, running it through something smart, and turning it into something a patient or clinician can actually use. ' +
-  'I believe the best software disappears into the problem it solves. ' +
-  'Right now I\'m focused on making glucose monitoring more accessible and actionable, so that people at risk of diabetes can intervene before it\'s too late. ' +
-  'When I\'m not writing code, I\'m probably reading about signal processing, training ML models, or figuring out how to make biomedical data tell a clearer story.'
+/** The heading: a small hello above the name. */
+export const GREETING = { hello: 'Hi, I’m', name: 'Tenzin' }
 
-export type Project = {
+/** The intro, one string per paragraph. */
+export const INTRO = [
+  'I grew up in Nepal and moved to Toronto when I was 13. I studied Biomedical Engineering at TMU and now work in silicon validation at Qualcomm.',
+  'I’m also building GlucoSolutions to help people with pre-diabetes reverse their condition.',
+]
+
+/** A row in one of the lists. Rows with a url are links; the rest just show their figure. */
+export type Item = {
   id: string
   title: string
+  /** Short label for the list. */
   tag: string
-  text: string
-  url: string
+  /** One line for the caption under the particles. */
+  line: string
+  url?: string
 }
 
-export const PROJECTS: Project[] = [
+export const WORK: Item[] = [
+  {
+    id: 'qualcomm',
+    title: 'Qualcomm',
+    tag: 'Silicon validation',
+    line: 'Silicon Validation Engineer. Making sure the chips do what the spec says they do.',
+  },
   {
     id: 'gluco',
     title: 'GlucoSolutions',
-    tag: 'Startup',
-    text: 'Personalized pre-diabetes management platform. Patient-facing app for glucose and metabolic health tracking, plus a dietitian dashboard for monitoring client stability. Full-stack TypeScript.',
+    tag: 'Co-founder',
+    line: 'A non-invasive, needle-free glucose-monitoring wristband for people with prediabetes, showing how meals, movement, sleep and stress affect their blood sugar.',
     url: 'https://glucosolutions.ca',
   },
   {
+    id: 'alphawave',
+    title: 'Alphawave Semi',
+    tag: 'Validation intern',
+    line: 'A year as a silicon validation intern, before Qualcomm acquired Alphawave.',
+  },
+  {
+    id: 'ibz',
+    title: 'Innovation Boost Zone',
+    tag: 'Incubator',
+    line: 'Worked at TMU’s startup incubator, around founders building their first companies.',
+  },
+]
+
+export const PROJECTS: Item[] = [
+  {
     id: 'zerisk',
     title: '0risk.ai',
-    tag: 'AI / Surgical Tech',
-    text: 'Real-time intraoperative risk monitoring overlay for surgical teams. Surfaces situational awareness cues during knee replacement surgery without diagnoses or predictions. React + TypeScript.',
+    tag: 'Surgical AI',
+    line: 'Real-time risk cues for surgical teams during knee replacement.',
     url: 'https://github.com/TenzinDhonyoe/0risk.ai',
   },
   {
     id: 'mobileqa',
     title: 'Mobile QA Engine',
-    tag: 'Dev Tools / Open Source',
-    text: 'Fully automated mobile QA tool for iOS apps. Appium-backed simulator testing with Revyl cloud device support, auto-permission config, and real-time bug fixing. Zero-dep pure HTTP client. Contributed to gstack.',
+    tag: 'Dev tools',
+    line: 'Automated QA for iOS apps: simulator and cloud-device testing that finds and fixes bugs.',
     url: 'https://github.com/TenzinDhonyoe/gstack/tree/feat/browse-mobile',
   },
   {
     id: 'tumor',
     title: 'Tumor Detection',
-    tag: 'ML / Healthcare',
-    text: 'Proof-of-concept for identifying tumor-like structures through image analysis. Preprocessing, segmentation, and classification pipeline for flagging regions of interest in biomedical imagery.',
+    tag: 'Imaging',
+    line: 'Flags tumor-like regions in medical images through segmentation and classification.',
     url: 'https://github.com/TenzinDhonyoe/Tumor-Detection-Prototype',
   },
   {
     id: 'trading',
     title: 'ML Trading Bot',
-    tag: 'ML / Finance',
-    text: 'Automated trading system for SPY ETF using sentiment analysis of financial news. NLP-driven signal generation combined with the Alpaca API for live trade execution.',
+    tag: 'Finance',
+    line: 'Trades SPY on sentiment from financial news, live through the Alpaca API.',
     url: 'https://github.com/TenzinDhonyoe/TradingBot-Using-ML',
   },
   {
     id: 'gym',
     title: 'ML Gym App',
-    tag: 'Computer Vision',
-    text: 'Real-time exercise tracking using pose estimation. Analyzes body joint positions frame-by-frame to detect movement patterns and count repetitions automatically.',
+    tag: 'Vision',
+    line: 'Pose estimation that follows your joints and counts reps in real time.',
     url: 'https://github.com/TenzinDhonyoe/ML-Gym-App',
   },
   {
     id: 'afib',
     title: 'AFib Detection',
-    tag: 'Signal Processing',
-    text: 'SVM-based classifier for detecting atrial fibrillation from ECG signal data. Signal preprocessing, feature extraction, and classification for cardiac arrhythmia detection.',
+    tag: 'Cardiac',
+    line: 'An SVM that spots atrial fibrillation in ECG signals.',
     url: 'https://github.com/TenzinDhonyoe/SVM_data_processing_for_atrial_fibrillation_detection',
   },
   {
     id: 'gene',
     title: 'Gene Sequence Analysis',
-    tag: 'Bioinformatics',
-    text: 'DNA analysis toolkit for pattern matching, gene finding, and promoter region detection. Parses FASTA files, compares sequences, and identifies biologically relevant motifs.',
+    tag: 'Genomics',
+    line: 'Finds genes, motifs and promoter regions in FASTA sequences.',
     url: 'https://github.com/TenzinDhonyoe/Gene-Sequence-Analysis',
   },
 ]
 
+export const LIFE: Item[] = [
+  {
+    id: 'home',
+    title: 'Nepal → Canada',
+    tag: 'Origin',
+    line: 'Grew up in Nepal, moved to Toronto at 13. Traded mountains for maple leaves.',
+  },
+  {
+    id: 'guitar',
+    title: 'Guitar',
+    tag: 'Music',
+    line: 'Mostly chords. Occasionally a solo nobody asked for.',
+  },
+  {
+    id: 'pickleball',
+    title: 'Pickleball',
+    tag: 'Sport',
+    line: 'Dinks, drives and a healthy amount of friendly trash talk.',
+  },
+  {
+    id: 'cooking',
+    title: 'Cooking',
+    tag: 'Food',
+    line: 'Recipes are more like suggestions.',
+  },
+  {
+    id: 'tinkering',
+    title: 'Weekends',
+    tag: 'Tinkering',
+    line: 'Building and tinkering. If it has screws, it’s getting opened.',
+  },
+  {
+    id: 'goal',
+    title: 'The goal',
+    tag: 'Why',
+    line: 'Make a real difference in at least one person’s health. Everything after that is a bonus.',
+  },
+]
+
+export const MILESTONES: Item[] = [
+  {
+    id: 'dmz',
+    title: 'DMZ Basecamp',
+    tag: 'Winner',
+    line: 'Won DMZ Basecamp, and $20,000 to keep building.',
+  },
+  {
+    id: 'gameon',
+    title: 'Game On (W26)',
+    tag: 'San Francisco',
+    line: 'Game On, Winter 2026 cohort, in San Francisco.',
+  },
+  {
+    id: 'residency',
+    title: 'The Residency',
+    tag: 'Biopunk, SF',
+    line: 'The Biopunk cohort of The Residency, in San Francisco.',
+  },
+  {
+    id: 'first',
+    title: 'FIRST Robotics',
+    tag: '2nd in the world',
+    line: 'Finished 2nd in the world at FIRST Robotics.',
+  },
+]
+
+/** The tabs on the right, in order; the first is open on arrival. */
+export const SECTIONS = [
+  { id: 'work', label: 'Work', items: WORK },
+  { id: 'projects', label: 'Projects', items: PROJECTS },
+  { id: 'life', label: 'Life', items: LIFE },
+  { id: 'milestones', label: 'Milestones', items: MILESTONES },
+]
+
+/** One-liners that rotate under the face while nothing is hovered. */
+export const FACTS = [
+  'Validating silicon by day, building GlucoSolutions by night.',
+  'Will happily talk pickleball, guitar or glucose with anyone.',
+  'Goal: make a difference in at least one person’s health.',
+]
+
 export const LINKS = [
-  { label: 'GitHub', url: 'https://github.com/TenzinDhonyoe', icon: 'github' },
-  { label: 'LinkedIn', url: 'https://www.linkedin.com/in/tenzindhonyoe/', icon: 'linkedin' },
-  { label: 'GlucoSolutions', url: 'https://glucosolutions.ca', icon: 'globe' },
+  { label: 'GitHub', url: 'https://github.com/TenzinDhonyoe' },
+  { label: 'LinkedIn', url: 'https://www.linkedin.com/in/tenzindhonyoe/' },
+  { label: 'X', url: 'https://x.com/_tenZdhon_' },
 ] as const

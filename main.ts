@@ -1,310 +1,255 @@
-import { createECG, drawECG, setBPM, shock, type ECGState } from './ecg-animated.ts'
-import { createHelix, tickHelix, setHelixScroll, type HelixState } from './dna-helix.ts'
-import { drawMiniSignal, initSimEvents } from './mini-signals.ts'
-import { HEADLINE_TEXT, SUBTITLE_TEXT, BIO_TEXT, PROJECTS, LINKS } from './data.ts'
+import { clamp01, easeInOut, isDark, mountStage, onThemeChange, setTheme, sphere, type ThemedPalette } from './particle-kit/src/index.ts'
+import { MILESTONE_FIGURES, WORK_FIGURES } from './career-shapes.ts'
+import { FACTS } from './data.ts'
+import { LIFE_FIGURES, THEMED } from './life-shapes.ts'
+import { loadImage, portrait } from './portrait.ts'
+import { PROJECT_FIGURES } from './project-shapes.ts'
+import { shapeshift, type Figure } from './shapeshift.ts'
 
-// ---- State ----
-let ecg: ECGState
-let stripEcg: ECGState
-let helix: HelixState | null = null
-let lastTs = 0
-let mouseX = -1
-let mouseY = -1
-let bootDone = false
-let bootSkipResolve: (() => void) | null = null
-let typewriterStart = 0
-let signalCanvases: HTMLCanvasElement[] = []
-const ACCENT = '#00e676'
-const ACCENT_WARN = '#ff6d3a'
-
-// ---- Boot Sequence ----
-const BOOT_LINES = [
-  '> INITIALIZING BIOSCAN...',
-  '> LOADING BIOMETRIC MODULES...',
-  `> SUBJECT IDENTIFIED: ${HEADLINE_TEXT}`,
-  '> CALIBRATING SENSORS... DONE',
-  '> ENTERING MONITORING MODE',
-]
-
-function finishBoot(): void {
-  document.getElementById('boot')!.classList.add('done')
-  bootDone = true
-  if (bootSkipResolve) { bootSkipResolve(); bootSkipResolve = null }
+// Ink on white by day, chalk on charcoal at night: 0 strongest, 1 mid, 2 soft.
+const palette: ThemedPalette = {
+  light: ['#0a0a0a', '#4a4a47', '#9d9d98'],
+  dark: ['#f2f1ed', '#b3b2ac', '#6f6e69'],
 }
 
-function runBootSequence(): Promise<void> {
-  return new Promise(resolve => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      finishBoot()
-      resolve()
-      return
+const canvas = document.getElementById('stage') as HTMLCanvasElement
+const slot = document.getElementById('slot')!
+const caption = document.getElementById('caption')!
+const lists = document.querySelector<HTMLElement>('.lists')!
+const items = Array.from(lists.querySelectorAll<HTMLElement>('.row[data-id]'))
+
+const small = window.matchMedia('(max-width: 860px)').matches
+const N = small ? 2800 : 5200
+const canHover = window.matchMedia('(hover: hover)').matches
+
+// ---- Placement: the dots fill the middle slot, above the caption ------------
+let cx = 0
+let cy = 0
+let radius = 100
+// Two portraits: dark dots where the photo is dark for the light page, light
+// dots where it is light for the dark page, so it's never a negative.
+let faces: { light: Figure; dark: Figure } | null = null
+// The photo is cropped tight to the head; this keeps the head about the size
+// it was with the looser head-and-shoulders crop.
+const FACE_SCALE = 0.8
+const face = () => (faces ? (isDark() ? faces.dark : faces.light) : null)
+const measure = () => {
+  const s = slot.getBoundingClientRect()
+  const room = s.height - caption.offsetHeight - 20
+  cx = s.left + s.width / 2
+  cy = s.top + room / 2
+  radius = Math.max(40, Math.min(s.width * (small ? 0.37 : 0.4), room * 0.46))
+}
+measure()
+window.addEventListener('resize', measure)
+
+// The floor glides forward one row each time the dots fly somewhere new.
+const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+const ROW = 1 / 2.4 // the kit's floor repeats every 1/2.4 of glide
+let glideFrom = 0
+let glideTo = 0
+let glideAt = 0
+const glide = () => {
+  const k = easeInOut(clamp01((performance.now() / 1000 - glideAt) / 1.5))
+  return glideFrom + (glideTo - glideFrom) * k
+}
+const advanceFloor = () => {
+  if (reduce) return
+  glideFrom = glide()
+  glideTo += ROW
+  glideAt = performance.now() / 1000
+}
+
+const shift = shapeshift(N, { lean: 0.22, center: () => [cx, cy], radius: () => radius })
+const stage = mountStage(canvas, shift.scene, {
+  palette,
+  pointerArea: document.body,
+  repelRadius: small ? 60 : 85,
+  floor: { horizon: small ? 0.64 : 0.7, glide },
+})
+
+// ---- Figures ---------------------------------------------------------------
+const BUILDERS: Record<string, (n: number, dark?: boolean) => Figure> = {
+  ...WORK_FIGURES,
+  ...PROJECT_FIGURES,
+  ...LIFE_FIGURES,
+  ...MILESTONE_FIGURES,
+}
+const figures = new Map<string, Figure>()
+const figureFor = (id: string) => {
+  // Themed figures are stippled per theme, so they're cached per theme too.
+  const key = THEMED.has(id) ? `${id}:${isDark() ? 'dark' : 'light'}` : id
+  let f = figures.get(key)
+  if (!f) figures.set(key, (f = BUILDERS[id](N, isDark())))
+  return f
+}
+
+let active: string | null = null
+
+const show = (f: Figure, time?: number) => {
+  shift.show(f, time)
+  advanceFloor()
+  stage.redraw()
+}
+
+// Dust gathers into my face on arrival.
+loadImage('/assets/portrait.jpg')
+  .then((img) => ({
+    light: { form: portrait(N, img), sway: 0.16, scale: FACE_SCALE },
+    dark: { form: portrait(N, img, { ink: false }), sway: 0.16, scale: FACE_SCALE },
+  }))
+  .catch(() => {
+    const f: Figure = { form: sphere(N), spin: 0.03 }
+    return { light: f, dark: f }
+  })
+  .then((f) => {
+    faces = f
+    if (!active) show(face()!, 2.4)
+    // Build the rest while the page is idle, so the first hover is instant.
+    const idle = window.requestIdleCallback ?? ((cb: () => void) => setTimeout(cb, 200))
+    const ids = items.map((a) => a.dataset.id!)
+    const next = () => {
+      const id = ids.shift()
+      if (!id) return
+      figureFor(id)
+      idle(next)
     }
-    bootSkipResolve = resolve
+    idle(next)
+  })
 
-    // Show skip hint after 0.8s
-    setTimeout(() => {
-      document.getElementById('boot-skip')?.classList.add('visible')
-    }, 800)
+// ---- Caption: the chosen thing, or a rotating line about me ------------------
+const hint = Array.from(caption.childNodes).map((c) => c.cloneNode(true))
+const idleLines: (string | null)[] = [null, ...FACTS] // null is the hover hint
+let idleIndex = 0
 
-    // Skip on keypress or click
-    const skip = () => {
-      document.removeEventListener('keydown', skip)
-      document.removeEventListener('click', skip)
-      finishBoot()
-    }
-    document.addEventListener('keydown', skip, { once: true })
-    document.addEventListener('click', skip, { once: true })
+const setCaption = (a: HTMLElement | null) => {
+  caption.classList.remove('in')
+  void caption.offsetWidth
+  caption.replaceChildren()
+  if (a) {
+    caption.setAttribute('aria-live', 'polite')
+    const b = document.createElement('b')
+    b.textContent = a.querySelector('.title')!.textContent + ' · ' + a.dataset.tag
+    caption.append(b, a.dataset.line ?? '')
+  } else {
+    // The rotating lines are decoration; don't announce each one.
+    caption.setAttribute('aria-live', 'off')
+    const line = idleLines[idleIndex]
+    if (line === null) caption.append(...hint.map((c) => c.cloneNode(true)))
+    else caption.append(line)
+  }
+  caption.classList.add('in')
+}
+setInterval(() => {
+  if (active || document.hidden) return
+  idleIndex = (idleIndex + 1) % idleLines.length
+  setCaption(null)
+}, 5500)
 
-    const container = document.getElementById('boot-text')!
-    let i = 0
-    const showNext = () => {
-      if (bootDone) return // already skipped
-      if (i >= BOOT_LINES.length) {
-        setTimeout(() => {
-          if (!bootDone) { finishBoot() }
-        }, 400)
-        return
+// ---- Choosing something to show ----------------------------------------------
+const select = (id: string | null) => {
+  if (id === active) return
+  active = id
+  const a = items.find((x) => x.dataset.id === id) ?? null
+  items.forEach((x) => x.classList.toggle('active', x === a))
+  lists.querySelectorAll('.list').forEach((l) => l.classList.toggle('has-active', Boolean(a && l.contains(a))))
+  if (!a) idleIndex = 0
+  setCaption(a)
+  if (id) show(figureFor(id))
+  else if (face()) show(face()!, 1.6)
+}
+
+// Mouse: follow hover, with a short grace period so sweeping across rows (or
+// slipping off the list for a moment) doesn't thrash the dots.
+let timer = 0
+const later = (id: string | null, ms: number) => {
+  clearTimeout(timer)
+  timer = window.setTimeout(() => select(id), ms)
+}
+items.forEach((a) => {
+  const id = a.dataset.id!
+  a.addEventListener('pointerenter', (e) => {
+    if (e.pointerType === 'mouse' || e.pointerType === 'pen') later(id, 70)
+  })
+  a.addEventListener('focus', () => {
+    clearTimeout(timer)
+    select(id)
+  })
+  a.addEventListener('click', (e) => {
+    if (canHover) return
+    // Touch: the first tap on a project shows it and the second opens it;
+    // life rows (no link) toggle.
+    if (a instanceof HTMLAnchorElement) {
+      if (active !== id) {
+        e.preventDefault()
+        select(id)
       }
-      const line = document.createElement('div')
-      line.className = 'boot-line'
-      line.textContent = BOOT_LINES[i]!
-      if (i === BOOT_LINES.length - 1) {
-        const cursor = document.createElement('span')
-        cursor.className = 'boot-cursor'
-        line.appendChild(cursor)
-      }
-      container.appendChild(line)
-      requestAnimationFrame(() => line.classList.add('visible'))
-      i++
-      setTimeout(showNext, 350 + Math.random() * 200)
-    }
-    showNext()
+    } else select(active === id ? null : id)
   })
-}
-
-// ---- Build Hero ----
-function buildVitals(): void {
-  const vitals = document.getElementById('vitals')!
-  const rows = [
-    { label: 'HR', id: 'v-hr', value: '72', unit: 'bpm' },
-    { label: 'SpO2', id: 'v-spo2', value: '98', unit: '%' },
-    { label: 'BP', id: 'v-bp', value: '120/80', unit: '' },
-    { label: 'RESP', id: 'v-resp', value: '16', unit: '/min' },
-  ]
-  for (const row of rows) {
-    const div = document.createElement('div')
-    div.className = 'vital-row'
-    div.innerHTML = `<span class="vital-label">${row.label}</span> <span class="vital-value" id="${row.id}">${row.value}</span><span class="vital-label">${row.unit}</span>`
-    vitals.appendChild(div)
+})
+lists.addEventListener('pointerleave', (e) => {
+  if (e.pointerType === 'mouse' || e.pointerType === 'pen') later(null, 260)
+})
+lists.addEventListener('focusout', (e) => {
+  if (!lists.contains(e.relatedTarget as Node)) later(null, 120)
+})
+// Tapping anywhere else brings the face back.
+const work = document.querySelector('.work')!
+document.addEventListener('click', (e) => {
+  if (!canHover && !work.contains(e.target as Node)) select(null)
+})
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    ;(document.activeElement as HTMLElement | null)?.blur()
+    select(null)
   }
-}
+})
 
-function buildLinks(): void {
-  const container = document.getElementById('hero-links')!
-  const icons: Record<string, string> = {
-    github: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>',
-    linkedin: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>',
-    globe: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>',
-  }
-  for (const link of LINKS) {
-    const a = document.createElement('a')
-    a.href = link.url
-    a.target = '_blank'
-    a.rel = 'noopener'
-    a.className = 'hero-link'
-    a.innerHTML = `${icons[link.icon] || ''}${link.label}`
-    container.appendChild(a)
-  }
-}
-
-function buildProjectCards(): void {
-  const grid = document.getElementById('project-grid')!
-  for (const project of PROJECTS) {
-    const card = document.createElement('div')
-    card.className = 'project-card'
-    card.innerHTML = `
-      <span class="scan-label">SCAN COMPLETE</span>
-      <div class="card-status">
-        <span class="status-dot"></span>
-        <span class="card-tag">${project.tag}</span>
-      </div>
-      <div class="card-title">${project.title}</div>
-      <div class="card-desc">${project.text}</div>
-      <canvas class="card-signal" data-signal="${project.id}"></canvas>
-      <a href="${project.url}" target="_blank" rel="noopener" class="card-link">VIEW PROJECT</a>
-    `
-    grid.appendChild(card)
-  }
-}
-
-// ---- Vitals Animation ----
-let vitalsTick = 0
-function updateVitals(bpm: number): void {
-  const hrEl = document.getElementById('v-hr')
-  const spo2El = document.getElementById('v-spo2')
-  const bpEl = document.getElementById('v-bp')
-  const respEl = document.getElementById('v-resp')
-  if (!hrEl) return
-
-  vitalsTick++
-  const jitter = () => Math.round((Math.random() - 0.5) * 2)
-
-  hrEl.textContent = String(Math.round(bpm))
-  hrEl.style.color = bpm > 100 ? ACCENT_WARN : ACCENT
-
-  if (vitalsTick % 30 === 0) {
-    spo2El!.textContent = String(97 + Math.round(Math.random() * 2))
-    const sys = 118 + Math.round(Math.random() * 8)
-    const dia = 78 + Math.round(Math.random() * 6)
-    bpEl!.textContent = `${sys}/${dia}`
-    respEl!.textContent = String(15 + jitter())
-  }
-}
-
-// ---- Mouse Proximity → BPM ----
-function getProximityBPM(): number {
-  if (mouseX < 0) return 72
-  const hero = document.getElementById('hero')!
-  const rect = hero.getBoundingClientRect()
-  const cx = rect.left + rect.width / 2
-  const cy = rect.top + rect.height / 2
-  const dist = Math.sqrt((mouseX - cx) ** 2 + (mouseY - cy) ** 2)
-  const maxDist = Math.sqrt(rect.width ** 2 + rect.height ** 2) / 2
-  const proximity = 1 - Math.min(1, dist / maxDist)
-  return 72 + proximity * 68 // 72–140 bpm
-}
-
-// ---- Typewriter for Bio ----
-function updateBioTypewriter(ts: number): void {
-  if (!bootDone) return
-  if (!typewriterStart) typewriterStart = ts
-  const elapsed = ts - typewriterStart
-  const chars = Math.min(BIO_TEXT.length, Math.floor((elapsed / 1000) * 120))
-  const bioEl = document.getElementById('bio-text')!
-  const cursorEl = document.getElementById('bio-cursor')!
-  bioEl.textContent = BIO_TEXT.substring(0, chars)
-  cursorEl.style.display = chars < BIO_TEXT.length ? 'inline-block' : 'none'
-}
-
-// ---- Hero Name Typewriter ----
-let nameRevealed = false
-function updateNameTypewriter(ts: number): void {
-  if (!bootDone) return
-  if (!typewriterStart) typewriterStart = ts
-  const elapsed = ts - typewriterStart
-  const chars = Math.min(HEADLINE_TEXT.length, Math.floor((elapsed / 1000) * 60))
-  const titleEl = document.getElementById('hero-title')!
-  titleEl.textContent = HEADLINE_TEXT.substring(0, chars)
-
-  if (chars >= HEADLINE_TEXT.length && !nameRevealed) {
-    nameRevealed = true
-    document.getElementById('hero-subtitle')!.textContent = SUBTITLE_TEXT
-    document.getElementById('hero-subtitle')!.classList.add('visible')
-  }
-}
-
-// ---- Shock Effect ----
-function triggerShock(x: number, y: number): void {
-  const flash = document.getElementById('shock')!
-  flash.classList.remove('active')
-  void flash.offsetWidth // force reflow to restart animation
-  flash.style.setProperty('--sx', `${x}px`)
-  flash.style.setProperty('--sy', `${y}px`)
-  flash.classList.add('active')
-  shock(ecg)
-  flash.addEventListener('animationend', () => flash.classList.remove('active'), { once: true })
-}
-
-// ---- Animation Loop ----
-function loop(ts: number): void {
-  const dt = lastTs ? (ts - lastTs) / 1000 : 0
-  lastTs = ts
-
-  // Mouse proximity BPM
-  const targetBpm = getProximityBPM()
-  setBPM(ecg, targetBpm)
-  setBPM(stripEcg, targetBpm)
-  updateVitals(ecg.bpm)
-
-  // Draw hero ECG
-  drawECG(ecg, dt, ACCENT, ACCENT_WARN)
-
-  // Draw sticky strip ECG
-  drawECG(stripEcg, dt, ACCENT, ACCENT_WARN)
-
-  // DNA helix
-  tickHelix(helix, ts)
-
-  // Name + bio typewriter
-  updateNameTypewriter(ts)
-  updateBioTypewriter(ts)
-
-  // Mini signals on project cards (cached NodeList)
-  const tSec = ts / 1000
-  for (const canvas of signalCanvases) {
-    const id = canvas.dataset.signal
-    if (id) drawMiniSignal(canvas, id, tSec, ACCENT)
-  }
-
-  requestAnimationFrame(loop)
-}
-
-// ---- Events ----
-function setupEvents(): void {
-  document.addEventListener('mousemove', (e) => {
-    mouseX = e.clientX
-    mouseY = e.clientY
+// ---- Work / Life tabs ---------------------------------------------------------
+const tabs = Array.from(document.querySelectorAll<HTMLButtonElement>('[role="tab"]'))
+const openTab = (tab: HTMLButtonElement, focus = false) => {
+  tabs.forEach((t) => {
+    const on = t === tab
+    t.setAttribute('aria-selected', String(on))
+    t.tabIndex = on ? 0 : -1
+    document.getElementById(t.getAttribute('aria-controls')!)!.toggleAttribute('inert', !on)
   })
-
-  window.addEventListener('blur', () => {
-    mouseX = -1
-    mouseY = -1
-  })
-
-  document.getElementById('hero-canvas')!.addEventListener('click', (e) => {
-    triggerShock(e.clientX, e.clientY)
-  })
-
-  window.addEventListener('scroll', () => {
-    setHelixScroll(helix, window.scrollY)
-    // Hide scroll indicator after scrolling
-    const indicator = document.getElementById('scroll-indicator')
-    if (indicator && window.scrollY > 50) {
-      indicator.style.opacity = '0'
-      indicator.style.transition = 'opacity 0.3s ease'
+  if (focus) tab.focus()
+  clearTimeout(timer)
+  select(null)
+}
+tabs.forEach((t, i) => {
+  t.addEventListener('click', () => openTab(t))
+  t.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+      e.preventDefault()
+      openTab(tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length], true)
     }
   })
+})
+
+// ---- Light / dark ------------------------------------------------------------
+const toggle = document.getElementById('theme')!
+const themeColor = document.querySelector('meta[name="theme-color"]')!
+const syncTheme = () => {
+  const dark = isDark()
+  toggle.setAttribute('aria-pressed', String(dark))
+  toggle.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode')
+  themeColor.setAttribute('content', dark ? '#0f0f10' : '#ffffff')
 }
-
-// ---- Boot ----
-async function boot(): Promise<void> {
-  buildVitals()
-  buildLinks()
-  buildProjectCards()
-
-  // Cache signal canvases and init interactive event listeners
-  signalCanvases = Array.from(document.querySelectorAll<HTMLCanvasElement>('.card-signal'))
-  for (const canvas of signalCanvases) initSimEvents(canvas)
-
-  // Create ECG instances
-  ecg = createECG(document.getElementById('hero-canvas') as HTMLCanvasElement, 42)
-  stripEcg = createECG(document.getElementById('strip-canvas') as HTMLCanvasElement, 42)
-
-  // Create DNA helix
-  helix = createHelix(document.getElementById('dna-canvas') as HTMLCanvasElement)
-
-  setupEvents()
-
-  // Wait for fonts, then boot
-  await document.fonts.ready
-  await runBootSequence()
-
-  typewriterStart = performance.now()
-  requestAnimationFrame(loop)
-}
-
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => boot())
-} else {
-  boot()
-}
+syncTheme()
+toggle.addEventListener('click', () => setTheme(isDark() ? 'light' : 'dark'))
+onThemeChange(() => {
+  syncTheme()
+  // The face (or a themed figure) re-forms for the other theme.
+  if (!active && face()) show(face()!, 1.4)
+  else if (active && THEMED.has(active)) show(figureFor(active), 1.4)
+})
+// Follow the system setting until the visitor picks one.
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+  let saved: string | null = null
+  try {
+    saved = localStorage.getItem('theme')
+  } catch {}
+  if (!saved) document.documentElement.dataset.theme = e.matches ? 'dark' : 'light'
+})
