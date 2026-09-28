@@ -1,5 +1,5 @@
 import { cp, rm } from 'node:fs/promises'
-import { renderPage } from './render.ts'
+import { renderDesign, renderPage } from './render.ts'
 
 await rm('./dist', { recursive: true, force: true })
 
@@ -13,6 +13,8 @@ const result = await Bun.build({
 if (result.success) {
   const html = await Bun.file('./index.html').text()
   await Bun.write('./dist/index.html', renderPage(html))
+  const [designHtml, design] = await Promise.all([Bun.file('./design.html').text(), Bun.file('./particle-kit/DESIGN.md').text()])
+  await Bun.write('./dist/design/index.html', renderDesign(designHtml, design))
   await cp('./assets', './dist/assets', { recursive: true })
   console.log('Build complete → dist/')
 } else {

@@ -1,4 +1,4 @@
-import { renderPage } from './render.ts'
+import { renderDesign, renderPage } from './render.ts'
 
 const server = Bun.serve({
   port: Number(process.env.PORT) || 3000,
@@ -24,6 +24,12 @@ const server = Bun.serve({
     if (path === '/index.html') {
       const html = await Bun.file('./index.html').text()
       return new Response(renderPage(html), { headers: { 'Content-Type': 'text/html; charset=utf-8' } })
+    }
+
+    // The design prompt, with particle-kit/DESIGN.md filled in
+    if (path === '/design' || path === '/design/') {
+      const [html, design] = await Promise.all([Bun.file('./design.html').text(), Bun.file('./particle-kit/DESIGN.md').text()])
+      return new Response(renderDesign(html, design), { headers: { 'Content-Type': 'text/html; charset=utf-8' } })
     }
 
     // Serve static files
