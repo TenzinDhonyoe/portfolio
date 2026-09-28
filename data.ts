@@ -174,6 +174,109 @@ export const SECTIONS = [
   { id: 'milestones', label: 'Milestones', items: MILESTONES },
 ]
 
+/** A stop on the timeline. */
+export type Chapter = {
+  id: string
+  /** A short label for when: a year, an age, a stage of life. */
+  when: string
+  title: string
+  line: string
+  /**
+   * The dot figure that stands beside the road: any row's id above,
+   * 'nepal' / 'toronto' for the two halves of 'home', or 'sun' for the
+   * sunrise at the end.
+   */
+  figure: string
+}
+
+/** The timeline, oldest first. The second-to-last chapter is "now"; the last is what's next. */
+export const TIMELINE: Chapter[] = [
+  {
+    id: 'nepal',
+    when: 'Early years',
+    title: 'Nepal',
+    line: 'Grew up in Nepal. This is where the story starts.',
+    figure: 'nepal',
+  },
+  {
+    id: 'toronto',
+    when: 'Age 13',
+    title: 'Toronto',
+    line: 'Moved to Toronto at 13. Traded mountains for maple leaves.',
+    figure: 'toronto',
+  },
+  {
+    id: 'first',
+    when: 'High school',
+    title: 'FIRST Robotics',
+    line: 'Finished 2nd in the world at FIRST Robotics.',
+    figure: 'first',
+  },
+  {
+    id: 'tmu',
+    when: 'University',
+    title: 'Biomedical Engineering',
+    line: 'Studied Biomedical Engineering at Toronto Metropolitan University.',
+    figure: 'afib',
+  },
+  {
+    id: 'ibz',
+    when: 'At TMU',
+    title: 'Innovation Boost Zone',
+    line: 'Worked at TMU’s startup incubator, around founders building their first companies.',
+    figure: 'ibz',
+  },
+  {
+    id: 'alphawave',
+    when: 'Internship',
+    title: 'Alphawave Semi',
+    line: 'A year as a silicon validation intern.',
+    figure: 'alphawave',
+  },
+  {
+    id: 'gluco',
+    when: 'Co-founder',
+    title: 'GlucoSolutions',
+    line: 'Started GlucoSolutions to help people with pre-diabetes reverse their condition.',
+    figure: 'gluco',
+  },
+  {
+    id: 'dmz',
+    when: 'Winner',
+    title: 'DMZ Basecamp',
+    line: 'Won DMZ Basecamp, and $20,000 to keep building.',
+    figure: 'dmz',
+  },
+  {
+    id: 'gameon',
+    when: 'Winter 2026',
+    title: 'Game On',
+    line: 'The W26 cohort of Game On, in San Francisco.',
+    figure: 'gameon',
+  },
+  {
+    id: 'residency',
+    when: 'San Francisco',
+    title: 'The Residency',
+    line: 'The Biopunk cohort of The Residency.',
+    figure: 'residency',
+  },
+  {
+    id: 'now',
+    when: 'Today',
+    title: 'Qualcomm',
+    line: 'Validating silicon at Qualcomm by day, building GlucoSolutions by night.',
+    figure: 'qualcomm',
+  },
+  {
+    id: 'next',
+    when: 'Next',
+    title: 'Not done yet',
+    line: 'The goal hasn’t changed: make a real difference in at least one person’s health. Everything after that is a bonus.',
+    figure: 'sun',
+  },
+]
+
 /** One-liners that rotate under the face while nothing is hovered. */
 export const FACTS = [
   'Validating silicon by day, building GlucoSolutions by night.',
