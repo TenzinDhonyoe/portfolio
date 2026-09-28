@@ -150,4 +150,7 @@ sampling needs `document`).
 The homepage runs on the kit: `main.ts` mounts one full-screen stage with the
 `shapeshift` scene (`../shapeshift.ts`), which flies the dots between a stipple
 portrait (`../portrait.ts`) and one figure per project (`../project-shapes.ts`)
-as you hover the list. The engine and shapes here are used unchanged.
+as you hover the list. The Timeline button hands the same dots to
+`../timeline.ts`, which lays them out as a road through the years with a
+figure at each stop (its chapters live in `../data.ts`). The engine and shapes
+here are used unchanged.

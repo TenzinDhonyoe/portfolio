@@ -1,6 +1,6 @@
 // Fills index.html's placeholders from data.ts, so the words are in the HTML
 // itself (readable without JavaScript); main.ts only adds the particles.
-import { GREETING, INTRO, LINKS, NAME, SECTIONS, type Item } from './data.ts'
+import { GREETING, INTRO, LINKS, NAME, SECTIONS, TIMELINE, type Item } from './data.ts'
 
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 
@@ -46,6 +46,33 @@ const sections = () => {
         </div>`
 }
 
+/** The timeline: a rail of every chapter (readable as a list), and a card for the one you're at. */
+const timeline = () => {
+  const rail = TIMELINE.map(
+    (ch, k) => `
+          <li><button type="button"${k === 0 ? ' aria-current="step"' : ''}><span class="tl-rail-num">${count(k + 1)}</span> <span class="tl-rail-title">${esc(ch.title)}</span></button></li>`
+  ).join('')
+  const first = TIMELINE[0]
+  return `
+        <p class="tl-heading">The story so far</p>
+        <ol class="tl-rail" aria-label="Chapters">${rail}
+        </ol>
+        <div class="tl-marks" aria-hidden="true"></div>
+        <div class="tl-card">
+          <div class="tl-text in" aria-live="polite">
+            <p class="tl-when"><span class="tl-num">01</span><span class="tl-when-text">${esc(first.when)}</span></p>
+            <h2 class="tl-title">${esc(first.title)}</h2>
+            <p class="tl-line">${esc(first.line)}</p>
+          </div>
+          <div class="tl-nav">
+            <button type="button" class="tl-prev" aria-label="Earlier chapter" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 12.5v-9M4 7l4-4 4 4"/></svg></button>
+            <button type="button" class="tl-next" aria-label="Later chapter"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3.5v9M4 9l4 4 4-4"/></svg></button>
+            <button type="button" class="tl-restart">Back to the start</button>
+            <span class="tl-hint" aria-hidden="true"><span class="hint-mouse">Scroll to move through time</span><span class="hint-touch">Swipe up to move through time</span></span>
+          </div>
+        </div>`
+}
+
 export function renderPage(html: string): string {
   const links = LINKS.map((l) => `<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)}</a>`).join('')
   return html
@@ -56,4 +83,5 @@ export function renderPage(html: string): string {
     .replace('<!--intro-->', INTRO.map((p) => `<p class="lede">${esc(p)}</p>`).join('\n        '))
     .replace('<!--links-->', links)
     .replace('<!--sections-->', sections())
+    .replace('<!--timeline-->', timeline())
 }

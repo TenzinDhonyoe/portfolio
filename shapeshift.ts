@@ -4,10 +4,13 @@
 // `show` again mid-flight just re-aims the dots, so fast hovering stays
 // smooth. Each figure idles on its own (a slow spin or a gentle sway).
 
-import { clamp01, easeInOut, rng, smooth, type Cloud, type Scene } from './particle-kit/src/index.ts'
+import { clamp01, easeInOut, rng, smooth, type Cloud, type FrameInfo, type Scene } from './particle-kit/src/index.ts'
 
 /** A cloud with optional per-dot size (px at unit depth) and opacity. */
 export type Form = Cloud & { s?: Float32Array; a?: Float32Array }
+
+/** Where a figure's `place` puts one dot: position, size (px at unit depth), opacity and palette index. */
+export type Place = { x: number; y: number; z: number; s: number; a: number; c: number }
 
 export type Figure = {
   form: Form
@@ -26,6 +29,80 @@ export type Figure = {
   alt?: { form: Form; period: number; hold?: number }
   /** Move dot `j` of the form at `t` seconds after the figure appeared (edit `p` in place). */
   move?: (t: number, j: number, p: [number, number, number]) => void
+  /**
+   * Or take over: write where dot `j` is every frame, `t` seconds after the
+   * figure appeared. Replaces everything above except `form` (whose `n` sets
+   * how many roles there are); the flight in still happens.
+   */
+  place?: (t: number, j: number, o: Place) => void
+  /** With `place`: called once a frame, before any dot is placed. */
+  tick?: (t: number, info: FrameInfo) => void
+}
+
+/**
+ * Poses a figure's dots for one frame: the alt blend, `move`, scale, then
+ * pitch and yaw. Call `frame` once per frame, then `dot` for each dot.
+ */
+export function poser() {
+  const p: [number, number, number] = [0, 0, 0]
+  let f: Figure | null = null
+  let k = 0
+  let age = 0
+  let cy = 1
+  let sy = 0
+  let cp = 1
+  let sp = 0
+  let k0 = 1
+  return {
+    /** Set up for `fig` at time `T` (seconds), which appeared at `born`. */
+    frame(fig: Figure, T: number, born: number) {
+      f = fig
+      age = T - born
+      k = 0
+      if (fig.alt) {
+        const ph = (age / fig.alt.period) % 1
+        const hold = fig.alt.hold
+        k = hold ? smooth(hold, 1 - hold, 1 - Math.abs(ph * 2 - 1)) : (1 - Math.cos(ph * Math.PI * 2)) / 2
+      }
+      const yaw = fig.spin ? age * fig.spin * Math.PI * 2 : Math.sin(T * 0.45) * (fig.sway ?? 0)
+      cy = Math.cos(yaw)
+      sy = Math.sin(yaw)
+      cp = Math.cos(fig.pitch ?? 0)
+      sp = Math.sin(fig.pitch ?? 0)
+      k0 = fig.scale ?? 1
+    },
+    /** Where dot `j` of the form sits now, relative to the figure's centre. */
+    dot(j: number, out: [number, number, number]) {
+      const form = f!.form
+      let px = form.x[j]
+      let py = form.y[j]
+      let pz = form.z[j]
+      const alt = f!.alt
+      if (alt) {
+        px += (alt.form.x[j] - px) * k
+        py += (alt.form.y[j] - py) * k
+        pz += (alt.form.z[j] - pz) * k
+      }
+      if (f!.move) {
+        p[0] = px
+        p[1] = py
+        p[2] = pz
+        f!.move(age, j, p)
+        px = p[0]
+        py = p[1]
+        pz = p[2]
+      }
+      px *= k0
+      py *= k0
+      pz *= k0
+      // Pitch, then yaw.
+      const y1 = py * cp - pz * sp
+      const z1 = py * sp + pz * cp
+      out[0] = px * cy - z1 * sy
+      out[1] = y1
+      out[2] = px * sy + z1 * cy
+    },
+  }
 }
 
 type Extra = Pick<Scene, 'lean' | 'radius' | 'center'>
@@ -77,7 +154,9 @@ export function shapeshift(n: number, extra: Extra = {}, { duration = 1.25, stag
     return s
   }
 
+  const pose = poser()
   const mp: [number, number, number] = [0, 0, 0]
+  const pl: Place = { x: 0, y: 0, z: 0, s: 0, a: 0, c: 0 }
   let target: Figure | null = null
   let slot: Uint32Array | null = null
   let t0 = 0
@@ -87,69 +166,49 @@ export function shapeshift(n: number, extra: Extra = {}, { duration = 1.25, stag
   const scene: Scene = {
     count: n,
     ...extra,
-    frame(_t, b) {
+    frame(_t, b, _first, info) {
       const T = now()
       if (!target || !slot) {
         b.a.fill(0)
         return
       }
       const f = target.form
-      const alt = target.alt
-      let k = 0
-      if (alt) {
-        const ph = ((T - born) / alt.period) % 1
-        k = alt.hold ? smooth(alt.hold, 1 - alt.hold, 1 - Math.abs(ph * 2 - 1)) : (1 - Math.cos(ph * Math.PI * 2)) / 2
-      }
-      const move = target.move
+      const place = target.place
       const age = T - born
-      const yaw = target.spin ? (T - born) * target.spin * Math.PI * 2 : Math.sin(T * 0.45) * (target.sway ?? 0)
-      const cy = Math.cos(yaw)
-      const sy = Math.sin(yaw)
-      const pitch = target.pitch ?? 0
-      const cp = Math.cos(pitch)
-      const sp = Math.sin(pitch)
+      if (place) target.tick?.(age, info)
+      else pose.frame(target, T, born)
       const m = reduce ? 1 : clamp01((T - t0) / span)
-      const k0 = target.scale ?? 1
+      // A barely-there drift so the shape breathes.
+      const drift = reduce ? 0 : 0.006
 
       for (let i = 0; i < n; i++) {
         const e = reduce ? 1 : easeInOut(clamp01(m * (1 + stagger) - delay[i]))
         const j = slot[i]
-        let px = f.x[j]
-        let py = f.y[j]
-        let pz = f.z[j]
-        if (alt) {
-          px += (alt.form.x[j] - px) * k
-          py += (alt.form.y[j] - py) * k
-          pz += (alt.form.z[j] - pz) * k
+        let tx, ty, tz, s0, a0, c0
+        if (place) {
+          place(age, j, pl)
+          tx = pl.x
+          ty = pl.y
+          tz = pl.z
+          s0 = pl.s
+          a0 = pl.a
+          c0 = pl.c
+        } else {
+          pose.dot(j, mp)
+          tx = mp[0] + Math.sin(T * 0.9 + phase[i]) * drift
+          ty = mp[1] + Math.cos(T * 0.7 + phase[i]) * drift
+          tz = mp[2]
+          s0 = f.s ? f.s[j] : 1.6 + ((i * 7919) % 97) / 120
+          a0 = f.a ? f.a[j] : 1
+          c0 = f.c[j]
         }
-        if (move) {
-          mp[0] = px
-          mp[1] = py
-          mp[2] = pz
-          move(age, j, mp)
-          px = mp[0]
-          py = mp[1]
-          pz = mp[2]
-        }
-        px *= k0
-        py *= k0
-        pz *= k0
-        // Pitch, then yaw, plus a barely-there drift so the shape breathes.
-        const y1 = py * cp - pz * sp
-        const z1 = py * sp + pz * cp
-        const drift = reduce ? 0 : 0.006
-        const tx = px * cy - z1 * sy + Math.sin(T * 0.9 + phase[i]) * drift
-        const ty = y1 + Math.cos(T * 0.7 + phase[i]) * drift
-        const tz = px * sy + z1 * cy
         const lift = Math.sin(Math.PI * e) * swirl
         const x = from.x[i] + (tx - from.x[i]) * e + sw[i * 3] * lift
         const y = from.y[i] + (ty - from.y[i]) * e + sw[i * 3 + 1] * lift
         const z = from.z[i] + (tz - from.z[i]) * e + sw[i * 3 + 2] * lift
-        const s0 = f.s ? f.s[j] : 1.6 + ((i * 7919) % 97) / 120
-        const a0 = f.a ? f.a[j] : 1
         const s = from.s[i] + (s0 - from.s[i]) * e
         const a = from.a[i] + (a0 - from.a[i]) * e
-        const c = e < 0.5 ? from.c[i] : f.c[j]
+        const c = e < 0.5 ? from.c[i] : c0
         b.x[i] = cur.x[i] = x
         b.y[i] = cur.y[i] = y
         b.z[i] = cur.z[i] = z

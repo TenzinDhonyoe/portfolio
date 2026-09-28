@@ -1,10 +1,11 @@
 import { clamp01, easeInOut, isDark, mountStage, onThemeChange, setTheme, sphere, type ThemedPalette } from './particle-kit/src/index.ts'
 import { MILESTONE_FIGURES, WORK_FIGURES } from './career-shapes.ts'
-import { FACTS } from './data.ts'
+import { FACTS, TIMELINE } from './data.ts'
 import { LIFE_FIGURES, THEMED } from './life-shapes.ts'
 import { loadImage, portrait } from './portrait.ts'
 import { PROJECT_FIGURES } from './project-shapes.ts'
 import { shapeshift, type Figure } from './shapeshift.ts'
+import { timeline } from './timeline.ts'
 
 // Ink on white by day, chalk on charcoal at night: 0 strongest, 1 mid, 2 soft.
 const palette: ThemedPalette = {
@@ -43,13 +44,28 @@ const measure = () => {
 measure()
 window.addEventListener('resize', measure)
 
+// The timeline (see the bottom of this file) is made up front: the stage asks
+// it where to look from its very first frame.
+const tl = timeline({
+  n: N,
+  chapters: TIMELINE,
+  figure: (id) => chapterFigure(id),
+  root: document.getElementById('timeline')!,
+  redraw: () => stage.redraw(),
+  onClose: () => closeTimeline(),
+})
+
 // The floor glides forward one row each time the dots fly somewhere new.
+// In the timeline it moves with the road instead.
 const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 const ROW = 1 / 2.4 // the kit's floor repeats every 1/2.4 of glide
 let glideFrom = 0
 let glideTo = 0
 let glideAt = 0
+let tlGlide = 0 // the floor's glide when the timeline opened
+let tlTravel = 0 // and how far the timeline had travelled by then
 const glide = () => {
+  if (tl.isOpen) return tlGlide + tl.travelled() - tlTravel
   const k = easeInOut(clamp01((performance.now() / 1000 - glideAt) / 1.5))
   return glideFrom + (glideTo - glideFrom) * k
 }
@@ -60,12 +76,39 @@ const advanceFloor = () => {
   glideAt = performance.now() / 1000
 }
 
-const shift = shapeshift(N, { lean: 0.22, center: () => [cx, cy], radius: () => radius })
+// The camera eases between the page (0) and the timeline (1).
+let tlFrom = 0
+let tlTo = 0
+let tlAt = 0
+const tlBlend = () => (reduce ? tlTo : tlFrom + (tlTo - tlFrom) * easeInOut(clamp01((performance.now() / 1000 - tlAt) / 1.6)))
+const lerp = (a: number, b: number, t: number) => a + (b - a) * t
+const HORIZON = small ? 0.64 : 0.7
+const LEAN = 0.22
+
+const shift = shapeshift(N, {
+  lean: LEAN,
+  center(w, h) {
+    const b = tlBlend()
+    if (b <= 0) return [cx, cy]
+    const v = tl.view(w, h)
+    return [lerp(cx, v.cx, b), lerp(cy, v.cy, b)]
+  },
+  radius(w, h) {
+    const b = tlBlend()
+    return b <= 0 ? radius : lerp(radius, tl.view(w, h).radius, b)
+  },
+})
 const stage = mountStage(canvas, shift.scene, {
   palette,
   pointerArea: document.body,
   repelRadius: small ? 60 : 85,
-  floor: { horizon: small ? 0.64 : 0.7, glide },
+  floor: {
+    get horizon() {
+      const b = tlBlend()
+      return b <= 0 ? HORIZON : lerp(HORIZON, tl.view(canvas.clientWidth, canvas.clientHeight).horizon, b)
+    },
+    glide,
+  },
 })
 
 // ---- Figures ---------------------------------------------------------------
@@ -82,6 +125,19 @@ const figureFor = (id: string) => {
   let f = figures.get(key)
   if (!f) figures.set(key, (f = BUILDERS[id](N, isDark())))
   return f
+}
+
+// The timeline's chapters use the same figures, plus the two halves of 'home'.
+const halves = new WeakMap<Figure, Record<'nepal' | 'toronto', Figure>>()
+const chapterFigure = (id: string): Figure => {
+  if (id !== 'nepal' && id !== 'toronto') return figureFor(id)
+  const home = figureFor('home')
+  let h = halves.get(home)
+  if (!h) {
+    h = { nepal: { form: home.form, sway: home.sway, pitch: home.pitch }, toronto: { form: home.alt!.form, sway: 0.25 } }
+    halves.set(home, h)
+  }
+  return h[id]
 }
 
 let active: string | null = null
@@ -104,7 +160,7 @@ loadImage('/assets/portrait.jpg')
   })
   .then((f) => {
     faces = f
-    if (!active) show(face()!, 2.4)
+    if (!active && !tl.isOpen) show(face()!, 2.4)
     // Build the rest while the page is idle, so the first hover is instant.
     const idle = window.requestIdleCallback ?? ((cb: () => void) => setTimeout(cb, 200))
     const ids = items.map((a) => a.dataset.id!)
@@ -148,7 +204,7 @@ setInterval(() => {
 
 // ---- Choosing something to show ----------------------------------------------
 const select = (id: string | null) => {
-  if (id === active) return
+  if (id === active || tl.isOpen) return
   active = id
   const a = items.find((x) => x.dataset.id === id) ?? null
   items.forEach((x) => x.classList.toggle('active', x === a))
@@ -199,7 +255,7 @@ document.addEventListener('click', (e) => {
   if (!canHover && !work.contains(e.target as Node)) select(null)
 })
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') {
+  if (e.key === 'Escape' && !tl.isOpen) {
     ;(document.activeElement as HTMLElement | null)?.blur()
     select(null)
   }
@@ -241,6 +297,8 @@ syncTheme()
 toggle.addEventListener('click', () => setTheme(isDark() ? 'light' : 'dark'))
 onThemeChange(() => {
   syncTheme()
+  // The timeline picks up the other theme's figures on its own.
+  if (tl.isOpen) return
   // The face (or a themed figure) re-forms for the other theme.
   if (!active && face()) show(face()!, 1.4)
   else if (active && THEMED.has(active)) show(figureFor(active), 1.4)
@@ -253,3 +311,65 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e)
   } catch {}
   if (!saved) document.documentElement.dataset.theme = e.matches ? 'dark' : 'light'
 })
+
+// ---- Timeline -------------------------------------------------------------------
+// The button in the corner sends every dot into a road through my life; see
+// timeline.ts. The page fades out while the camera drops to the floor.
+const toggleButton = document.getElementById('tl-toggle')!
+const tlRoot = document.getElementById('timeline')!
+const page = document.querySelector<HTMLElement>('.page')!
+
+// The stage only rereads how far the pointer may turn the scene when the
+// pointer moves, so nudge it after changing that.
+let pointer: [number, number] | null = null
+window.addEventListener('pointermove', (e) => {
+  if (e.isTrusted && e.pointerType !== 'touch') pointer = [e.clientX, e.clientY]
+})
+const setLean = (lean: number) => {
+  shift.scene.lean = lean
+  if (pointer) document.body.dispatchEvent(new PointerEvent('pointermove', { clientX: pointer[0], clientY: pointer[1], bubbles: true }))
+}
+const blendTo = (to: number) => {
+  tlFrom = tlBlend()
+  tlTo = to
+  tlAt = performance.now() / 1000
+}
+
+const openTimeline = () => {
+  if (tl.isOpen) return
+  clearTimeout(timer)
+  // Let go of whatever was hovered, without flying back to the face.
+  active = null
+  items.forEach((x) => x.classList.remove('active'))
+  lists.querySelectorAll('.list').forEach((l) => l.classList.remove('has-active'))
+  tlGlide = glide()
+  tlTravel = tl.travelled()
+  tl.open()
+  blendTo(1)
+  setLean(0)
+  document.documentElement.classList.add('tl-open')
+  page.inert = true
+  toggleButton.setAttribute('aria-expanded', 'true')
+  shift.show(tl.figure, 2.2)
+  stage.redraw()
+}
+
+const closeTimeline = () => {
+  if (!tl.isOpen) return
+  const g = glide()
+  // Don't strand keyboard focus inside a section that's about to go inert.
+  if (tlRoot.contains(document.activeElement)) toggleButton.focus()
+  tl.close()
+  glideFrom = glideTo = g
+  blendTo(0)
+  setLean(LEAN)
+  document.documentElement.classList.remove('tl-open')
+  page.inert = false
+  toggleButton.setAttribute('aria-expanded', 'false')
+  idleIndex = 0
+  setCaption(null)
+  if (face()) show(face()!, 1.8)
+}
+
+toggleButton.hidden = false
+toggleButton.addEventListener('click', () => (tl.isOpen ? closeTimeline() : openTimeline()))
