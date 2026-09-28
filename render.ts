@@ -85,3 +85,23 @@ export function renderPage(html: string): string {
     .replace('<!--sections-->', sections())
     .replace('<!--timeline-->', timeline())
 }
+
+/** Joins hard-wrapped Markdown lines back into whole paragraphs and list items,
+ *  so the text rewraps cleanly at any width. Headings and table rows stay put. */
+const unwrap = (md: string) =>
+  md
+    .trim()
+    .split('\n')
+    .reduce<string[]>((out, line) => {
+      const prev = out[out.length - 1]
+      const block = /^\s*([-#|]|\d+\.\s)/
+      if (prev && line.trim() && !block.test(line) && !/^\s*[#|]/.test(prev)) out[out.length - 1] = `${prev} ${line.trim()}`
+      else out.push(line)
+      return out
+    }, [])
+    .join('\n')
+
+/** The /design page: particle-kit/DESIGN.md, word for word, under the prompt's brief. */
+export function renderDesign(html: string, design: string): string {
+  return html.replaceAll('{{name}}', esc(NAME)).replace('<!--design-->', () => esc(unwrap(design)))
+}

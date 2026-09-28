@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Particle design · Tenzin Dhonyoe</title>
+    <meta name="description" content="The design rules behind the dots on my homepage, as a prompt for your AI coding agent." />
+    <meta property="og:title" content="Particle design · Tenzin Dhonyoe" />
+    <meta property="og:description" content="The design rules behind the dots on my homepage, as a prompt for your AI coding agent." />
+    <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><g fill='%230a0a0a'><circle cx='30' cy='30' r='9'/><circle cx='70' cy='30' r='9'/><circle cx='30' cy='70' r='9'/><circle cx='70' cy='70' r='9'/><circle cx='50' cy='50' r='9'/></g></svg>" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400&display=swap" rel="stylesheet" />
+    <!-- Theme before first paint: the saved choice, else the system setting. -->
+    <script>
+      try {
+        var t = localStorage.getItem('theme')
+        if (t !== 'dark' && t !== 'light') t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+        document.documentElement.dataset.theme = t
+      } catch (e) {}
+    </script>
+    <style>
+      :root {
+        --page: #ffffff;
+        --ink: #0a0a0a;
+        --ink-2: #5f5f5c;
+        --ink-3: #a1a19c;
+        --line: #ececea;
+        --gutter: clamp(20px, 4vw, 64px);
+        color-scheme: light;
+      }
+      :root[data-theme='dark'] {
+        --page: #0f0f10;
+        --ink: #f2f1ed;
+        --ink-2: #a3a29c;
+        --ink-3: #6c6b67;
+        --line: #252528;
+        color-scheme: dark;
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; background: var(--page); color: var(--ink); transition: background-color 0.35s, color 0.35s; }
+      body {
+        font: 16px/1.6 Geist, system-ui, -apple-system, 'Segoe UI', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+      }
+      ::selection { background: var(--ink); color: var(--page); }
+      a { color: inherit; text-decoration: none; }
+      :focus-visible { outline: 1.5px solid var(--ink); outline-offset: 4px; border-radius: 2px; }
+
+      .top { display: flex; align-items: center; justify-content: space-between; padding: 20px var(--gutter) 0; }
+      .home { font-size: 14px; font-weight: 500; padding: 2px 0; border-bottom: 1px solid var(--line); transition: border-color 0.2s; }
+      .home::before { content: '←'; margin-right: 6px; color: var(--ink-3); font-weight: 400; }
+      .home:hover { border-color: var(--ink); }
+      .theme {
+        width: 38px; height: 38px; padding: 0; display: grid; place-items: center;
+        border: 1px solid var(--line); border-radius: 999px;
+        background: transparent; color: var(--ink); cursor: pointer;
+        transition: border-color 0.2s;
+      }
+      .theme:hover { border-color: var(--ink-3); }
+      .theme svg { width: 16px; height: 16px; }
+      .theme .sun, :root[data-theme='dark'] .theme .moon { display: none; }
+      :root[data-theme='dark'] .theme .sun { display: block; }
+
+      main { max-width: calc(48rem + 2 * var(--gutter)); padding: clamp(48px, 11vh, 120px) var(--gutter) 0; }
+      .kicker { margin: 0 0 14px; font-size: 14px; color: var(--ink-3); }
+      h1 { margin: 0; font-weight: 600; font-size: clamp(2.3rem, 1.4rem + 2.6vw, 3.6rem); line-height: 1; letter-spacing: -0.045em; }
+      .lede { margin: 22px 0 0; max-width: 34rem; color: var(--ink-2); line-height: 1.55; text-wrap: pretty; }
+
+      .prompt { margin: 48px 0 80px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+      .bar {
+        position: sticky; top: 0; z-index: 1;
+        display: flex; align-items: center; justify-content: space-between; gap: 16px;
+        padding: 10px 0; border-bottom: 1px solid var(--line);
+        background: color-mix(in srgb, var(--page) 86%, transparent);
+        -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+        font-size: 13px; color: var(--ink-3);
+      }
+      .copy {
+        height: 34px; padding: 0 16px; border: 1px solid var(--ink); border-radius: 999px;
+        background: var(--ink); color: var(--page); cursor: pointer;
+        font: inherit; font-size: 13px; font-weight: 500;
+        transition: opacity 0.2s, background-color 0.35s, color 0.35s;
+      }
+      .copy:hover { opacity: 0.85; }
+      .status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+      pre {
+        margin: 0; padding: 22px 0 30px;
+        font: 13px/1.7 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+        color: var(--ink-2); white-space: pre-wrap; overflow-wrap: anywhere; tab-size: 2;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html, body, .copy { transition: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="top">
+      <a class="home" href="/">Tenzin Dhonyoe</a>
+      <button class="theme" id="theme" type="button" aria-label="Switch to dark mode" aria-pressed="false">
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7Z"/></svg>
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"/></svg>
+      </button>
+    </header>
+
+    <main>
+      <p class="kicker">Particle design</p>
+      <h1>Build your own dots.</h1>
+      <p class="lede">The rules behind the particles on my homepage, written as a prompt. Paste it into Claude Code, Cursor or any AI coding agent, fill in the brackets, and it’ll build a section in the same style.</p>
+
+      <section class="prompt" aria-label="Prompt">
+        <div class="bar">
+          <span>Prompt</span>
+          <button class="copy" id="copy" type="button">Copy prompt</button>
+        </div>
+<!-- Everything inside <pre> is copied as-is, so it isn't indented. -->
+<pre id="prompt">Build [the hero / a section] of [my site, and what it's for] in the particle style described below.
+
+The engine (what the rules below call "the kit"): a few thousand dots on a &lt;canvas&gt;, in plain TypeScript with no libraries. Each dot has an x, y, z (roughly -1 to 1), is perspective-projected, and fades with depth. The shape spins slowly, leans toward the pointer and scatters away from it, springing back when the pointer leaves. Shapes are point clouds: a sphere, a ring, a helix, text sampled from an offscreen canvas, or anything else you can sample into points. In a pinned scroll section, the dots morph from one shape into another as the reader scrolls. Pause drawing when the canvas is offscreen or the tab is hidden, cap devicePixelRatio at 2, and under prefers-reduced-motion drop the spin and pointer response (scroll morphs can still follow the scroll).
+
+My choices:
+- Hero shape: [a sphere / a ring / a helix / text "…" / …]
+- On scroll it becomes: [target shape]
+- Accent: [#hex] by day, [a brighter #hex] at night
+- Copy: headline "[…]", one short line, and [the one action]
+
+Follow the design rules below. Check the result in a browser on desktop and on a 390px-wide phone, in light and dark mode, before calling it done.
+
+---
+
+# Designing with the particle kit
+
+The kit makes the dots move; these rules make them look considered instead of like a screensaver. They come from a lot of iteration on the GlucoSolutions site. Adapt the colours and content; keep the restraint.
+
+## Principles
+
+1. **One visual idea.** Dots are the illustration style. Don't mix in stock photos, 3D renders or icon sets as decoration beside them.
+2. **A studio stage.** Hero-scale moments sit on a soft radial &quot;stage&quot; (bright centre falling off to the page colour) with an endless floor grid. Between them, the plain page. The stage ends in the page colour, so it never seams.
+3. **Words on one side, dots in the room.** Copy holds the left (or the bottom on phones); the shape sits right of centre. Text never sits on top of dense dots; fields that pass behind copy stay faint.
+4. **Understood in one glance.** The first screen says what it is and what to do: one plain headline, one short line, one action. The motion is the hook, not the message.
+5. **Motion is calm.** Slow spins (0.03–0.06 turns a second), gentle floats, springy pointer response. Nothing flashes or loops fast. Scroll-driven changes follow the reader, never autoplay past them.
+6. **Colour carries meaning.** One accent plus ink and a soft gray. Use the accent for what matters (the subject, the &quot;rising&quot; line) and ink for structure. Extra colours only where the content needs them (a spectrum).
+
+## Numbers that worked
+
+| Thing | Value |
+| --- | --- |
+| Dot size | 1.4–2.8 px at unit depth |
+| Hero dots | about 3,500 (about 1,800 on phones) |
+| Figure dots | 1,200–1,600 |
+| Depth fade | farthest dots at about 20% opacity |
+| Pointer scatter | 70–110 px radius, spring back over about half a second |
+| Pointer lean | up to about 0.35 rad |
+| Hero shape placement | centre at 64% across, 50% down; radius 30% of the short side |
+| Pinned scroll track | 190–220vh; morph over roughly the first 60% of it |
+| Morph stagger / swirl | 0.35 / 0.32 |
+| Floor horizon | 68% down |
+
+## Type and layout that pair well
+
+- One sans family (Geist, Inter or system UI). Headlines semibold, tight tracking (about -0.035em), leading about 1.05. Body regular, 16–17px, 1.6 leading.
+- Small grey kickers above headlines in sentence case. Never all caps or letter-spaced.
+- One container width (about 1320px) with 24px / 40px side gutters, so every left edge lines up.
+- Structure from hairlines and spacing, not boxed cards.
+
+## Dark mode
+
+Same system at night: charcoal page (about `#0f0f10`), warm off-white ink, and a **brighter twin of the accent** (deep accents drop to about 3.5:1 on near-black; aim for 6:1 or more). Everything is tokens, so one attribute flips it; the canvas follows.
+
+## Don'ts
+
+- No text over dense dots.
+- No fast or constant flashy motion; no autoplaying morphs.
+- No rainbow palettes outside content that needs them.
+- No all-caps eyebrows, gradient buttons or icon tiles around the dots.
+- Don't make the particles the only way to read something: it's `aria-hidden` decoration, and the words carry the meaning.</pre>
+      </section>
+    </main>
+
+    <p class="status" id="status" aria-live="polite"></p>
+
+    <script>
+      // Copy the prompt, falling back to selecting it where the clipboard API is blocked.
+      const copy = document.getElementById('copy')
+      const prompt = document.getElementById('prompt')
+      const status = document.getElementById('status')
+      let reset
+      copy.addEventListener('click', async () => {
+        let label = 'Copied'
+        try {
+          await navigator.clipboard.writeText(prompt.textContent)
+        } catch (e) {
+          const range = document.createRange()
+          range.selectNodeContents(prompt)
+          getSelection().removeAllRanges()
+          getSelection().addRange(range)
+          if (!document.execCommand('copy')) label = 'Press ⌘C to copy'
+        }
+        copy.textContent = status.textContent = label
+        clearTimeout(reset)
+        reset = setTimeout(() => (copy.textContent = 'Copy prompt'), 2000)
+      })
+
+      // Light / dark, shared with the homepage through the same saved choice.
+      const root = document.documentElement
+      const toggle = document.getElementById('theme')
+      const themeColor = document.querySelector('meta[name="theme-color"]')
+      const syncTheme = () => {
+        const dark = root.dataset.theme === 'dark'
+        toggle.setAttribute('aria-pressed', String(dark))
+        toggle.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode')
+        themeColor.setAttribute('content', dark ? '#0f0f10' : '#ffffff')
+      }
+      syncTheme()
+      toggle.addEventListener('click', () => {
+        root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark'
+        try { localStorage.setItem('theme', root.dataset.theme) } catch (e) {}
+        syncTheme()
+      })
+      // Follow the system setting until the visitor picks one.
+      matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        let saved = null
+        try { saved = localStorage.getItem('theme') } catch (e) {}
+        if (!saved) { root.dataset.theme = e.matches ? 'dark' : 'light'; syncTheme() }
+      })
+    </script>
+  </body>
+</html>

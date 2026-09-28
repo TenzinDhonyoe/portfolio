@@ -158,6 +158,15 @@
       .list.has-active .row.active { opacity: 1; }
       .row.active .arrow, .row:focus-visible .arrow { opacity: 1; transform: none; }
 
+      /* ---- Bottom left: the design prompt, across from the timeline button ---- */
+      .design-link {
+        position: absolute; left: var(--gutter); bottom: 24px;
+        height: 38px; display: inline-flex; align-items: center; gap: 5px;
+        font-size: 13px; color: var(--ink-3); transition: color 0.2s;
+      }
+      .design-link::after { content: '→'; }
+      .design-link:hover { color: var(--ink); }
+
       /* ---- Phones and narrow windows: stack name / dots / list ---- */
       @media (max-width: 860px) {
         .page {
@@ -181,6 +190,7 @@
         .title { font-size: 13.5px; letter-spacing: -0.02em; line-height: 1.25; }
         .num { font-size: 11px; }
         .tag, .arrow { display: none; }
+        .design-link { left: 20px; bottom: max(14px, env(safe-area-inset-bottom)); height: 36px; }
       }
       @media (max-width: 860px) and (max-height: 700px) {
         /* Short phones: keep the first paragraph, a touch smaller. */
@@ -354,6 +364,8 @@
       <section class="work" aria-label="Work, projects, life and milestones">
         <!--sections-->
       </section>
+
+      <a class="design-link" href="/design">Build your own dots</a>
     </main>
 
     <button class="tl-toggle" id="tl-toggle" type="button" aria-expanded="false" aria-controls="timeline" hidden>
